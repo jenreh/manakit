@@ -7,6 +7,7 @@ Documentation: https://mantine.dev/x/nprogress/
 Run with: reflex run
 """
 
+import asyncio
 from collections.abc import AsyncGenerator
 from typing import Any
 
@@ -76,16 +77,16 @@ class NProgressExamplesState(rx.State):
         yield rx.call_script("window.nprogress && window.nprogress.start()")
 
         # Simulate incremental loading
-        await self.sleep(0.5)
+        await asyncio.sleep(0.5)
         yield rx.call_script("window.nprogress && window.nprogress.set(30)")
 
-        await self.sleep(0.5)
+        await asyncio.sleep(0.5)
         yield rx.call_script("window.nprogress && window.nprogress.set(60)")
 
-        await self.sleep(0.5)
+        await asyncio.sleep(0.5)
         yield rx.call_script("window.nprogress && window.nprogress.set(90)")
 
-        await self.sleep(0.5)
+        await asyncio.sleep(0.5)
         self.data_loaded = True
         self.is_loading = False
         yield rx.call_script("window.nprogress && window.nprogress.complete()")
@@ -98,7 +99,7 @@ class NProgressExamplesState(rx.State):
         for i in range(0, 101, 10):
             self.upload_progress = i
             yield rx.call_script(f"window.nprogress && window.nprogress.set({i})")
-            await self.sleep(0.3)
+            await asyncio.sleep(0.3)
 
         yield rx.call_script("window.nprogress && window.nprogress.complete()")
 
