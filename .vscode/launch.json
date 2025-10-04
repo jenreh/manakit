@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "reflex",
+            "type": "python",
+            "request": "launch",
+            "module": "reflex",
+            "args": [
+                "run"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Reflex Debug",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "reflex",
+            "args": [
+                "run"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "REFLEX_USE_TURBOPACK": "1"
+            },
+            "autoReload": {
+                "enable": true,
+                "pattern": [
+                    "**/*.py"
+                ]
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Attach to Reflex",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            }
+        }
+    ]
+}

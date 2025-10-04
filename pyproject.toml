@@ -1,0 +1,262 @@
+[project]
+name = "reflex-mantine"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "reflex>=0.8.13",
+]
+
+[dependency-groups]
+dev = ["pytest==8.4.1", "ruff==0.12.4", "bump-my-version>=1.2.1", "detect-secrets>=1.5.0"]
+
+
+[tool.uv]
+cache-dir = ".cache/uv_cache"
+
+[tool.uv.workspace]
+members = ["components/*", "knowledgeai/*"]
+exclude = ["**/__pycache__"]
+
+[tool.uv.sources]
+knai-anonymizer = { workspace = true }
+knai-assistant = { workspace = true }
+knai-avvia = { workspace = true }
+knai-common = { workspace = true }
+knai-hours = { workspace = true }
+knai-imagegen = { workspace = true }
+knai-nmxdia = { workspace = true }
+knai-tools = { workspace = true }
+knowledgeai-commons = { workspace = true }
+knowledgeai-commons-ui = { workspace = true }
+
+[[tool.uv.index]]
+name = "local"
+url = "http://localhost:3030/simple/"
+publish-url = "http://localhost:3030/"
+#format = "flat"
+explicit = true
+
+[[tool.uv.index]]
+name = "nmxdia_packages"
+url = "https://europe-west3-python.pkg.dev/nm-x-dia-61bc/nmxdia/simple/"
+publish-url = "https://europe-west3-python.pkg.dev/nm-x-dia-61bc/nmxdia/"
+explicit = true
+
+
+[tool.bumpversion]
+current_version = "0.21.0"
+commit = false
+tag = false
+allow-dirty = true
+
+[[tool.bumpversion.files]]
+filename = "configuration/config.yaml"
+search = '  version: {current_version}'
+replace = '  version: {new_version}'
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-anonymizer/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-assistant/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-avvia/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-common/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-hours/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-imagegen/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-nmxdia/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/knai-tools/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "knowledgeai/knowledgeai-commons/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "knowledgeai/knowledgeai-commons-ui/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+
+[tool.ruff]
+cache-dir = ".cache/ruff"
+indent-width = 4
+line-length = 88
+target-version = "py312"
+extend-exclude = [".cache", "docs", "infra", "prompts", "scripts", "static"]
+extend-select = ["I"]
+
+[tool.ruff.lint]
+ignore = [
+    "EM101", # Exception must not use a string literal
+    "EM102", # Exception must not use a string literal with a format specifier
+    "ISC001", # Implicit string concatenation
+    "N811", # Constant {name} imported as non-constant {asname}
+    "N818", # Exception name {name} should be named with an Error suffix
+    "PLR0913", # Too many arguments in function
+    "PT011", # pytest-raises-too-broad
+    "PT012", # pytest.raises() block should contain a single simple statement
+    "RUF012", # Mutable class attributes should be annotated with typing.ClassVar
+    "RUF100", # unused noqa
+    "SIM300", # Yoda conditions are discouraged, use {suggestion} instead
+]
+select = [
+    "A", # Flake8-builtins
+    "ANN001",
+    "ANN201", # Missing return type annotation
+    "ARG", # Flake8-arguments
+    "ASYNC", # Flake8-async
+    "B", # Flake8-bugbear
+    "C4", # Flake8-comprehensions
+    "DTZ", # Flake8-datetimez
+    "E", # Pyflakes
+    "EM", # Flake8-errmsg
+    "EXE", # Flake8-executable
+    "F", # Pyflakes
+    "FIX", # Flake8-fixme
+    "FAST", # FastAPI
+    "G", # Flake8-logging-format
+    "ICN", # Flake8-import-conventions
+    "LOG", # Flake8-logging
+    "N", # Naming
+    "PERF", # Perflint
+    "PIE", # Flake8-pie
+    "PL", # PyLint
+    "PT", # Flake8-pytest-style
+    "PTH", # Flake8-use-pathlib
+    "PYI", # Flake8-pyi
+    "Q", # Flake8-quotes
+    "RET", # Flake8-return
+    "RUF", # Ruff
+    "S", # Flake8-bandit
+    "SIM", # Flake8-simplify
+    "SLF", # Flake8-self
+    "SLF001", # Flake8-self
+    "T20", # Flake8-print
+    "TID", # Flake8-tidy-imports
+    "UP", # PyUpgrade - will show hints for deprecated syntax in python 3.11
+    "W", # pycodestyle
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "I001"] # {name} imported but unused
+"server.py" = ["W605", "S104"] # invalid escape sequence
+"test_**.py" = ["S101", "PLR2004", "ANN001", "S106"]
+"alembic/versions/*.py" = ["E501"]
+"indexer/main.py" = ["S104"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+exclude = ["*.pyi"]
+
+[tool.ruff.lint.isort]
+known-local-folder = ["app", "alembic"]
+known-first-party = ["knowledgeai_*", "knai_*"]
+
+[tool.pytest.ini_options]
+cache_dir = ".cache/pytest"
+testpaths = ["tests"]
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "C0103",
+    "C0114",
+    "C0115",
+    "C0116",
+    "C0301",
+    "C0415",
+    "W0621",
+    "E0239",
+    "E1101",
+    "E1102",
+    "E1120",
+    "E1136",
+    "W0718",
+    "R0903",
+    "W0611",
+    "W0613",
+    "W0622",
+]
+
+[tool.mypy]
+cache_dir = ".cache/mypy"
+disallow_untyped_defs = true
+incremental = true
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+ignore_errors = true
+ignore_missing_imports = false
+exclude = [
+    ".cache",
+    ".venv",
+    ".venv.mac",
+    ".venv_mac",
+    ".web",
+    ".github",
+    ".devcontainer",
+    ".idea",
+    ".vscode",
+    "build",
+    "dist",
+    "docs",
+    "infra",
+    "prompts",
+    "scripts",
+    "static",
+    "uploads",
+]
+
+[tool.coverage.run]
+branch = true
+omit = []
+source = ["app", "server", "common"]
+
+[tool.coverage.report]
+exclude_lines = ["if TYPE_CHECKING:", "if __name__ == .__main__.:", "pragma: no cover"]
+fail_under = 80
+show_missing = true
+skip_covered = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

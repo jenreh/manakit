@@ -1,0 +1,43 @@
+{
+    "servers": {
+        "fetch": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-fetch",
+                "--ignore-robots-txt"
+            ]
+        },
+        "memory": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory"
+            ]
+        },
+        "code-reasoning": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@mettamatt/code-reasoning"
+            ]
+        },
+        // "context7": {
+        //     "type": "http",
+        //     "url": "https://mcp.context7.com/mcp",
+        // },
+        "duckduckgo": {
+            "command": "uvx",
+            "args": [
+                "duckduckgo-mcp-server"
+            ]
+        },
+    },
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "api_key",
+            "description": "API-Key to access KnowledgeAI MCP server", // 74b21216-3fe5-7263-fd94-a617ca4044ee
+            "password": true
+        }
+    ]
+}
