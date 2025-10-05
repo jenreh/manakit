@@ -27,6 +27,13 @@ class TiptapState(rx.State):
 <li>Links and more!</li>
 </ul>"""
 
+    # Minimal toolbar content
+    minimal_toolbar_content: str = """<p>This editor has a <strong>minimal toolbar</strong> with only basic formatting controls.</p>"""
+
+    # Custom toolbar content
+    custom_toolbar_content: str = """<h2>Custom Toolbar Configuration</h2>
+<p>This editor demonstrates custom toolbar groups!</p>"""
+
     # Color picker example content
     color_content: str = """<p>Select text and use the color picker to <span style="color: #fa5252">change</span> <span style="color: #228be6">text</span> <span style="color: #40c057">colors</span>!</p>"""
 
@@ -51,6 +58,14 @@ class TiptapState(rx.State):
         """Update controlled editor content."""
         self.controlled_content = html
 
+    def update_minimal_toolbar_content(self, html: str) -> None:
+        """Update minimal toolbar editor content."""
+        self.minimal_toolbar_content = html
+
+    def update_custom_toolbar_content(self, html: str) -> None:
+        """Update custom toolbar editor content."""
+        self.custom_toolbar_content = html
+
     def update_color_content(self, html: str) -> None:
         """Update color editor content."""
         self.color_content = html
@@ -63,6 +78,8 @@ class TiptapState(rx.State):
         """Reset all editors to default content."""
         self.simple_content = "<p>Content has been reset!</p>"
         self.controlled_content = "<p>Content has been reset!</p>"
+        self.minimal_toolbar_content = "<p>Content has been reset!</p>"
+        self.custom_toolbar_content = "<p>Content has been reset!</p>"
         self.color_content = "<p>Content has been reset!</p>"
         self.minimal_content = ""
 
@@ -103,6 +120,46 @@ def tiptap_page() -> rx.Component:
                 color_scheme="gray",
                 mt="2",
             ),
+            # Minimal toolbar example
+            rx.heading("Minimal Toolbar", size="7", mt="8"),
+            rx.text(
+                "Custom toolbar with only basic formatting controls.",
+                size="3",
+                color_scheme="gray",
+                mb="3",
+            ),
+            mn.rich_text_editor(
+                content=TiptapState.minimal_toolbar_content,
+                on_update=TiptapState.update_minimal_toolbar_content,
+                placeholder="Type with minimal toolbar...",
+                toolbar_config=mn.EditorToolbarConfig(
+                    control_groups=[
+                        mn.ToolbarControlGroup.BASIC_FORMATTING.value,
+                        mn.ToolbarControlGroup.HISTORY.value,
+                    ]
+                ),
+            ),
+            # Custom toolbar example
+            rx.heading("Custom Toolbar Groups", size="7", mt="8"),
+            rx.text(
+                "Fully custom toolbar configuration with specific controls.",
+                size="3",
+                color_scheme="gray",
+                mb="3",
+            ),
+            mn.rich_text_editor(
+                content=TiptapState.custom_toolbar_content,
+                on_update=TiptapState.update_custom_toolbar_content,
+                placeholder="Custom toolbar example...",
+                toolbar_config=mn.EditorToolbarConfig(
+                    control_groups=[
+                        ["bold", "italic", "underline"],
+                        ["h1", "h2", "h3"],
+                        ["bulletList", "orderedList"],
+                        ["link", "unlink"],
+                    ]
+                ),
+            ),
             # Controlled editor with custom toolbar
             rx.heading("Controlled Editor with State", size="7", mt="8"),
             rx.text(
@@ -128,6 +185,13 @@ def tiptap_page() -> rx.Component:
                 content=TiptapState.color_content,
                 on_update=TiptapState.update_color_content,
                 placeholder="Select text and change its color...",
+                toolbar_config=mn.EditorToolbarConfig(
+                    control_groups=[
+                        mn.ToolbarControlGroup.BASIC_FORMATTING.value,
+                        mn.ToolbarControlGroup.COLORS.value,
+                        mn.ToolbarControlGroup.HISTORY.value,
+                    ]
+                ),
             ),
             # Minimal editor (no toolbar)
             rx.heading("Content Area", size="7", mt="8"),

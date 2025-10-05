@@ -8,13 +8,119 @@ Documentation: https://mantine.dev/x/tiptap/
 
 from __future__ import annotations
 
+import enum
 from typing import Literal
 
 import reflex as rx
 from reflex.assets import asset
+from reflex.base import Base
 from reflex.components.component import NoSSRComponent
 from reflex.event import EventHandler
 from reflex.vars.base import Var
+
+
+class ToolbarControlGroup(list, enum.Enum):
+    """Predefined control groups for the toolbar."""
+
+    BASIC_FORMATTING = [
+        "bold",
+        "italic",
+        "underline",
+        "strikethrough",
+        "clearFormatting",
+        "code",
+        "highlight",
+    ]
+    HEADINGS = ["h1", "h2", "h3", "h4"]
+    LISTS_AND_BLOCKS = [
+        "blockquote",
+        "hr",
+        "bulletList",
+        "orderedList",
+        "subscript",
+        "superscript",
+    ]
+    LINKS = ["link", "unlink"]
+    ALIGNMENT = ["alignLeft", "alignCenter", "alignRight", "alignJustify"]
+    COLORS = ["colorPicker", "unsetColor"]
+    HISTORY = ["undo", "redo"]
+    ALL = [
+        "bold",
+        "italic",
+        "underline",
+        "strikethrough",
+        "clearFormatting",
+        "code",
+        "highlight",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "blockquote",
+        "hr",
+        "bulletList",
+        "orderedList",
+        "subscript",
+        "superscript",
+        "link",
+        "unlink",
+        "alignLeft",
+        "alignCenter",
+        "alignRight",
+        "alignJustify",
+        "colorPicker",
+        "unsetColor",
+        "undo",
+        "redo",
+    ]
+
+
+class EditorToolbarConfig(Base):
+    """Configuration for the RichTextEditor toolbar.
+
+    Use this to customize which controls appear in the toolbar and how they are grouped.
+
+    Example:
+        ```python
+        from mantine import EditorToolbarConfig, ToolbarControlGroup
+
+        # Use predefined groups
+        config = EditorToolbarConfig(
+            control_groups=[
+                ToolbarControlGroup.BASIC_FORMATTING.value,
+                ToolbarControlGroup.HEADINGS.value,
+                ToolbarControlGroup.ALIGNMENT.value,
+            ]
+        )
+
+        # Or define custom groups
+        config = EditorToolbarConfig(
+            control_groups=[
+                ["bold", "italic", "underline"],
+                ["h1", "h2"],
+                ["link", "unlink"],
+            ]
+        )
+
+        # Use in component
+        mn.rich_text_editor(
+            content=State.content,
+            toolbar_config=config,
+        )
+        ```
+    """
+
+    # List of control groups (each group is a list of control names)
+    control_groups: list[list[str]] | None = None
+
+    # Whether to show the toolbar (default: True)
+    show_toolbar: bool | None = None
+
+    # Whether the toolbar should be sticky (default: True)
+    sticky: bool | None = None
+
+    # Sticky offset in pixels (default: 0)
+    sticky_offset: int | str | None = None
 
 
 class RichTextEditor(NoSSRComponent):
@@ -84,6 +190,72 @@ class RichTextEditor(NoSSRComponent):
     # Localization
     labels: Var[dict] = None
     """Localization labels for controls."""
+
+    # Toolbar configuration - individual props instead of dict
+    control_groups: Var[list] = None
+    """List of control groups for the toolbar. Each group is a list of control names."""
+
+    show_toolbar: Var[bool] = None
+    """Whether to show the toolbar. Default: True."""
+
+    sticky: Var[bool] = None
+    """Whether the toolbar should be sticky. Default: True."""
+
+    sticky_offset: Var[str | int] = None
+    """Sticky offset in pixels. Default: '0px'."""
+
+    @classmethod
+    def create(
+        cls, toolbar_config: EditorToolbarConfig | None = None, **props
+    ) -> rx.Component:
+        """Create an instance of RichTextEditor.
+
+        Args:
+            toolbar_config: Optional toolbar configuration to customize controls.
+            **props: Any properties to be passed to the RichTextEditor
+
+        Returns:
+            A RichTextEditor instance.
+
+        Raises:
+            ValueError: If toolbar_config is a state Var.
+
+        Example:
+            ```python
+            from mantine import (
+                rich_text_editor,
+                EditorToolbarConfig,
+                ToolbarControlGroup,
+            )
+
+            # With default toolbar
+            rich_text_editor(content=State.content, on_update=State.update)
+
+            # With custom toolbar using config
+            config = EditorToolbarConfig(
+                control_groups=[
+                    ToolbarControlGroup.BASIC_FORMATTING.value,
+                    ToolbarControlGroup.HEADINGS.value,
+                ]
+            )
+            rich_text_editor(content=State.content, toolbar_config=config)
+            ```
+        """
+        if toolbar_config is not None:
+            if isinstance(toolbar_config, Var):
+                msg = "EditorToolbarConfig cannot be a state Var"
+                raise ValueError(msg)
+            # Extract individual props from config
+            config_dict = toolbar_config.dict()
+            if config_dict.get("control_groups") is not None:
+                props["control_groups"] = config_dict["control_groups"]
+            if config_dict.get("show_toolbar") is not None:
+                props["show_toolbar"] = config_dict["show_toolbar"]
+            if config_dict.get("sticky") is not None:
+                props["sticky"] = config_dict["sticky"]
+            if config_dict.get("sticky_offset") is not None:
+                props["sticky_offset"] = config_dict["sticky_offset"]
+        return super().create(**props)
 
 
 # Namespace

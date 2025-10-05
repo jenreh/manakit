@@ -16,16 +16,29 @@ import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Placeholder from '@tiptap/extension-placeholder';
 
-export const RichTextEditorWrapper = memo(function Wrapper({
-  content = '',
-  onUpdate,
-  editable = true,
-  placeholder = '',
-  variant,
-  withTypographyStyles,
-  labels,
-  ...otherProps
-}) {
+export const RichTextEditorWrapper = memo(function Wrapper(props) {
+  // Destructure and filter out toolbar-related props
+  const {
+    content = '',
+    onUpdate,
+    editable = true,
+    placeholder = '',
+    variant,
+    withTypographyStyles,
+    labels,
+    // Toolbar configuration props
+    controlGroups,
+    showToolbar,
+    sticky,
+    stickyOffset,
+    // Legacy/snake_case variants to filter out
+    control_groups,
+    show_toolbar,
+    sticky_offset,
+    toolbar_config, // Old dict-based approach
+    toolbarConfig,   // Old dict-based approach
+    ...restProps
+  } = props;
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ link: false }),
@@ -63,6 +76,102 @@ export const RichTextEditorWrapper = memo(function Wrapper({
     return null;
   }
 
+  // Control name to component mapping
+  const controlMap = {
+    bold: MantineRichTextEditor.Bold,
+    italic: MantineRichTextEditor.Italic,
+    underline: MantineRichTextEditor.Underline,
+    strikethrough: MantineRichTextEditor.Strikethrough,
+    clearFormatting: MantineRichTextEditor.ClearFormatting,
+    code: MantineRichTextEditor.Code,
+    highlight: MantineRichTextEditor.Highlight,
+    h1: MantineRichTextEditor.H1,
+    h2: MantineRichTextEditor.H2,
+    h3: MantineRichTextEditor.H3,
+    h4: MantineRichTextEditor.H4,
+    blockquote: MantineRichTextEditor.Blockquote,
+    hr: MantineRichTextEditor.Hr,
+    bulletList: MantineRichTextEditor.BulletList,
+    orderedList: MantineRichTextEditor.OrderedList,
+    subscript: MantineRichTextEditor.Subscript,
+    superscript: MantineRichTextEditor.Superscript,
+    link: MantineRichTextEditor.Link,
+    unlink: MantineRichTextEditor.Unlink,
+    alignLeft: MantineRichTextEditor.AlignLeft,
+    alignCenter: MantineRichTextEditor.AlignCenter,
+    alignRight: MantineRichTextEditor.AlignRight,
+    alignJustify: MantineRichTextEditor.AlignJustify,
+    undo: MantineRichTextEditor.Undo,
+    redo: MantineRichTextEditor.Redo,
+    // colorPicker is handled specially (needs colors prop)
+    // color is handled specially (needs color prop)
+    unsetColor: MantineRichTextEditor.UnsetColor,
+  };
+
+  // Default toolbar configuration
+  const defaultControlGroups = [
+    ['bold', 'italic', 'underline', 'strikethrough', 'clearFormatting', 'code', 'highlight'],
+    ['h1', 'h2', 'h3', 'h4'],
+    ['blockquote', 'hr', 'bulletList', 'orderedList', 'subscript', 'superscript'],
+    ['link', 'unlink'],
+    ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+    ['undo', 'redo'],
+  ];
+
+  // Use camelCase version, fallback to snake_case if needed
+  const config = toolbarConfig || toolbar_config;
+
+  // Debug logging
+  if (typeof window !== 'undefined') {
+    console.log('[RichTextEditorWrapper] Received props:', {
+      controlGroups,
+      showToolbar,
+      sticky,
+      stickyOffset,
+      editable,
+      placeholder,
+      variant
+    });
+  }
+
+  // Use destructured props with defaults
+  const finalControlGroups = controlGroups || defaultControlGroups;
+  const finalShowToolbar = showToolbar !== false;
+  const finalSticky = sticky !== false;
+  const finalStickyOffset = stickyOffset || '0px';
+
+  // Build toolbar controls
+  const toolbarContent = finalShowToolbar ? createElement(
+    MantineRichTextEditor.Toolbar,
+    { sticky: finalSticky, stickyOffset: finalStickyOffset },
+    ...finalControlGroups.map((group, groupIndex) =>
+      createElement(
+        MantineRichTextEditor.ControlsGroup,
+        { key: groupIndex },
+        ...group.map((controlName, controlIndex) => {
+          // Handle special controls that need props
+          if (controlName === 'colorPicker') {
+            return createElement(MantineRichTextEditor.ColorPicker, {
+              key: `${groupIndex}-${controlIndex}`,
+              colors: [
+                '#25262b', '#868e96', '#fa5252', '#e64980',
+                '#be4bdb', '#7950f2', '#4c6ef5', '#228be6',
+                '#15aabf', '#12b886', '#40c057', '#82c91e',
+                '#fab005', '#fd7e14',
+              ]
+            });
+          }
+
+          // For regular controls, use the control map
+          const ControlComponent = controlMap[controlName];
+          return ControlComponent
+            ? createElement(ControlComponent, { key: `${groupIndex}-${controlIndex}` })
+            : null;
+        }).filter(Boolean)
+      )
+    )
+  ) : null;
+
   return createElement(
     MantineRichTextEditor,
     {
@@ -70,61 +179,9 @@ export const RichTextEditorWrapper = memo(function Wrapper({
       variant: variant,
       withTypographyStyles: withTypographyStyles,
       labels: labels,
-      ...otherProps,
+      ...restProps,
     },
-    createElement(
-      MantineRichTextEditor.Toolbar,
-      { sticky: true, stickyOffset: '0px' },
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.Bold, null),
-        createElement(MantineRichTextEditor.Italic, null),
-        createElement(MantineRichTextEditor.Underline, null),
-        createElement(MantineRichTextEditor.Strikethrough, null),
-        createElement(MantineRichTextEditor.ClearFormatting, null),
-        createElement(MantineRichTextEditor.Code, null),
-        createElement(MantineRichTextEditor.Highlight, null)
-      ),
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.H1, null),
-        createElement(MantineRichTextEditor.H2, null),
-        createElement(MantineRichTextEditor.H3, null),
-        createElement(MantineRichTextEditor.H4, null)
-      ),
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.Blockquote, null),
-        createElement(MantineRichTextEditor.Hr, null),
-        createElement(MantineRichTextEditor.BulletList, null),
-        createElement(MantineRichTextEditor.OrderedList, null),
-        createElement(MantineRichTextEditor.Subscript, null),
-        createElement(MantineRichTextEditor.Superscript, null)
-      ),
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.Link, null),
-        createElement(MantineRichTextEditor.Unlink, null)
-      ),
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.AlignLeft, null),
-        createElement(MantineRichTextEditor.AlignCenter, null),
-        createElement(MantineRichTextEditor.AlignRight, null),
-        createElement(MantineRichTextEditor.AlignJustify, null)
-      ),
-      createElement(
-        MantineRichTextEditor.ControlsGroup,
-        null,
-        createElement(MantineRichTextEditor.Undo, null),
-        createElement(MantineRichTextEditor.Redo, null)
-      )
-    ),
+    toolbarContent,
     createElement(MantineRichTextEditor.Content, null)
   );
 });

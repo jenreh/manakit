@@ -12,6 +12,8 @@ _MAPPING = {
     "mantine.textarea": ["textarea"],
     "mantine.tiptap": [
         "rich_text_editor",
+        "EditorToolbarConfig",
+        "ToolbarControlGroup",
     ],
 }
 
