@@ -84,7 +84,7 @@ class TextareaState(rx.State):
 
 def basic_textarea_example() -> rx.Component:
     """Basic textarea example."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Basic Textarea", size="4"),
         mn.textarea(
             placeholder="Enter your comment...",
@@ -103,7 +103,7 @@ def basic_textarea_example() -> rx.Component:
 
 def textarea_variants_example() -> rx.Component:
     """Demonstrate different variants."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Variants", size="4"),
         rx.vstack(
             mn.textarea(
@@ -131,7 +131,7 @@ def textarea_variants_example() -> rx.Component:
 
 def textarea_sizes_example() -> rx.Component:
     """Demonstrate different sizes."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Sizes", size="4"),
         rx.vstack(
             mn.textarea(placeholder="Extra small (xs)", size="xs"),
@@ -149,7 +149,7 @@ def textarea_sizes_example() -> rx.Component:
 
 def autosize_textarea_example() -> rx.Component:
     """Demonstrate autosize feature."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Autosize", size="4"),
         rx.text(
             "Textarea will grow as you type. Try adding multiple lines!",
@@ -184,7 +184,7 @@ def autosize_textarea_example() -> rx.Component:
 
 def resize_textarea_example() -> rx.Component:
     """Demonstrate resize options."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Resize Control", size="4"),
         rx.vstack(
             mn.textarea(
@@ -217,7 +217,7 @@ def resize_textarea_example() -> rx.Component:
 
 def textarea_with_validation_example() -> rx.Component:
     """Demonstrate validation."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Validation", size="4"),
         rx.vstack(
             mn.textarea(
@@ -253,7 +253,7 @@ def textarea_with_validation_example() -> rx.Component:
 
 def textarea_states_example() -> rx.Component:
     """Demonstrate different states."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("States", size="4"),
         rx.vstack(
             mn.textarea(
@@ -283,7 +283,7 @@ def textarea_states_example() -> rx.Component:
 
 def complete_form_example() -> rx.Component:
     """Complete form with multiple textareas."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Complete Form Example", size="4"),
         rx.vstack(
             mn.textarea(
@@ -342,31 +342,33 @@ def textarea_examples_page() -> rx.Component:
     """Main examples page."""
     return rx.container(
         rx.vstack(
-            rx.heading("Mantine Textarea Examples", size="8"),
+            rx.heading("Textarea Examples", size="9"),
             rx.text(
-                "Comprehensive examples of the Mantine Textarea component",
+                "Comprehensive examples of NumberInput component from @mantine/core",
                 size="4",
                 color="gray",
             ),
-            rx.divider(),
-            basic_textarea_example(),
-            rx.divider(),
-            textarea_variants_example(),
-            rx.divider(),
-            textarea_sizes_example(),
-            rx.divider(),
-            autosize_textarea_example(),
-            rx.divider(),
-            resize_textarea_example(),
-            rx.divider(),
-            textarea_with_validation_example(),
-            rx.divider(),
-            textarea_states_example(),
-            rx.divider(),
-            complete_form_example(),
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
+            ),
+            rx.grid(
+                basic_textarea_example(),
+                textarea_variants_example(),
+                textarea_sizes_example(),
+                autosize_textarea_example(),
+                resize_textarea_example(),
+                textarea_with_validation_example(),
+                textarea_states_example(),
+                complete_form_example(),
+                columns="2",
+                spacing="4",
+                width="100%",
+            ),
             spacing="6",
-            padding="4",
+            width="100%",
+            padding_y="4rem",
         ),
-        max_width="800px",
-        default_color_scheme="light",
+        size="4",
     )

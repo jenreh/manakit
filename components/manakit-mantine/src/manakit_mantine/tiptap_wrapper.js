@@ -15,6 +15,8 @@ import Superscript from '@tiptap/extension-superscript';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Placeholder from '@tiptap/extension-placeholder';
+import Image from "@tiptap/extension-image";
+
 
 export const RichTextEditorWrapper = memo(function Wrapper(props) {
   // Destructure and filter out toolbar-related props
@@ -49,6 +51,13 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
       Superscript,
       TextStyle,
       Color,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'tiptap-image',
+        },
+      }),
       ...(placeholder ? [Placeholder.configure({ placeholder })] : []),
     ],
     content: content,
@@ -103,6 +112,7 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
     alignJustify: MantineRichTextEditor.AlignJustify,
     undo: MantineRichTextEditor.Undo,
     redo: MantineRichTextEditor.Redo,
+    // image is handled specially (custom control)
     // colorPicker is handled specially (needs colors prop)
     // color is handled specially (needs color prop)
     unsetColor: MantineRichTextEditor.UnsetColor,
@@ -160,6 +170,21 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
                 '#fab005', '#fd7e14',
               ]
             });
+          }
+
+          // Handle image control
+          if (controlName === 'image') {
+            return createElement(MantineRichTextEditor.Control, {
+              key: `${groupIndex}-${controlIndex}`,
+              onClick: () => {
+                const url = window.prompt('Enter image URL:');
+                if (url) {
+                  editor.chain().focus().setImage({ src: url }).run();
+                }
+              },
+              'aria-label': 'Insert image',
+              title: 'Insert image',
+            }, '🖼️');
           }
 
           // For regular controls, use the control map

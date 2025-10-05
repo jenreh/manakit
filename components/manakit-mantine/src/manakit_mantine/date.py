@@ -5,7 +5,9 @@ from typing import Any
 import reflex as rx
 from reflex.vars.base import Var
 
-from .base import MantineInputComponentBase
+from .base import MANTINE_VERSION, MantineInputComponentBase
+
+DAYJS_VERSION: str = "1.11.18"
 
 
 def _date_input_on_change(value: Var) -> list[Var]:
@@ -24,8 +26,8 @@ class MantineDateInputBase(MantineInputComponentBase):
     Extends MantineInputComponentBase with dates-specific CSS imports.
     """
 
-    library = "@mantine/dates@^8.2.5"
-    lib_dependencies: list[str] = ["dayjs@1.11.13"]
+    library = f"@mantine/dates@{MANTINE_VERSION}"
+    lib_dependencies: list[str] = [f"dayjs@{DAYJS_VERSION}"]
 
     def _get_custom_code(self) -> str | None:
         """Add CSS imports for Mantine DateInput.

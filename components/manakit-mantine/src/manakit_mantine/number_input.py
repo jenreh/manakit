@@ -10,11 +10,12 @@ from __future__ import annotations
 
 from typing import Literal
 
+from reflex.event import EventHandler
+from reflex.vars.base import Var
+
 from manakit_mantine.base import (
     MantineInputComponentBase,
 )
-from reflex.event import EventHandler
-from reflex.vars.base import Var
 
 
 class NumberInput(MantineInputComponentBase):

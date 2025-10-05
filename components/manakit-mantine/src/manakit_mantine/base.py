@@ -35,7 +35,7 @@ Example:
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Final, Literal
 
 import reflex as rx
 from reflex.assets import asset
@@ -43,6 +43,9 @@ from reflex.event import EventHandler
 from reflex.vars.base import Var
 
 public_provider_path = "$/public/" + asset(path="mantine_provider.js", shared=True)
+
+MANTINE_LIBARY: Final[str] = "@mantine/core"
+MANTINE_VERSION: Final[str] = "8.3.3"
 
 
 class MemoizedMantineProvider(rx.Component):
@@ -65,7 +68,7 @@ class MantineComponentBase(rx.Component):
         ```
     """
 
-    library = "@mantine/core@8.2.5"
+    library = f"{MANTINE_LIBARY}@{MANTINE_VERSION}"
 
     def _get_custom_code(self) -> str:
         return """import '@mantine/core/styles.css';"""

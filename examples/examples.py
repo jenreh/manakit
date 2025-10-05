@@ -11,7 +11,6 @@ from examples.pages.number_input_examples import number_input_examples_page
 from examples.pages.password_input_examples import password_input_examples_page
 from examples.pages.textarea_examples import textarea_examples_page
 from examples.pages.tiptap_examples import tiptap_page
-from rxconfig import config
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -25,20 +24,26 @@ def index() -> rx.Component:
     return rx.container(
         rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
+            rx.heading("Welcome to ManaKit!", size="9"),
             rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
+                "A component library for ",
+                rx.link("Reflex.dev", href="https://reflex.dev/", is_external=True),
+                " based on ",
+                rx.link("Mantine UI", href="https://mantine.dev/", is_external=True),
+                margin_bottom="24px",
             ),
-            rx.link("Password Input", href="/password"),
-            rx.link("Date Input", href="/date"),
-            rx.link("Number Input", href="/number"),
-            rx.link("Textarea", href="/textarea"),
-            rx.link("Inputs Showcase", href="/inputs"),
-            rx.link("Navigation Progress", href="/nprogress"),
-            rx.link("Rich Text Editor (Tiptap)", href="/tiptap"),
-            spacing="5",
+            # rx.separator(margin="12px"),
+            rx.text.strong("Explore the MantineUI examples:", size="3"),
+            rx.list.unordered(
+                rx.list.item(rx.link("Text Inputs", href="/inputs")),
+                rx.list.item(rx.link("Password Input", href="/password")),
+                rx.list.item(rx.link("Date Input", href="/date")),
+                rx.list.item(rx.link("Number Input", href="/number")),
+                rx.list.item(rx.link("Textarea", href="/textarea")),
+                rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
+                rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
+            ),
+            spacing="2",
             justify="center",
             min_height="85vh",
         ),

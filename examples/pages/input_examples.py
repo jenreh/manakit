@@ -302,60 +302,59 @@ def input_radius_example() -> rx.Component:
 def form_inputs_showcase() -> rx.Component:
     """Complete showcase of all Mantine Input examples."""
     return rx.container(
+        rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading(
-                "Mantine Input Components",
-                size="8",
-                margin_bottom="2",
-            ),
+            rx.heading("Input Examples", size="9"),
             rx.text(
-                "Comprehensive examples of Mantine Input components in Reflex",
+                "Comprehensive examples of FormInput component from @mantine/core",
                 size="4",
                 color="gray",
-                margin_bottom="6",
             ),
-            rx.divider(),
-            # Examples grid - 2 columns
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
+            ),
             rx.grid(
-                rx.box(
+                rx.card(
                     basic_input_variants(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
                 ),
-                rx.box(
-                    input_sizes(),
-                    padding="4",
-                    border_radius="md",
-                    border=f"1px solid {rx.color('gray', 6)}",
-                ),
-                rx.box(
+                rx.card(
                     input_with_sections(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
                 ),
-                rx.box(
-                    input_radius_example(),
+                rx.card(
+                    custom_layout_example(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
                 ),
-                rx.box(
+                rx.card(
+                    input_states_example(),
+                    padding="4",
+                    border_radius="md",
+                    border=f"1px solid {rx.color('gray', 6)}",
+                ),
+                rx.card(
                     input_wrapper_example(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
                     grid_column="span 2",
                 ),
-                rx.box(
-                    custom_layout_example(),
+                rx.card(
+                    input_sizes(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
                 ),
-                rx.box(
-                    input_states_example(),
+                rx.card(
+                    input_radius_example(),
                     padding="4",
                     border_radius="md",
                     border=f"1px solid {rx.color('gray', 6)}",
@@ -366,8 +365,7 @@ def form_inputs_showcase() -> rx.Component:
             ),
             spacing="6",
             width="100%",
+            padding_y="8",
         ),
-        max_width="1200px",
-        padding="8",
-        default_color_scheme="light",
+        size="3",
     )

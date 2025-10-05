@@ -8,6 +8,8 @@ from reflex.vars.base import Var
 
 from .base import MantineInputComponentBase
 
+IMASK_VERSION: str = "7.6.1"
+
 
 class MaskedInput(MantineInputComponentBase):
     """Mantine InputBase with IMask integration for masked input fields.
@@ -95,8 +97,7 @@ class MaskedInput(MantineInputComponentBase):
     """
 
     tag = "InputBase"
-    library = "@mantine/core@8.2.5"
-    lib_dependencies: list[str] = ["react-imask@7.6.1"]
+    lib_dependencies: list[str] = [f"react-imask@{IMASK_VERSION}"]
 
     def _get_custom_code(self) -> str:
         return """import '@mantine/core/styles.css';

@@ -86,12 +86,18 @@ class TiptapState(rx.State):
 def tiptap_page() -> rx.Component:
     """Main Tiptap examples page."""
     return rx.container(
+        rx.color_mode.button(position="top-right"),
         rx.vstack(
             rx.heading("Mantine RichTextEditor (Tiptap)", size="9"),
             rx.text(
                 "Comprehensive WYSIWYG editor based on Tiptap with full formatting support.",
                 size="4",
                 color_scheme="gray",
+            ),
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
             ),
             # Simple editor with default toolbar
             rx.heading("Rich Text Editor", size="7", mt="6"),
@@ -107,6 +113,7 @@ def tiptap_page() -> rx.Component:
                 placeholder="Start typing...",
                 sticky_toolbar=True,
                 sticky_offset="0px",
+                width="100%",
             ),
             rx.text(
                 "Current content length: "
@@ -137,6 +144,7 @@ def tiptap_page() -> rx.Component:
                         mn.ToolbarControlGroup.HISTORY.value,
                     ]
                 ),
+                width="100%",
             ),
             # Custom toolbar example
             rx.heading("Custom Toolbar Groups", size="7", mt="8"),
@@ -156,8 +164,10 @@ def tiptap_page() -> rx.Component:
                         ["h1", "h2", "h3"],
                         ["bulletList", "orderedList"],
                         ["link", "unlink"],
+                        ["image"],
                     ]
                 ),
+                width="100%",
             ),
             # Controlled editor with custom toolbar
             rx.heading("Controlled Editor with State", size="7", mt="8"),
@@ -171,6 +181,7 @@ def tiptap_page() -> rx.Component:
                 content=TiptapState.controlled_content,
                 on_update=TiptapState.update_controlled_content,
                 placeholder="Start typing...",
+                width="100%",
             ),
             # Color picker example
             rx.heading("Text Color Support", size="7", mt="8"),
@@ -191,6 +202,7 @@ def tiptap_page() -> rx.Component:
                         mn.ToolbarControlGroup.HISTORY.value,
                     ]
                 ),
+                width="100%",
             ),
             # Minimal editor (no toolbar)
             rx.heading("Content Area", size="7", mt="8"),
@@ -204,6 +216,7 @@ def tiptap_page() -> rx.Component:
                 content=TiptapState.minimal_content,
                 on_update=TiptapState.update_minimal_content,
                 placeholder="Try Cmd+B for bold, Cmd+I for italic...",
+                width="100%",
             ),
             # Code and special formatting
             rx.heading("Code Support", size="7", mt="8"),
@@ -216,6 +229,7 @@ def tiptap_page() -> rx.Component:
             mn.rich_text_editor(
                 content=TiptapState.code_content,
                 placeholder="Write some code...",
+                width="100%",
             ),
             # Readonly editor
             rx.heading("Read-Only Editor", size="7", mt="8"),
@@ -228,6 +242,7 @@ def tiptap_page() -> rx.Component:
             mn.rich_text_editor(
                 content=TiptapState.readonly_content,
                 editable=False,
+                width="100%",
             ),
             # Text alignment example
             rx.heading("Text Alignment", size="7", mt="8"),
@@ -244,6 +259,7 @@ def tiptap_page() -> rx.Component:
 <p style="text-align: center;">This paragraph is centered.</p>
 <h2 style="text-align: right;">Right Aligned Heading</h2>
 <p style="text-align: right;">This paragraph is aligned to the right.</p>""",
+                width="100%",
             ),
             # Subscript and superscript
             rx.heading("Subscript & Superscript", size="7", mt="8"),
@@ -257,6 +273,7 @@ def tiptap_page() -> rx.Component:
                 content="""<p>Chemical formula: H<sub>2</sub>O</p>
 <p>Mathematical expression: E = mc<sup>2</sup></p>
 <p>Footnote reference<sup>1</sup></p>""",
+                width="100%",
             ),
             # Variant example - subtle
             rx.heading("Subtle Variant", size="7", mt="8"),
@@ -269,6 +286,7 @@ def tiptap_page() -> rx.Component:
             mn.rich_text_editor(
                 content="<p>This editor uses the subtle variant style.</p>",
                 variant="subtle",
+                width="100%",
             ),
             # Action buttons
             rx.hstack(

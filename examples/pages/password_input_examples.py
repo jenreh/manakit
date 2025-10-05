@@ -184,7 +184,7 @@ class PasswordExamplesState(rx.State):
 
 def basic_password_input_example() -> rx.Component:
     """Basic PasswordInput with label and description."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Basic Password Input", size="4"),
         rx.text(
             "Simple password input with label and description",
@@ -212,7 +212,7 @@ def basic_password_input_example() -> rx.Component:
 
 def controlled_visibility_example() -> rx.Component:
     """PasswordInput with controlled visibility state."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Controlled Visibility", size="4"),
         rx.text(
             "Control password visibility with external toggle",
@@ -247,7 +247,7 @@ def controlled_visibility_example() -> rx.Component:
 
 def synchronized_visibility_example() -> rx.Component:
     """Multiple PasswordInputs with synchronized visibility."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Synchronized Visibility", size="4"),
         rx.text(
             "Toggle shows/hides both password fields",
@@ -282,7 +282,7 @@ def synchronized_visibility_example() -> rx.Component:
 
 def error_state_example() -> rx.Component:
     """PasswordInput with validation and error display."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Error State", size="4"),
         rx.text(
             "Password must be at least 8 characters",
@@ -309,7 +309,7 @@ def error_state_example() -> rx.Component:
 
 def disabled_state_example() -> rx.Component:
     """Disabled PasswordInput (hides visibility toggle)."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Disabled State", size="4"),
         rx.text(
             "Disabled password input (no visibility toggle)",
@@ -334,7 +334,7 @@ def disabled_state_example() -> rx.Component:
 
 def left_section_example() -> rx.Component:
     """PasswordInput with lock icon in left section."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("With Left Section", size="4"),
         rx.text(
             "Password input with lock icon",
@@ -361,7 +361,7 @@ def left_section_example() -> rx.Component:
 
 def password_strength_example() -> rx.Component:
     """PasswordInput with password strength meter."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Password Strength Meter", size="4"),
         rx.text(
             "Visual indicator of password strength",
@@ -407,7 +407,7 @@ def password_strength_example() -> rx.Component:
 
 def form_validation_example() -> rx.Component:
     """Complete form with password validation."""
-    return rx.vstack(
+    return rx.card(
         rx.heading("Form Validation", size="4"),
         rx.text(
             "Password confirmation with validation",
@@ -467,43 +467,35 @@ def form_validation_example() -> rx.Component:
 def password_input_examples_page() -> rx.Component:
     """Main page showing all PasswordInput examples."""
     return rx.container(
+        rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading(
-                "Mantine PasswordInput Examples",
-                size="8",
-            ),
+            rx.heading("PasswordInput Examples", size="9"),
             rx.text(
-                "Comprehensive examples of PasswordInput component usage",
+                "Comprehensive examples of PasswordInput component from @mantine/core",
                 size="4",
                 color="gray",
             ),
-            rx.divider(),
-            # Example 1: Basic usage
-            basic_password_input_example(),
-            rx.divider(),
-            # Example 2: Controlled visibility
-            controlled_visibility_example(),
-            rx.divider(),
-            # Example 3: Synchronized visibility
-            synchronized_visibility_example(),
-            rx.divider(),
-            # Example 4: Error state
-            error_state_example(),
-            rx.divider(),
-            # Example 5: Disabled state
-            disabled_state_example(),
-            rx.divider(),
-            # Example 6: Left section
-            left_section_example(),
-            rx.divider(),
-            # Example 7: Password strength
-            password_strength_example(),
-            rx.divider(),
-            # Example 8: Form validation
-            form_validation_example(),
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
+            ),
+            rx.grid(
+                basic_password_input_example(),
+                controlled_visibility_example(),
+                synchronized_visibility_example(),
+                error_state_example(),
+                disabled_state_example(),
+                left_section_example(),
+                password_strength_example(),
+                form_validation_example(),
+                columns="2",
+                spacing="4",
+                width="100%",
+            ),
             spacing="6",
-            padding="4",
+            width="100%",
+            padding_y="8",
         ),
-        max_width="800px",
-        default_color_scheme="light",
+        size="3",
     )

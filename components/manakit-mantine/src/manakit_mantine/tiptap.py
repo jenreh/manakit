@@ -9,7 +9,7 @@ Documentation: https://mantine.dev/x/tiptap/
 from __future__ import annotations
 
 import enum
-from typing import Literal
+from typing import Final, Literal
 
 import reflex as rx
 from reflex.assets import asset
@@ -17,6 +17,13 @@ from reflex.base import Base
 from reflex.components.component import NoSSRComponent
 from reflex.event import EventHandler
 from reflex.vars.base import Var
+
+from .base import MANTINE_VERSION
+
+TIPTAP_REACT_VERSION: Final[str] = "^2.10.4"
+TIPTAP_VERSION: Final[str] = (
+    TIPTAP_REACT_VERSION  # Same version for all @tiptap packages
+)
 
 
 class ToolbarControlGroup(list, enum.Enum):
@@ -44,6 +51,7 @@ class ToolbarControlGroup(list, enum.Enum):
     ALIGNMENT = ["alignLeft", "alignCenter", "alignRight", "alignJustify"]
     COLORS = ["colorPicker", "unsetColor"]
     HISTORY = ["undo", "redo"]
+    MEDIA = ["image"]
     ALL = [
         "bold",
         "italic",
@@ -72,6 +80,7 @@ class ToolbarControlGroup(list, enum.Enum):
         "unsetColor",
         "undo",
         "redo",
+        "image",
     ]
 
 
@@ -151,19 +160,20 @@ class RichTextEditor(NoSSRComponent):
     is_default = False
 
     lib_dependencies: list[str] = [
-        "@mantine/tiptap@8.2.5",
-        "@mantine/core@8.2.5",
-        "@tiptap/react@^2.10.4",
-        "@tiptap/pm@^2.10.4",
-        "@tiptap/extension-link@^2.10.4",
-        "@tiptap/starter-kit@^2.10.4",
-        "@tiptap/extension-highlight@^2.10.4",
-        "@tiptap/extension-text-align@^2.10.4",
-        "@tiptap/extension-subscript@^2.10.4",
-        "@tiptap/extension-superscript@^2.10.4",
-        "@tiptap/extension-color@^2.10.4",
-        "@tiptap/extension-text-style@^2.10.4",
-        "@tiptap/extension-placeholder@^2.10.4",
+        f"@mantine/tiptap@{MANTINE_VERSION}",
+        f"@mantine/core@{MANTINE_VERSION}",
+        f"@tiptap/react@{TIPTAP_VERSION}",
+        f"@tiptap/pm@{TIPTAP_VERSION}",
+        f"@tiptap/extension-link@{TIPTAP_VERSION}",
+        f"@tiptap/starter-kit@{TIPTAP_VERSION}",
+        f"@tiptap/extension-color@{TIPTAP_VERSION}",
+        f"@tiptap/extension-highlight@{TIPTAP_VERSION}",
+        f"@tiptap/extension-image@{TIPTAP_VERSION}",
+        f"@tiptap/extension-placeholder@{TIPTAP_VERSION}",
+        f"@tiptap/extension-subscript@{TIPTAP_VERSION}",
+        f"@tiptap/extension-superscript@{TIPTAP_VERSION}",
+        f"@tiptap/extension-text-align@{TIPTAP_VERSION}",
+        f"@tiptap/extension-text-style@{TIPTAP_VERSION}",
     ]
 
     # Content management

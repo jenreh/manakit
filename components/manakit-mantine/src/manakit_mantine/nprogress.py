@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from reflex.vars.base import Var
 
-from .base import MantineComponentBase
+from .base import MANTINE_VERSION, MantineComponentBase
 
 
 class NavigationProgress(MantineComponentBase):
@@ -42,7 +42,7 @@ class NavigationProgress(MantineComponentBase):
     """
 
     tag = "NavigationProgress"
-    library = "@mantine/nprogress@8.2.5"
+    library = f"@mantine/nprogress@{MANTINE_VERSION}"
 
     def _get_custom_code(self) -> str:
         return """import '@mantine/core/styles.css';

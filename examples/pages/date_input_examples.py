@@ -191,13 +191,14 @@ def basic_date_example() -> rx.Component:
     - Display selected date value
     - Proper width using w="100%"
     """
-    return rx.vstack(
+    return rx.card(
         rx.heading("Basic Date Input", size="6"),
         rx.text("Simple date input with state binding", color_scheme="gray"),
         rx.divider(),
         rx.vstack(
             mn.date_input(
                 label="Select a date",
+                description="Choose any date from the calendar",
                 placeholder="Pick a date",
                 value=BasicDateState.selected_date,
                 on_change=BasicDateState.set_selected_date,
@@ -229,7 +230,7 @@ def formatted_date_example() -> rx.Component:
     - Different format patterns (YYYY MMM DD)
     - Description text for user guidance
     """
-    return rx.vstack(
+    return rx.card(
         rx.heading("Custom Date Format", size="6"),
         rx.text("Date input with custom display format", color_scheme="gray"),
         rx.divider(),
@@ -273,7 +274,7 @@ def constrained_date_example() -> rx.Component:
     today = datetime.now(tz=UTC).strftime("%Y-%m-%d")
     max_date = (datetime.now(tz=UTC) + timedelta(days=30)).strftime("%Y-%m-%d")
 
-    return rx.vstack(
+    return rx.card(
         rx.heading("Date Range Constraints", size="6"),
         rx.text("Date input limited to next 30 days", color_scheme="gray"),
         rx.divider(),
@@ -315,7 +316,7 @@ def clearable_date_example() -> rx.Component:
     - Default value on component load
     - Clear button interaction
     """
-    return rx.vstack(
+    return rx.card(
         rx.heading("Clearable Date Input", size="6"),
         rx.text("Date input with clear button", color_scheme="gray"),
         rx.divider(),
@@ -361,7 +362,7 @@ def validated_date_example() -> rx.Component:
     max_birth_date = (today - timedelta(days=MIN_AGE_YEARS * 365)).strftime("%Y-%m-%d")
     min_birth_date = (today - timedelta(days=MAX_AGE_YEARS * 365)).strftime("%Y-%m-%d")
 
-    return rx.vstack(
+    return rx.card(
         rx.heading("Date Validation", size="6"),
         rx.text("Birth date with age validation (18+)", color_scheme="gray"),
         rx.divider(),
@@ -406,7 +407,7 @@ def date_range_form_example() -> rx.Component:
     - Form submission with validation
     - Error handling for both inputs
     """
-    return rx.vstack(
+    return rx.card(
         rx.heading("Date Range Form", size="6"),
         rx.text("Form with start and end date validation", color_scheme="gray"),
         rx.divider(),
@@ -454,7 +455,7 @@ def disabled_date_example() -> rx.Component:
     """
     default_date = "2025-12-31"
 
-    return rx.vstack(
+    return rx.card(
         rx.heading("Disabled Date Input", size="6"),
         rx.text("Date input in disabled state", color_scheme="gray"),
         rx.divider(),
@@ -488,7 +489,7 @@ def sizes_variants_example() -> rx.Component:
     - Different variants (default, filled, unstyled)
     - Border radius options
     """
-    return rx.vstack(
+    return rx.card(
         rx.heading("Sizes & Variants", size="6"),
         rx.text("Date inputs in different sizes and styles", color_scheme="gray"),
         rx.divider(),
@@ -557,30 +558,36 @@ def sizes_variants_example() -> rx.Component:
 def date_input_examples_page() -> rx.Component:
     """Main page showing all DateInput examples."""
     return rx.container(
+        rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading(
-                "Mantine DateInput Examples",
-                size="8",
-                mb="2",
-            ),
+            rx.heading("DateInput Examples", size="9"),
             rx.text(
                 "Comprehensive examples of DateInput component from @mantine/dates",
                 size="4",
-                color_scheme="gray",
-                mb="6",
+                color="gray",
+            ),
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
             ),
             # All examples
-            basic_date_example(),
-            formatted_date_example(),
-            constrained_date_example(),
-            clearable_date_example(),
-            validated_date_example(),
-            date_range_form_example(),
-            disabled_date_example(),
-            sizes_variants_example(),
-            spacing="8",
+            rx.grid(
+                basic_date_example(),
+                clearable_date_example(),
+                formatted_date_example(),
+                constrained_date_example(),
+                disabled_date_example(),
+                validated_date_example(),
+                date_range_form_example(),
+                sizes_variants_example(),
+                columns="2",
+                spacing="4",
+                width="100%",
+            ),
+            spacing="6",
             width="100%",
+            padding_y="8",
         ),
-        size="4",
-        py="8",
+        size="3",
     )

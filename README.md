@@ -380,7 +380,7 @@ See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for det
 
 ### Key Dependencies
 
-- `@mantine/core@8.2.5` - Mantine UI library
+- `@mantine/core@8.3` - Mantine UI library
 - `@mantine/dates@^8.2.5` - Date components
 - `@mantine/nprogress@8.2.5` - Progress indicator
 - `react-imask@7.6.1` - Input masking

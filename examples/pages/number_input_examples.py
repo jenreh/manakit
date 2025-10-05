@@ -489,62 +489,64 @@ def disabled_readonly_example() -> rx.Component:
 def number_input_examples_page() -> rx.Component:
     """Main page showcasing all NumberInput examples."""
     return rx.container(
+        rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading(
-                "Mantine NumberInput Examples",
-                size="8",
-                margin_bottom="2rem",
-            ),
+            rx.heading("NumberInput Examples", size="9"),
             rx.text(
-                "Comprehensive examples of the mn.number_input component",
+                "Comprehensive examples of NumberInput component from @mantine/core",
                 size="4",
-                margin_bottom="3rem",
+                color="gray",
+            ),
+            rx.link(
+                "← Back to Home",
+                href="/",
+                size="3",
             ),
             # Grid layout for examples
             rx.grid(
-                rx.box(
+                rx.card(
                     basic_number_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     currency_input_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     percentage_input_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     quantity_selector_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     no_controls_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     number_form_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     thousand_separator_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
                     border_radius="8px",
                 ),
-                rx.box(
+                rx.card(
                     disabled_readonly_example(),
                     padding="4",
                     border="1px solid #e0e0e0",
