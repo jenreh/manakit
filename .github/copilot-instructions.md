@@ -2,197 +2,43 @@
 applyTo: "**"
 ---
 
-# Reflex-Mantine Component Library
+# Reflex-Mantine Component Library Instructions
 
-**A comprehensive Reflex wrapper library for Mantine UI components with production-ready examples.**
+**AI coding agent instructions for a Reflex wrapper library for Mantine UI components.**
 
-> **Purpose:** Guide GitHub Copilot & Copilot Chat to align suggestions with our tech stack, workflows, and quality bars.
-> **Stacks:** Python 3.13 · Reflex (UI) · FastAPI · SQLAlchemy 2.0 · Alembic · Pydantic · FastMCP · LangChain
-
----
-
-## 1) Golden Rules (Short, Actionable)
-1. **Think → Memory → Tools → Code → Memory.** Start with step-by-step reasoning (using the tool code-reasoning); **search Memory first**; pick tools; code minimal diff; **write learnings back to Memory**.
-2. **Tests are truth.** On failures: **fix code first**. Change tests only if they clearly diverge from spec.
-3. **Small, safe changes.** Prefer smallest viable diff; add tests for new behavior **before** code.
-4. **Consistency > cleverness.** Follow this file’s SOPs and stack idioms.
-5. **Memory multiplies.** Persist decisions, patterns, error signatures, and proven fixes.
-
-> Rule of thumb: prefer *local* changes over cross-module refactors.
+> **Tech Stack:** Python 3.12+ · Reflex 0.8.13+ · Mantine 8.3+ · UV workspace · React 18
+> **Purpose:** Guide AI agents to understand unique architectural patterns and workflows
 
 ---
 
-## 2) Task Bootstrap Pattern (for Inline Copilot & Chat)
-Paste/edit this at the top of the change (as a comment) to steer Copilot:
+## 🎯 Core Architecture Patterns
 
-```markdown
-<!-- plan:start
-goal: <one line clear goal>
-constraints:
-- Python 3.13; Reflex UI; FastAPI; SQLAlchemy 2.0; Alembic; Pydantic
-- logging: no f-strings in logger calls
-- minimal diff; add/adjust tests first
-definition_of_done:
-- tests pass; coverage ≥ 80%; lint/type checks clean; memory updated
-steps:
-1) Search Memory for "<keywords>"
-2) Draft/adjust failing test to capture expected behavior
-3) Implement minimal code change
-4) Run make test; iterate until green
-5) Update Memory: decisions, patterns, error→fix
-plan:end -->
-```
-
----
-
-## 3) Tooling Decision Matrix (Condensed)
-
-| Situation | Primary | Secondary | Store to Memory |
-|---|---|---|---|
-| API/pattern uncertainty | **Context7** | — | Canonical snippet + link; edge cases |
-| Ecosystem bug/issue | **DuckDuckGo** | — | Minimal repro; versions; workaround |
-| Repeated test failure | **Memory (search)** | Context7 | Error signature → fix; root cause |
-| New feature scaffold | **Context7** | — | How‑to snippet; checklist |
-| House style/tooling | **This file** | Context7 | Checklist results |
-
-**Prefer official docs; widen via web search when cross-version issues arise.**
-
----
-
-## 4) SOP — Development Workflow
-
-### Prepare
-1. **Memory first:** search for prior solutions and patterns.
-2. **Reasoning plan:** use the *Task Bootstrap Pattern*.
-3. **Sync tools:** `make install` (uses **uv**, Python 3.13).
-4. **Baseline:** `make test` to snapshot current failures.
-
-### Triage Failures
-- Read the **first** failing assertion; map to spec.
-- If tests match spec → fix code. If tests diverge → document and adjust spec/tests (after approval).
-- Add/adjust unit tests to codify expected behavior.
-
-### Implement (Minimal Diff)
-- Tests-first for new behavior.
-- Use only approved stacks. Examples:
-  - **Logging (no f-strings):**
-    ```python
-    import logging
-    log = logging.getLogger(__name__)
-    log.info("Loaded items: %d", count)      # ✅
-    # log.info(f"Loaded items: {count}")     # ❌
-    ```
-
-### Reflex UI
-- Small components; separate **state** from **view**.
-- Deterministic state transitions; avoid hidden side effects.
-- Reuse components; document patterns in **Memory**.
-
-### Quality Gates
-- Lint/format/type: `uv run ruff check --fix`, `uv run ruff format`.
-- Tests: `uv run pytest` with coverage ≥ **80%**.
-- Docs: update `docs/` for migrations/decisions.
-
-
-### Commit & PR
-- Conventional Commits (`feat:`, `fix:`, `refactor:`…).
-- PR must include: description, `Closes #123`, UI screenshots, migration rationale.
-
-### Learn
-- Reflect; extract learnings; write to **Memory**.
-
----
-
-## 5) Code Generation Rules
-- **Python 3.13** only; deps via **uv**.
-- Use Reflex, Alembic, SQLAlchemy 2.0, FastAPI, Pydantic, FastMCP, LangChain.
-- **No f-strings in logger calls.**
-- Clean code; narrow modules; clear boundaries.
-- Unit tests for every new path.
-
----
-
-## 6) Testing Strategy
-- Tests in `tests/test_*.py`; isolate units; avoid coupling.
-- Coverage target **≥ 80%**.
-- Write regression tests first when fixing bugs.
-- Use fixtures for env/config swaps.
-
-## 7) Search SOPs
-- **Context7 first** for framework truths; cite sources in **Memory**.
-- **DuckDuckGo** for cross-version issues; prefer official docs, well-known repos.
-- Capture only the **final answer** in **Memory**: minimal snippet + rationale + version pins + link.
-
-## 8) Security & Config Hygiene
-- No credentials in code/history; use `.env` locally, Key Vault in prod.
-- Prefer non-secret YAML; override with env `__` pattern.
-- Parameterized logs; avoid sensitive values.
-- Update vulnerable deps promptly; document CVE-driven updates in commits and **Memory**.
-
----
-
-## 9) Pre‑PR Checklist
-- [ ] Tests added/updated; all green
-- [ ] Lint/format/type checks pass
-- [ ] Migrations reviewed & documented
-- [ ] **Memory updated** (decisions, patterns, error→fix links)
-- [ ] PR description complete; links/screenshots added
-
-
----
-
-# Project Architecture
-
-This is a **Reflex component library** wrapping [Mantine UI v8.2.5](https://mantine.dev) for Python web apps. Structure:
-
-- `mantine/` – Core component wrappers (Input, DateInput, NumberInput, PasswordInput, Textarea, NavigationProgress, etc.)
-- `mantine/base.py` – Base classes (`MantineComponentBase`, `MantineInputComponentBase`) with inheritance hierarchy
-- `reflex_mantine/` – Demo app with example pages showing component usage patterns
-- `docs/` – Comprehensive usage guides and API references
-- `assets/` – JavaScript shims for Mantine integration (MantineProvider, NavigationProgress)
-
-### Key Design Principle: Inheritance-Based Architecture
-
-**ALL Mantine input components inherit from `MantineInputComponentBase`**, eliminating code duplication:
+### Inheritance-Based Component Design
+**Critical:** ALL input components inherit from `MantineInputComponentBase` to eliminate code duplication of ~40 common props.
 
 ```python
-# Base class provides ~40 common props for free
-class MantineInputComponentBase(MantineComponentBase):
-    # Input.Wrapper props (label, description, error, required, with_asterisk)
-    # Visual variants (variant, size, radius)
-    # State props (value, default_value, placeholder, disabled)
-    # HTML attributes (name, id, aria_label, max_length, pattern, etc.)
-    # Section props (left_section, right_section with widths and pointer_events)
-    # Mantine style props (w, maw, m, mt, mb, ml, mr, mx, my, p, etc.)
-    # Event handlers (on_change, on_focus, on_blur, on_key_down, on_key_up)
-```
-
-**When creating new components, only define component-specific props:**
-
-```python
-# ✅ Correct - only unique props
+# ✅ Correct - only define component-specific props
 class NumberInput(MantineInputComponentBase):
     tag = "NumberInput"
-    min: Var[int | float] = None
+    min: Var[int | float] = None  # Component-specific only
     max: Var[int | float] = None
-    decimal_scale: Var[int] = None
-    # All common props inherited automatically
+    # All common props inherited: label, placeholder, value, on_change, etc.
 
-# ❌ Wrong - don't redeclare inherited props
+# ❌ Wrong - don't redeclare inherited props  
 class BadInput(MantineInputComponentBase):
-    tag = "BadInput"
     label: Var[str] = None  # Already in base class!
-    placeholder: Var[str] = None  # Already in base class!
 ```
 
-## Critical Integration Patterns
+**Base Class Selection:**
+- Input-like components → `MantineInputComponentBase`
+- General Mantine components → `MantineComponentBase` 
+- External libraries → `rx.Component`
 
-### 1. MantineProvider Requirement
-
-**ALL Mantine components MUST be wrapped in `MantineProvider`** - auto-injected via `_get_app_wrap_components()`:
+### MantineProvider Auto-Injection
+**Critical:** MantineProvider is automatically injected at priority 44 via `_get_app_wrap_components()`. Never manually wrap apps - it happens automatically.
 
 ```python
-# Automatically wraps app at priority 44
+# This happens automatically - don't add manually
 @staticmethod
 def _get_app_wrap_components() -> dict[tuple[int, str], rx.Component]:
     return {
@@ -200,38 +46,49 @@ def _get_app_wrap_components() -> dict[tuple[int, str], rx.Component]:
     }
 ```
 
-The provider respects Reflex's color mode and injects required CSS. See `mantine/mantine_provider.js`.
+### UV Workspace Structure
+**Key distinction:** Publishable component library vs demo app:
+- `components/manakit-mantine/src/manakit_mantine/` → Component source (gets published)
+- `reflex_mantine/` → Demo app with examples
+- `pyproject.toml` workspace manages both
 
-### 2. Custom CSS Injection Pattern
+---
 
-Components requiring additional CSS override `_get_custom_code()`:
+## 🔧 Component Development Workflow
+
+### Creating New Components
+1. **Determine base class** (see architecture patterns above)
+2. **Create component with minimal props:**
 
 ```python
-class NavigationProgress(MantineComponentBase):
-    library = "@mantine/nprogress@8.2.5"
+from manakit_mantine.base import MantineInputComponentBase
 
-    def _get_custom_code(self) -> str:
-        return """import '@mantine/core/styles.css';
-import '@mantine/nprogress/styles.css';
-import { nprogress } from '@mantine/nprogress';
-
-// Expose API globally for Reflex control
-if (typeof window !== 'undefined') {
-    window.nprogress = nprogress;
-}"""
+class MyInput(MantineInputComponentBase):
+    tag = "MyInput"  # React component name
+    alias = "MantineMyInput"  # Optional: avoid name collisions
+    
+    # Only component-specific props
+    custom_prop: Var[str] = None
 ```
 
-### 3. Event Handler Transformations
+3. **Export in `__init__.py`:**
+```python
+from .my_input import MyInput, my_input
+__all__ = ["MyInput", "my_input", ...]
+```
 
-Some Mantine components send raw values instead of events - transform via `get_event_triggers()`:
+4. **Create example page** in `reflex_mantine/pages/my_input_examples.py`
+5. **Register page** in `reflex_mantine/reflex_mantine.py`
+
+### Event Handler Transformations
+Some Mantine components send raw values instead of events:
 
 ```python
 # NumberInput sends number directly, not event.target.value
 class NumberInput(MantineInputComponentBase):
     on_change: EventHandler[lambda value: [value]] = None
-    # Receives number directly, not event object
 
-# DateInput sends null when cleared - convert to empty string for Reflex state
+# DateInput sends null when cleared - convert to empty string
 def _date_input_on_change(value: Var) -> list[Var]:
     return [rx.Var(f"({value} ?? '')", _var_type=str)]
 
@@ -243,138 +100,104 @@ class DateInput(MantineDateInputBase):
         }
 ```
 
-### 4. External Library Dependencies
-
-Declare via `lib_dependencies` for NPM packages:
+### Custom CSS Integration
+Components requiring additional CSS override `_get_custom_code()`:
 
 ```python
-class IMaskInput(rx.Component):
-    library = "react-imask@7.6.1"
-    lib_dependencies: list[str] = ["react-imask@7.6.1"]
+class NavigationProgress(MantineComponentBase):
+    library = "@mantine/nprogress@8.2.5"
+    
+    def _get_custom_code(self) -> str:
+        return """import '@mantine/core/styles.css';
+import '@mantine/nprogress/styles.css';
+// Component-specific setup here"""
+```
 
+### External Dependencies
+Declare NPM packages via `lib_dependencies`:
+
+```python
 class DateInput(MantineDateInputBase):
     library = "@mantine/dates@^8.2.5"
     lib_dependencies: list[str] = ["dayjs@1.11.13"]
 ```
 
-## Development Workflow
+---
 
-### Running the Demo App
+## ⚡ Development Commands
 
 ```bash
-# Start Reflex dev server (auto-reload enabled)
+# Setup (uses uv workspace)
+uv sync
+
+# Run demo app with hot reload
 reflex run
 
-# Or with debug logging
-reflex run --loglevel debug
+# Lint and format
+uv run ruff check --fix
+uv run ruff format
+
+# Test components
+uv run pytest
 ```
 
-Access demo pages:
-- `/` - Index with navigation links
-- `/password` - PasswordInput examples
-- `/date` - DateInput examples
-- `/number` - NumberInput examples
-- `/textarea` - Textarea examples
-- `/inputs` - Input component showcase
-- `/nprogress` - NavigationProgress examples
+---
 
-### Creating New Components
+## 📋 Quality Standards
 
-1. **Determine base class:**
-   - Input-like? Extend `MantineInputComponentBase`
-   - General Mantine? Extend `MantineComponentBase`
-   - External library? Extend `rx.Component`
-
-2. **Implement minimal component:**
-
+### Type Safety (Python 3.12+)
 ```python
-from mantine.base import MantineInputComponentBase
+from typing import Literal
+from reflex.vars.base import Var
+from reflex.event import EventHandler
 
+class MyComponent(MantineInputComponentBase):
+    variant: Var[Literal["filled", "outlined"]] = None
+    on_change: EventHandler[lambda value: [value]] = None
+```
+
+### Component Documentation
+```python
+"""Mantine MyInput component wrapper.
+
+Based on: https://mantine.dev/core/my-input/
+Inherits common props from MantineInputComponentBase.
+"""
 class MyInput(MantineInputComponentBase):
-    tag = "MyInput"  # React component name
-    alias = "MantineMyInput"  # Optional: avoid name collisions
-
-    # Only component-specific props
-    custom_prop: Var[str] = None
-    special_mode: Var[bool] = None
-
-# Export convenience function
-my_input = MyInput.create
+    """Mantine MyInput component.
+    
+    See `my_input()` function for usage examples.
+    """
 ```
 
-3. **Add to `mantine/__init__.py`:**
-
+### Prop Aliasing
+Python snake_case automatically converts to React camelCase:
 ```python
-from mantine.my_input import MyInput, my_input
-
-__all__ = ["MyInput", "my_input", ...]
+# These are automatically aliased
+default_value → defaultValue
+with_asterisk → withAsterisk  
+left_section → leftSection
+max_length → maxLength
 ```
 
-4. **Create example page in `reflex_mantine/pages/`:**
+---
 
-```python
-import reflex as rx
-import manakit_mantine as mn
+## 🚨 Common Patterns to Follow
 
-class MyInputState(rx.State):
-    value: str = ""
-
-    def set_value(self, val: str) -> None:
-        self.value = val
-
-def my_input_page() -> rx.Component:
-    return rx.container(
-        rx.heading("MyInput Examples"),
-        mn.my_input(
-            label="Example",
-            value=MyInputState.value,
-            on_change=MyInputState.set_value,
-        ),
-    )
-```
-
-5. **Register page in `reflex_mantine/reflex_mantine.py`:**
-
-```python
-from reflex_mantine.pages.my_input_examples import my_input_page
-
-app.add_page(my_input_page, title="My Input", route="/myinput")
-```
-
-### Testing Components
-
-Verify inheritance didn't break existing props:
-
-```python
-# All inherited props should work
-mn.my_input(
-    label="Test",  # From MantineInputComponentBase
-    required=True,  # From MantineInputComponentBase
-    left_section=rx.icon("search"),  # From MantineInputComponentBase
-    custom_prop="works",  # Your specific prop
-)
-```
-
-## Common Patterns from Examples
-
-### State Management with Validation
-
+### State Management
 ```python
 class InputState(rx.State):
-    username: str = ""
-    username_error: str = ""
-
-    @rx.event
-    async def validate_username(self) -> AsyncGenerator[Any, Any]:
-        if len(self.username) < 3:
-            self.username_error = "Must be at least 3 characters"
+    value: str = ""
+    error: str = ""
+    
+    def validate(self) -> None:
+        if len(self.value) < 3:
+            self.error = "Too short"
         else:
-            self.username_error = ""
-            yield rx.toast.success("Valid!", position="top-right")
+            self.error = ""
 ```
 
-### Controlled vs Uncontrolled Components
-
+### Controlled vs Uncontrolled
 ```python
 # ✅ Controlled - value managed by state
 mn.input(value=State.value, on_change=State.set_value)
@@ -382,28 +205,12 @@ mn.input(value=State.value, on_change=State.set_value)
 # ✅ Uncontrolled - uses default_value
 mn.input(default_value="Initial")
 
-# ⚠️ IMaskInput is ALWAYS uncontrolled - use on_accept, not value
-mn.imask_input(mask="+1 (000) 000-0000", on_accept=State.handle_accept)
+# ⚠️ IMaskInput is ALWAYS uncontrolled
+mn.masked_input(mask="+1 (000) 000-0000", on_accept=State.handle_accept)
 ```
 
-### Input.Wrapper for Complete Form Fields
-
+### Input Sections (Icons/Buttons)
 ```python
-# All input components support wrapper props inherited from base
-mn.password_input(
-    label="Password",
-    description="Must be at least 8 characters",
-    error=State.password_error,
-    required=True,
-    with_asterisk=True,  # Show red asterisk
-    placeholder="Enter password",
-)
-```
-
-### Left/Right Sections (Icons, Buttons)
-
-```python
-# Inherited from MantineInputComponentBase
 mn.input(
     placeholder="Search...",
     left_section=rx.icon("search"),
@@ -413,67 +220,20 @@ mn.input(
 )
 ```
 
-## Code Quality Standards
+---
 
-### Type Annotations (Python 3.12+)
+## 🔍 Key Files Reference
 
-```python
-from typing import Any, Literal
-from reflex.vars.base import Var
-from reflex.event import EventHandler
+- `components/manakit-mantine/src/manakit_mantine/base.py` - Base classes with all common props
+- `components/manakit-mantine/src/manakit_mantine/inputs.py` - Input component examples
+- `reflex_mantine/pages/` - Live examples of all patterns
+- `pyproject.toml` - UV workspace configuration
+- `rxconfig.py` - Reflex app configuration
 
-class MyComponent(MantineInputComponentBase):
-    # Use Var[] for Reflex props
-    variant: Var[Literal["filled", "outlined"]] = None
-    max_value: Var[int | float] = None
+**Focus development in:**
+- `components/manakit-mantine/src/manakit_mantine/` (component source)
+- `reflex_mantine/` (demo app with examples)
 
-    # Event handlers with lambda signatures
-    on_change: EventHandler[lambda value: [value]] = None
-```
+---
 
-### Documentation Standards
-
-Every component should have:
-- Module docstring with Mantine docs link
-- Class docstring linking to Mantine reference
-- Prop comments explaining non-obvious behavior
-- Example usage in dedicated page
-
-```python
-"""Mantine MyInput component wrapper for Reflex.
-
-Provides advanced input functionality with custom features.
-See `my_input()` function for detailed usage and examples.
-
-Documentation: https://mantine.dev/core/my-input/
-"""
-
-class MyInput(MantineInputComponentBase):
-    """Mantine MyInput component.
-
-    Based on: https://mantine.dev/core/my-input/
-
-    Inherits common input props from MantineInputComponentBase.
-    See `my_input()` function for detailed documentation and examples.
-    """
-```
-
-## Project-Specific Notes
-
-### Why This Structure?
-
-- `pyproject.toml` references non-existent `components/knai-*` packages - **ignore these**, they're from a different project
-- `uv.lock` workspace members don't match actual structure - **this is a standalone component library**
-- Focus development in `mantine/` package and `reflex_mantine/` demo app only
-
-### Version Management
-
-- Pin versions to avoid breaking changes
-
-### Asset Management
-
-JavaScript shims in `assets/external/mantine/`:
-- `base/mantine_provider.js` - Color mode integration
-- `nprogress/navigation_progress.js` - Progress bar controls
-
-Reference via `asset(path="<filename.js>", shared=True)` in component `library` prop.
+**Remember:** This codebase eliminates code duplication through inheritance. When in doubt, check what props already exist in the base classes before adding new ones.
