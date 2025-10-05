@@ -5,7 +5,7 @@ from reflex.utils import lazy_loader
 _MAPPING = {
     "mantine.date": ["date_input"],
     "mantine.inputs": ["form_input"],
-    "mantine.masked_input": ["masked_input"],
+    "mantine.masked_input": ["MaskedInput", "masked_input"],
     "mantine.nprogress": ["navigation_progress"],
     "mantine.number_input": ["number_input"],
     "mantine.password_input": ["password_input"],

@@ -4,13 +4,13 @@ import logging
 
 import reflex as rx
 
-from reflex_mantine.pages.date_input_examples import date_input_examples_page
-from reflex_mantine.pages.input_examples import form_inputs_showcase
-from reflex_mantine.pages.nprogress_examples import nprogress_examples_page
-from reflex_mantine.pages.number_input_examples import number_input_examples_page
-from reflex_mantine.pages.password_input_examples import password_input_examples_page
-from reflex_mantine.pages.textarea_examples import textarea_examples_page
-from reflex_mantine.pages.tiptap_examples import tiptap_page
+from examples.pages.date_input_examples import date_input_examples_page
+from examples.pages.input_examples import form_inputs_showcase
+from examples.pages.nprogress_examples import nprogress_examples_page
+from examples.pages.number_input_examples import number_input_examples_page
+from examples.pages.password_input_examples import password_input_examples_page
+from examples.pages.textarea_examples import textarea_examples_page
+from examples.pages.tiptap_examples import tiptap_page
 from rxconfig import config
 
 logging.basicConfig(level=logging.DEBUG)
