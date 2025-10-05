@@ -4,8 +4,8 @@ requires-python = ">=3.12"
 
 [manifest]
 members = [
+    "manakit",
     "manakit-mantine",
-    "reflex-ui",
 ]
 
 [[package]]
@@ -328,6 +328,37 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/9e/38/bd5b78a920a64d708fe6bc8e0a2c075e1389d53bef8413725c63ba041535/mako-1.3.10.tar.gz", hash = "sha256:99579a6f39583fa7e5630a28c3c1f440e4e97a414b80372649c0ce338da2ea28", size = 392474, upload-time = "2025-04-10T12:44:31.16Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/87/fb/99f81ac72ae23375f22b7afdb7642aba97c00a713c217124420147681a2f/mako-1.3.10-py3-none-any.whl", hash = "sha256:baef24a52fc4fc514a0887ac600f9f1cff3d82c61d4d700a1fa84d597b88db59", size = 78509, upload-time = "2025-04-10T12:50:53.297Z" },
+]
+
+[[package]]
+name = "manakit"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "manakit-mantine" },
+    { name = "reflex" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "bump-my-version" },
+    { name = "detect-secrets" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "manakit-mantine", editable = "components/manakit-mantine" },
+    { name = "reflex", specifier = ">=0.8.13" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bump-my-version", specifier = ">=1.2.1" },
+    { name = "detect-secrets", specifier = ">=1.5.0" },
+    { name = "pytest", specifier = "==8.4.1" },
+    { name = "ruff", specifier = "==0.12.4" },
 ]
 
 [[package]]
@@ -723,37 +754,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/98/51/029207a63593f25cddb9cfe5c59147cf1e5de9a967dfa87cd8b6296e7c41/reflex_hosting_cli-0.1.56.tar.gz", hash = "sha256:b29bb0a2bee0ee59ac4f1c7beecc727e914c3c0ab73fc4a536a5b33c237f40b7", size = 35889, upload-time = "2025-09-25T03:28:29.977Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c6/10/ab023eabe375eed3a0e0ac3350f007465e10a59ca6d70dbde455abcb404d/reflex_hosting_cli-0.1.56-py3-none-any.whl", hash = "sha256:9c6e5f0a26ab61fa20a89a4ea053d36d94e3134507fc1fca428500a0738139b2", size = 45420, upload-time = "2025-09-25T03:28:28.685Z" },
-]
-
-[[package]]
-name = "reflex-ui"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "manakit-mantine" },
-    { name = "reflex" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "bump-my-version" },
-    { name = "detect-secrets" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "manakit-mantine", editable = "components/manakit-mantine" },
-    { name = "reflex", specifier = ">=0.8.13" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "bump-my-version", specifier = ">=1.2.1" },
-    { name = "detect-secrets", specifier = ">=1.5.0" },
-    { name = "pytest", specifier = "==8.4.1" },
-    { name = "ruff", specifier = "==0.12.4" },
 ]
 
 [[package]]

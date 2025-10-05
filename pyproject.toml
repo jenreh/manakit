@@ -1,5 +1,5 @@
 [project]
-name = "reflex-ui"
+name = "manakit"
 version = "0.1.0"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
