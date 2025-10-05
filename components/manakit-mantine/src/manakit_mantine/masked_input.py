@@ -151,11 +151,12 @@ import { IMaskInput } from 'react-imask';"""
     # IMask-Specific Event Handlers
     # ========================================================================
 
-    on_accept: EventHandler[rx.event.input_event] = None
-    """Called when mask accepts input (use this instead of on_change)."""
+    on_accept: EventHandler[lambda value: [value]] = None
+    """Called when mask accepts input (receives value directly, not event).
+    Use this instead of on_change for masked inputs."""
 
-    on_complete: EventHandler[rx.event.input_event] = None
-    """Called when mask is completely filled."""
+    on_complete: EventHandler[lambda value: [value]] = None
+    """Called when mask is completely filled (receives value directly)."""
 
     # Note: on_change, on_focus, on_blur, etc. inherited from base class
 
