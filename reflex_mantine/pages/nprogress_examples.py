@@ -34,7 +34,35 @@ class NProgressExamplesState(rx.State):
     def start_progress(self) -> rx.event.EventSpec:
         """Start the progress bar."""
         self.is_loading = True
-        return rx.call_script("window.nprogress && window.nprogress.start()")
+        # Add console.log for debugging
+        return rx.call_script("""
+            console.log('Attempting to start progress...');
+            console.log('window.nprogress:', window.nprogress);
+
+            // Check if NavigationProgress component is in DOM
+            const progressBar = document.querySelector('[class*="nprogress"]');
+            console.log('Progress bar element:', progressBar);
+
+            // Check for mantine nprogress specific elements
+            const mantineProgress = document.querySelector('.mantine-nprogress-root, [data-nprogress]');
+            console.log('Mantine progress element:', mantineProgress);
+
+            if (window.nprogress) {
+                window.nprogress.start();
+                console.log('Progress started!');
+
+                // Check if progress bar appeared after start
+                setTimeout(() => {
+                    const afterStart = document.querySelector('[class*="nprogress"], .mantine-nprogress-root');
+                    console.log('Progress bar after start():', afterStart);
+                    if (afterStart) {
+                        console.log('Element styles:', window.getComputedStyle(afterStart));
+                    }
+                }, 100);
+            } else {
+                console.error('window.nprogress is not defined!');
+            }
+        """)
 
     def stop_progress(self) -> rx.event.EventSpec:
         """Stop the progress bar."""
@@ -74,34 +102,47 @@ class NProgressExamplesState(rx.State):
         """Simulate a loading process with progress updates."""
         self.is_loading = True
         self.data_loaded = False
+        yield  # Force state update
+
         yield rx.call_script("window.nprogress && window.nprogress.start()")
-
-        # Simulate incremental loading
         await asyncio.sleep(0.5)
+
+        # Simulate incremental loading with state updates
         yield rx.call_script("window.nprogress && window.nprogress.set(30)")
-
         await asyncio.sleep(0.5)
+
         yield rx.call_script("window.nprogress && window.nprogress.set(60)")
-
         await asyncio.sleep(0.5)
+
         yield rx.call_script("window.nprogress && window.nprogress.set(90)")
-
         await asyncio.sleep(0.5)
+
         self.data_loaded = True
         self.is_loading = False
+        yield  # Force state update
+
         yield rx.call_script("window.nprogress && window.nprogress.complete()")
 
     async def simulate_upload(self) -> AsyncGenerator[Any, Any]:
         """Simulate file upload with progress tracking."""
-        self.upload_progress = 0
-        yield rx.call_script("window.nprogress && window.nprogress.start()")
+        # Start progress
+        rx.call_script("window.nprogress && window.nprogress.start()")
+        yield
 
+        # Update progress incrementally
         for i in range(0, 101, 10):
-            self.upload_progress = i
-            yield rx.call_script(f"window.nprogress && window.nprogress.set({i})")
-            await asyncio.sleep(0.3)
+            self.upload_progress = i  # State update triggers render
+            yield  # Yield without event to force state update to be sent
+            await asyncio.sleep(0.1)
 
-        yield rx.call_script("window.nprogress && window.nprogress.complete()")
+            # Now update the progress bar
+            rx.call_script(f"window.nprogress && window.nprogress.set({i})")
+            yield
+            await asyncio.sleep(0.2)
+
+        # Complete
+        rx.call_script("window.nprogress && window.nprogress.complete()")
+        yield
 
 
 # ============================================================================

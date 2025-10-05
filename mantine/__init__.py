@@ -10,6 +10,9 @@ _MAPPING = {
     "mantine.number_input": ["number_input"],
     "mantine.password_input": ["password_input"],
     "mantine.textarea": ["textarea"],
+    "mantine.tiptap": [
+        "rich_text_editor",
+    ],
 }
 
 _SUBMODULES = set()
