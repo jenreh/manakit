@@ -143,7 +143,7 @@ plan:end -->
 
 # Project Architecture
 
-This is a **Reflex component library** wrapping [Mantine UI v8.2.5](https://mantine.dev) for Python web apps. Structure:
+This is a **Reflex component library** wrapping [Mantine UI v8.3.3](https://mantine.dev) for Python web apps. Structure:
 
 - `mantine/` – Core component wrappers (Input, DateInput, NumberInput, PasswordInput, Textarea, NavigationProgress, etc.)
 - `mantine/base.py` – Base classes (`MantineComponentBase`, `MantineInputComponentBase`) with inheritance hierarchy
@@ -208,7 +208,7 @@ Components requiring additional CSS override `_get_custom_code()`:
 
 ```python
 class NavigationProgress(MantineComponentBase):
-    library = "@mantine/nprogress@8.2.5"
+    library = "@mantine/nprogress@8.3.3"
 
     def _get_custom_code(self) -> str:
         return """import '@mantine/core/styles.css';
@@ -253,7 +253,7 @@ class IMaskInput(rx.Component):
     lib_dependencies: list[str] = ["react-imask@7.6.1"]
 
 class DateInput(MantineDateInputBase):
-    library = "@mantine/dates@^8.2.5"
+    library = "@mantine/dates@^8.3.3"
     lib_dependencies: list[str] = ["dayjs@1.11.13"]
 ```
 

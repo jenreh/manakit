@@ -27,7 +27,7 @@ The RichTextEditor component is included in the `manakit-mantine` package. All r
 
 The component automatically installs:
 
-- `@mantine/tiptap@8.2.5` - Mantine's Tiptap integration
+- `@mantine/tiptap@8.3.3` - Mantine's Tiptap integration
 - `@tiptap/react@^2.10.4` - React bindings for Tiptap
 - `@tiptap/pm@^2.10.4` - ProseMirror core
 - `@tiptap/extension-link@^2.10.4` - Link extension

@@ -4,11 +4,14 @@ import logging
 
 import reflex as rx
 
+from examples.pages.autocomplete_examples import autocomplete_examples
+from examples.pages.combobox_examples import combobox_examples
 from examples.pages.date_input_examples import date_input_examples_page
 from examples.pages.input_examples import form_inputs_showcase
 from examples.pages.nprogress_examples import nprogress_examples_page
 from examples.pages.number_input_examples import number_input_examples_page
 from examples.pages.password_input_examples import password_input_examples_page
+from examples.pages.select_examples import select_examples
 from examples.pages.textarea_examples import textarea_examples_page
 from examples.pages.tiptap_examples import tiptap_page
 
@@ -42,6 +45,9 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Textarea", href="/textarea")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
                 rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
+                rx.list.item(rx.link("Select", href="/select")),
+                rx.list.item(rx.link("Autocomplete", href="/autocomplete")),
+                rx.list.item(rx.link("Combobox", href="/combobox")),
             ),
             spacing="2",
             justify="center",
@@ -60,3 +66,6 @@ app.add_page(textarea_examples_page, title="Textarea", route="/textarea")
 app.add_page(form_inputs_showcase, title="Inputs", route="/inputs")
 app.add_page(nprogress_examples_page, title="Navigation Progress", route="/nprogress")
 app.add_page(tiptap_page, title="Rich Text Editor", route="/tiptap")
+app.add_page(select_examples, title="Select", route="/select")
+app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
+app.add_page(combobox_examples, title="Combobox", route="/combobox")

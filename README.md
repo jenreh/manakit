@@ -7,7 +7,7 @@
 
 **Production-ready Mantine UI input components for Reflex with type safety and comprehensive examples.**
 
-A Reflex wrapper library focusing on [Mantine UI v8.2.5](https://mantine.dev) input components, designed for building robust forms and data entry interfaces in Python web applications.
+A Reflex wrapper library focusing on [Mantine UI v8.3.3](https://mantine.dev) input components, designed for building robust forms and data entry interfaces in Python web applications.
 
 ---
 
@@ -18,7 +18,7 @@ A Reflex wrapper library focusing on [Mantine UI v8.2.5](https://mantine.dev) in
 - **📚 Rich Examples** - Production-ready code examples for every component with common patterns and edge cases
 - **🏗️ Clean Architecture** - Inheritance-based design eliminating code duplication across 40+ common props
 - **🎨 Mantine Integration** - Seamless integration with Mantine's theming, color modes, and design system
-- **⚡ Modern Stack** - Built on Reflex 0.8.13+ with React 18 and Mantine 8.2.5
+- **⚡ Modern Stack** - Built on Reflex 0.8.13+ with React 18 and Mantine 8.3.3
 
 ---
 
@@ -380,9 +380,9 @@ See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for det
 
 ### Key Dependencies
 
-- `@mantine/core@8.3` - Mantine UI library
-- `@mantine/dates@^8.2.5` - Date components
-- `@mantine/nprogress@8.2.5` - Progress indicator
+- `@mantine/core@8.3.3` - Mantine UI library
+- `@mantine/dates@^8.3.3` - Date components
+- `@mantine/nprogress@8.3.3` - Progress indicator
 - `react-imask@7.6.1` - Input masking
 - `@tiptap/*` - Rich text editor
 

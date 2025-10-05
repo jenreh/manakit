@@ -91,7 +91,9 @@ from knowledgeai_commons_ui.components import (
 ### Dependencies
 
 These are automatically installed by Reflex:
-- `@mantine/core@8.2.5` - Mantine UI library
+
+
+- `@mantine/core@8.3.3` - Mantine UI library
 - `react-imask@7.6.1` - Input masking library
 
 ---
@@ -785,10 +787,10 @@ def contact_form():
 ---
 
 ## Additional Resources
-
-- **Mantine Documentation:** https://mantine.dev/core/input/
-- **IMask Documentation:** https://imask.js.org/guide.html
-- **Reflex Documentation:** https://reflex.dev/docs/
+<https://mantine.dev/core/input/>
+- **Mantine Documentation:*<https://imask.js.org/guide.html>ut/>
+- **IMask Documentation:** <<https://reflex.dev/docs/>de.html>
+- **Reflex Documentation:** <https://reflex.dev/docs/>
 
 ---
 
