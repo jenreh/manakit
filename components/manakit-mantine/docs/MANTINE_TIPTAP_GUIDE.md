@@ -21,7 +21,7 @@ Comprehensive guide for using the Mantine RichTextEditor component in Reflex app
 
 ## Installation
 
-The RichTextEditor component is included in the `reflex-mantine` package. All required NPM dependencies are automatically installed when you use the component.
+The RichTextEditor component is included in the `manakit-mantine` package. All required NPM dependencies are automatically installed when you use the component.
 
 ### NPM Dependencies
 
@@ -55,7 +55,7 @@ The fastest way to get started is using the `simple_rich_text_editor` component:
 
 ```python
 import reflex as rx
-import mantine as mn
+import manakit_mantine as mn
 
 
 class EditorState(rx.State):
@@ -96,6 +96,7 @@ mn.simple_rich_text_editor(
 ```
 
 **Props:**
+
 - `content` - Initial HTML content
 - `on_update` - Callback when content changes
 - `editable` - Whether editor is editable (default: True)
@@ -122,6 +123,7 @@ mn.memoized_rich_text_editor(
 ```
 
 **Props:**
+
 - `content` - Initial HTML content
 - `on_update` - Callback when content changes
 - `editable` - Whether editor is editable
@@ -143,7 +145,7 @@ Direct access to Mantine's RichTextEditor. Requires manually managing the Tiptap
 
 ```python
 import reflex as rx
-import mantine as mn
+import manakit_mantine as mn
 
 
 class SimpleEditorState(rx.State):
@@ -519,6 +521,7 @@ class ExportState(rx.State):
 **Problem:** Editor doesn't appear or shows blank.
 
 **Solution:**
+
 - Ensure `mn.rich_text_editor_content()` is included in the component tree
 - Check browser console for JavaScript errors
 - Verify all NPM dependencies are installed
@@ -528,6 +531,7 @@ class ExportState(rx.State):
 **Problem:** Changes in the editor don't update state.
 
 **Solution:**
+
 - Make sure `on_update` callback is provided
 - Verify the callback function is properly updating state
 - Check that the state variable is reactive
@@ -537,6 +541,7 @@ class ExportState(rx.State):
 **Problem:** Clicking toolbar buttons has no effect.
 
 **Solution:**
+
 - Ensure required extensions are loaded (check [Extensions](#extensions) section)
 - For color controls, verify `TextStyle` and `Color` extensions are present
 - Check browser console for extension-related errors
@@ -546,7 +551,9 @@ class ExportState(rx.State):
 **Problem:** Sticky toolbar overlaps with fixed headers.
 
 **Solution:**
+
 - Adjust `sticky_offset` to match your header height:
+
   ```python
   mn.rich_text_editor_toolbar(
       ...,
@@ -560,6 +567,7 @@ class ExportState(rx.State):
 **Problem:** Custom styles not affecting editor content.
 
 **Solution:**
+
 - Set `with_typography_styles=False` to disable default styles
 - Add custom CSS targeting `.mantine-RichTextEditor-content` class
 
@@ -570,6 +578,7 @@ class ExportState(rx.State):
 ### 1. State Management
 
 **DO:**
+
 ```python
 class EditorState(rx.State):
     content: str = "<p>Initial</p>"
@@ -579,6 +588,7 @@ class EditorState(rx.State):
 ```
 
 **DON'T:**
+
 ```python
 # Don't store editor state in component props
 # Don't use multiple state variables for same content
@@ -587,33 +597,39 @@ class EditorState(rx.State):
 ### 2. Performance
 
 **DO:**
+
 - Use `simple_rich_text_editor` for standard use cases
 - Debounce auto-save operations
 - Limit real-time collaboration features
 
 **DON'T:**
+
 - Don't create new editor instances in loops
 - Don't perform heavy operations in `on_update` callback
 
 ### 3. Content Handling
 
 **DO:**
+
 - Sanitize HTML before saving to database
 - Validate content length and structure
 - Handle empty content gracefully
 
 **DON'T:**
+
 - Don't trust user-submitted HTML without sanitization
 - Don't store excessively large documents client-side
 
 ### 4. Toolbar Design
 
 **DO:**
+
 - Group related controls together
 - Provide essential formatting options
 - Use sticky toolbar for long documents
 
 **DON'T:**
+
 - Don't overcrowd the toolbar
 - Don't include rarely-used controls
 - Don't forget undo/redo controls
@@ -621,11 +637,13 @@ class EditorState(rx.State):
 ### 5. Accessibility
 
 **DO:**
+
 - Provide clear labels for custom controls
 - Support keyboard shortcuts
 - Test with screen readers
 
 **DON'T:**
+
 - Don't remove focus indicators
 - Don't disable keyboard navigation
 
@@ -651,9 +669,9 @@ The editor supports standard keyboard shortcuts:
 
 ## Additional Resources
 
-- **Mantine Tiptap Docs:** https://mantine.dev/x/tiptap/
-- **Tiptap Documentation:** https://tiptap.dev/
-- **Reflex Documentation:** https://reflex.dev/docs/
+- **Mantine Tiptap Docs:** <https://mantine.dev/x/tiptap/>
+- **Tiptap Documentation:** <https://tiptap.dev/>
+- **Reflex Documentation:** <https://reflex.dev/docs/>
 - **Example Page:** `/tiptap` route in the demo app
 
 ---

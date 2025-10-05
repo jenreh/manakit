@@ -1,61 +1,43 @@
 [project]
-name = "reflex-mantine"
+name = "reflex-ui"
 version = "0.1.0"
-description = "Add your description here"
+description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "asyncio>=4.0.0",
     "reflex>=0.8.13",
+    "manakit-mantine",
 ]
 
 [dependency-groups]
 dev = ["pytest==8.4.1", "ruff==0.12.4", "bump-my-version>=1.2.1", "detect-secrets>=1.5.0"]
 
+[tool.setuptools.packages.find]
+where = [
+    "components/manakit-mantine/src",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "examples",
+    "manakit_mantine",
+]
 
 [tool.uv]
 cache-dir = ".cache/uv_cache"
 
 [tool.uv.workspace]
-members = ["components/*", "knowledgeai/*"]
+members = ["components/*"]
 exclude = ["**/__pycache__"]
 
 [tool.uv.sources]
-knai-anonymizer = { workspace = true }
-knai-assistant = { workspace = true }
-knai-avvia = { workspace = true }
-knai-common = { workspace = true }
-knai-hours = { workspace = true }
-knai-imagegen = { workspace = true }
-knai-nmxdia = { workspace = true }
-knai-tools = { workspace = true }
-knowledgeai-commons = { workspace = true }
-knowledgeai-commons-ui = { workspace = true }
-
-[[tool.uv.index]]
-name = "local"
-url = "http://localhost:3030/simple/"
-publish-url = "http://localhost:3030/"
-#format = "flat"
-explicit = true
-
-[[tool.uv.index]]
-name = "nmxdia_packages"
-url = "https://europe-west3-python.pkg.dev/nm-x-dia-61bc/nmxdia/simple/"
-publish-url = "https://europe-west3-python.pkg.dev/nm-x-dia-61bc/nmxdia/"
-explicit = true
-
+manakit-mantine = { workspace = true }
 
 [tool.bumpversion]
-current_version = "0.21.0"
+current_version = "0.1.0"
 commit = false
 tag = false
 allow-dirty = true
-
-[[tool.bumpversion.files]]
-filename = "configuration/config.yaml"
-search = '  version: {current_version}'
-replace = '  version: {new_version}'
 
 [[tool.bumpversion.files]]
 filename = "pyproject.toml"
@@ -63,52 +45,7 @@ search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/knai-anonymizer/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-assistant/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-avvia/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-common/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-hours/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-imagegen/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-nmxdia/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "components/knai-tools/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "knowledgeai/knowledgeai-commons/pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "knowledgeai/knowledgeai-commons-ui/pyproject.toml"
+filename = "components/manakit-mantine/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 

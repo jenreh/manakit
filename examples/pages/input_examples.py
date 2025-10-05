@@ -16,9 +16,8 @@ from __future__ import annotations
 from collections.abc import AsyncGenerator
 from typing import Any
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 # Constants
 MIN_USERNAME_LENGTH = 3

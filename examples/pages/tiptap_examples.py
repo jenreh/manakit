@@ -3,9 +3,8 @@
 Demonstrates various use cases and features of the RichTextEditor component.
 """
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 
 class TiptapState(rx.State):

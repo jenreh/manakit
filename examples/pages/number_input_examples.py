@@ -11,9 +11,8 @@ Navigate to: /number-input-examples
 from collections.abc import AsyncGenerator
 from typing import Any
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 # ============================================================================
 # Example 1: Basic Number Input

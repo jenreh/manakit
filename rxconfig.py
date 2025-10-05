@@ -1,7 +1,7 @@
 import reflex as rx
 
 config = rx.Config(
-    app_name="reflex_mantine",
+    app_name="examples",
     plugins=[
         rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(),

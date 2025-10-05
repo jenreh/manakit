@@ -74,6 +74,8 @@ class MantineInputBase(rx.Component):
 
     Combines Input and Input.Wrapper, supports component prop for custom
     inputs. See `mantine_input_base()` function for usage examples.
+
+    IMPORTANT: IMask components are UNCONTROLLED - use 'on_accept', not 'value'.
     """
 
     library = "@mantine/core@8.2.5"
@@ -170,6 +172,8 @@ def masked_input(*children, **props) -> MantineInputBase:
 
     This is a convenience wrapper that creates an InputBase component with
     IMaskInput as the component prop.
+
+    Documentation: https://imask.js.org/guide.html
 
     IMPORTANT: This is an UNCONTROLLED component!
     - DO NOT use 'value' prop (prevents typing)

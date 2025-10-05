@@ -1,6 +1,6 @@
-# Reflex-Mantine
+# manakit-mantine
 
-[![PyPI version](https://badge.fury.io/py/reflex-mantine.svg)](https://badge.fury.io/py/reflex-mantine)
+[![PyPI version](https://badge.fury.io/py/manakit-mantine.svg)](https://badge.fury.io/py/manakit-mantine)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/reflex-mantine)
@@ -156,8 +156,6 @@ on_focus=State.handle_focus
 on_blur=State.handle_blur
 ```
 
----
-
 ## 📖 Usage Examples
 
 ### Basic Input with Validation
@@ -270,16 +268,9 @@ def editor():
     )
 ```
 
----
-
 ## 📚 Documentation
 
 Comprehensive guides are available in the [`docs/`](docs/) directory:
-
-- **[Mantine Inputs Guide](docs/MANTINE_INPUTS_GUIDE.md)** - Complete reference for all input components
-- **[Textarea Guide](docs/MANTINE_TEXTAREA_GUIDE.md)** - Multi-line text input patterns
-- **[Tiptap Guide](docs/MANTINE_TIPTAP_GUIDE.md)** - Rich text editor configuration
-- **[Number Format Quick Reference](docs/NUMBER_FORMAT_QUICK_REF.md)** - Number formatting patterns
 
 ### Live Examples
 
@@ -298,95 +289,6 @@ reflex run
 ```
 
 Visit `http://localhost:3000` and navigate through the example pages:
-
-- `/password` - Password input patterns
-- `/date` - Date picker examples
-- `/number` - Number input formatting
-- `/textarea` - Textarea auto-resize
-- `/inputs` - Basic input showcase
-- `/nprogress` - Navigation progress
-- `/tiptap` - Rich text editor
-
----
-
-## 🏗️ Architecture
-
-### UV Workspace Structure
-
-This project uses **UV workspace** to manage the component library and demo application:
-
-```
-reflex-mantine/
-├── components/
-│   └── reflex-mantine/    # Distributable component library
-│       ├── mantine/             # Component source code
-│       └── pyproject.toml       # Component package config
-├── reflex_mantine/              # Demo application
-│   ├── pages/                   # Example pages
-│   └── reflex_mantine.py        # App entry point
-├── docs/                        # Documentation guides
-├── pyproject.toml               # Workspace root config
-└── README.md                    # This file
-```
-
-The **`reflex-mantine`** package is published to PyPI and can be used independently. The demo app in `reflex_mantine/` serves as both documentation and testing ground.
-
-### Inheritance-Based Design
-
-All input components inherit from `MantineInputComponentBase`, eliminating code duplication:
-
-```python
-# Base class provides ~40 common props automatically
-class MantineInputComponentBase(MantineComponentBase):
-    # Input.Wrapper props (label, description, error, required)
-    # Visual variants (variant, size, radius)
-    # State props (value, default_value, placeholder)
-    # HTML attributes (name, id, aria_label, pattern)
-    # Section props (left_section, right_section)
-    # Mantine style props (w, maw, m, p)
-    # Event handlers (on_change, on_focus, on_blur)
-```
-
-**When creating new components, only define component-specific props:**
-
-```python
-class NumberInput(MantineInputComponentBase):
-    tag = "NumberInput"
-
-    # Only unique props - all common props inherited
-    min: Var[int | float] = None
-    max: Var[int | float] = None
-    decimal_scale: Var[int] = None
-    prefix: Var[str] = None
-    suffix: Var[str] = None
-```
-
-### Critical Integration Patterns
-
-1. **MantineProvider Auto-Injection** - Wraps all apps automatically at priority 44
-2. **Custom CSS Injection** - Components override `_get_custom_code()` for Mantine CSS
-3. **Event Handler Transformations** - Components transform raw values to Reflex events
-4. **External Dependencies** - NPM packages declared via `lib_dependencies`
-
-See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for detailed development guidelines.
-
----
-
-## 🔧 Requirements
-
-- **Python**: 3.12 or higher
-- **Reflex**: 0.8.13 or higher
-- **Node.js**: 18+ (for Mantine/React dependencies)
-
-### Key Dependencies
-
-- `@mantine/core@8.2.5` - Mantine UI library
-- `@mantine/dates@^8.2.5` - Date components
-- `@mantine/nprogress@8.2.5` - Progress indicator
-- `react-imask@7.6.1` - Input masking
-- `@tiptap/*` - Rich text editor
-
----
 
 ## 🤝 Contributing
 
@@ -420,7 +322,7 @@ reflex run --loglevel debug
 
 ### Publishing the Component
 
-The `reflex-mantine` component can be published independently:
+The `manakit-mantine` component can be published independently:
 
 ```bash
 # Navigate to component directory
@@ -433,30 +335,12 @@ uv build
 uv publish
 ```
 
----
-
 ## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
----
-
 ## 🔗 Links
 
-- **GitHub**: [https://github.com/jenreh/reflex-mantine](https://github.com/jenreh/reflex-mantine)
-- **PyPI**: [https://pypi.org/project/reflex-mantine/](https://pypi.org/project/reflex-mantine/)
-- **Reflex Docs**: [https://reflex.dev](https://reflex.dev)
-- **Mantine Docs**: [https://mantine.dev](https://mantine.dev)
-- **Issues**: [https://github.com/jenreh/reflex-mantine/issues](https://github.com/jenreh/reflex-mantine/issues)
-
----
-
 ## 🙏 Acknowledgments
-
-- **[Reflex](https://reflex.dev)** - The pure Python web framework
-- **[Mantine](https://mantine.dev)** - The React component library
-- **Community contributors** who helped shape this project
-
----
 
 **Built with ❤️ for the Reflex community**

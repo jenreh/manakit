@@ -3,12 +3,10 @@
  * This allows Reflex to control the progress bar via rx.call_script()
  */
 import { NavigationProgress, nprogress } from "@mantine/nprogress";
-import { useEffect } from "react";
 
 // Expose nprogress API globally so it can be accessed via rx.call_script()
 if (typeof window !== "undefined") {
     window.nprogress = nprogress;
 }
 
-// Re-export NavigationProgress component
 export default NavigationProgress;

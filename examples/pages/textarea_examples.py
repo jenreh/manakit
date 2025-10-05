@@ -7,9 +7,8 @@ in Reflex applications.
 from collections.abc import AsyncGenerator
 from typing import Any
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 
 class TextareaState(rx.State):

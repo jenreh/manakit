@@ -1,11 +1,3 @@
-"""Mantine DateInput component wrapper for Reflex.
-
-Provides a free form date input with calendar popup, date parsing, and validation.
-See `mantine_date_input()` function for detailed usage and examples.
-
-Documentation: https://mantine.dev/dates/date-input/
-"""
-
 from __future__ import annotations
 
 from typing import Any
@@ -13,7 +5,7 @@ from typing import Any
 import reflex as rx
 from reflex.vars.base import Var
 
-from mantine.base import MantineInputComponentBase
+from .base import MantineInputComponentBase
 
 
 def _date_input_on_change(value: Var) -> list[Var]:

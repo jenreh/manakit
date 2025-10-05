@@ -1,18 +1,8 @@
-"""Mantine NavigationProgress component wrapper for Reflex.
-
-Provides a top-of-page progress bar for navigation and loading states.
-Uses the @mantine/nprogress package.
-
-See `navigation_progress()` function for detailed usage and examples.
-
-Documentation: https://mantine.dev/x/nprogress/
-"""
-
 from __future__ import annotations
 
 from reflex.vars.base import Var
 
-from mantine.base import MantineComponentBase
+from .base import MantineComponentBase
 
 
 class NavigationProgress(MantineComponentBase):

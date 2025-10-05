@@ -23,9 +23,8 @@ from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 # Constants for validation
 MIN_AGE_YEARS = 18

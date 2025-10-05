@@ -7,9 +7,8 @@ sections, error states, and password strength indicators.
 Run with: reflex run
 """
 
+import manakit_mantine as mn
 import reflex as rx
-
-import mantine as mn
 
 # ============================================================================
 # Constants

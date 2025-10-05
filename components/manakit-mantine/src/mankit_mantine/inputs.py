@@ -1,11 +1,3 @@
-"""Mantine Input component family wrappers for Reflex.
-
-Provides base Input component and sub-components (Wrapper, Label, etc.).
-See individual convenience functions for detailed usage and examples.
-
-Documentation: https://mantine.dev/core/input/
-"""
-
 from __future__ import annotations
 
 from typing import Any, Literal
@@ -14,11 +6,7 @@ import reflex as rx
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
-from mantine.base import MantineInputComponentBase
-
-# ============================================================================
-# Main Input Component
-# ============================================================================
+from .base import MantineInputComponentBase
 
 
 class Input(MantineInputComponentBase):

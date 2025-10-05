@@ -10,7 +10,7 @@ from typing import Literal
 
 from reflex.vars.base import Var
 
-from mantine.base import (
+from .base import (
     MantineInputComponentBase,
 )
 
