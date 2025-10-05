@@ -106,7 +106,7 @@ class NProgressExamplesState(rx.State):
             self.data_loaded = True
             self.is_loading = False
             # This final script call is also sent immediately.
-            yield rx.call_script("window.nprogress && window.nprogress.done()")
+            yield rx.call_script("window.nprogress && window.nprogress.complete()")
 
     @rx.event(background=True)
     async def simulate_upload(self) -> AsyncGenerator[Any, Any]:
