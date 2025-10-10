@@ -7,9 +7,11 @@ import reflex_enterprise as rxe
 
 from examples.pages.action_icon_examples import action_icon_examples
 from examples.pages.autocomplete_examples import autocomplete_examples
+from examples.pages.button_examples import button_examples
 from examples.pages.combobox_examples import combobox_examples
 from examples.pages.date_input_examples import date_input_examples_page
 from examples.pages.input_examples import form_inputs_showcase
+from examples.pages.json_input_examples import json_input_examples
 from examples.pages.nprogress_examples import nprogress_examples_page
 from examples.pages.number_input_examples import number_input_examples_page
 from examples.pages.password_input_examples import password_input_examples_page
@@ -51,6 +53,8 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
                 rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
                 rx.list.item(rx.link("Action Icon (Group demo)", href="/action-icon")),
+                rx.list.item(rx.link("Button", href="/button")),
+                rx.list.item(rx.link("Json Input", href="/json-input")),
             ),
             spacing="2",
             justify="center",
@@ -73,3 +77,5 @@ app.add_page(select_examples, title="Select", route="/select")
 app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
 app.add_page(combobox_examples, title="Combobox", route="/combobox")
 app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
+app.add_page(button_examples, title="Button", route="/button")
+app.add_page(json_input_examples, title="Json Input", route="/json-input")
