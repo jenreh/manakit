@@ -18,6 +18,7 @@ from examples.pages.number_formatter_examples import number_formatter_examples
 from examples.pages.number_input_examples import number_input_examples_page
 from examples.pages.password_input_examples import password_input_examples_page
 from examples.pages.select_examples import select_examples
+from examples.pages.table_examples import table_examples
 from examples.pages.textarea_examples import textarea_examples_page
 from examples.pages.tiptap_examples import tiptap_page
 
@@ -42,7 +43,7 @@ def index() -> rx.Component:
                 margin_bottom="24px",
             ),
             # rx.separator(margin="12px"),
-            rx.text.strong("Explore the MantineUI examples:", size="3"),
+            rx.text.strong("Inputs:", size="3"),
             rx.list.unordered(
                 rx.list.item(rx.link("Text Inputs", href="/inputs")),
                 rx.list.item(rx.link("Password Input", href="/password")),
@@ -51,14 +52,21 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Textarea", href="/textarea")),
                 rx.list.item(rx.link("Select", href="/select")),
                 rx.list.item(rx.link("Autocomplete", href="/autocomplete")),
-                rx.list.item(rx.link("Combobox", href="/combobox")),
+                #                rx.list.item(rx.link("Combobox", href="/combobox")),
+                rx.list.item(rx.link("Json Input", href="/json-input")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
-                rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
+            ),
+            rx.text.strong("Buttons:", size="3"),
+            rx.list.unordered(
                 rx.list.item(rx.link("Action Icon (Group demo)", href="/action-icon")),
                 rx.list.item(rx.link("Button", href="/button")),
-                rx.list.item(rx.link("Json Input", href="/json-input")),
+            ),
+            rx.text.strong("Others:", size="3"),
+            rx.list.unordered(
+                rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
                 rx.list.item(rx.link("Nav Link", href="/nav-link")),
                 rx.list.item(rx.link("Number Formatter", href="/number-formatter")),
+                rx.list.item(rx.link("Table", href="/table")),
             ),
             spacing="2",
             justify="center",
@@ -89,3 +97,4 @@ app.add_page(
     title="Number Formatter",
     route="/number-formatter",
 )
+app.add_page(table_examples, title="Table", route="/table")

@@ -28,6 +28,7 @@ from manakit_mantine.json_input import json_input
 from manakit_mantine.button import button
 from manakit_mantine.nav_link import nav_link
 from manakit_mantine.number_formatter import number_formatter
+from manakit_mantine.table import table
 
 
 __all__ = [
@@ -54,5 +55,6 @@ __all__ = [
     "password_input",
     "rich_text_editor",
     "select",
+    "table",
     "textarea",
 ]

@@ -164,7 +164,9 @@ def input_with_sections() -> rx.Component:
             placeholder="Enter email...",
             left_section=rx.icon("mail"),
             right_section_pointer_events="all",
-            right_section=rx.icon_button("check", color="green"),
+            right_section=mn.action_icon(
+                rx.icon("check", color="green"), color="green", variant="subtle"
+            ),
             variant="filled",
         ),
         mn.form_input(
