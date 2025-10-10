@@ -1,0 +1,56 @@
+"""Examples demonstrating Mantine NumberFormatter usage."""
+
+from __future__ import annotations
+
+import manakit_mantine as mn
+import reflex as rx
+
+
+class NumberFormatterState(rx.State):
+    value: float = 1_234_567.8901
+
+    @rx.event
+    def set_value(self, v: str | float | None) -> None:
+        self.value = v or ""
+
+
+def number_formatter_examples() -> rx.Component:
+    return rx.container(
+        rx.color_mode.button(position="top-right"),
+        rx.vstack(
+            rx.heading("NumberFormatter Examples", size="8"),
+            rx.text("Basic formatters and custom parser/format examples."),
+            rx.link("← Back to Home", href="/"),
+            rx.card(
+                rx.vstack(
+                    rx.heading("Basic formatter", size="4"),
+                    mn.number_formatter(
+                        value=NumberFormatterState.value,
+                        prefix="$ ",
+                    ),
+                    rx.text("Value: ", NumberFormatterState.value),
+                    spacing="3",
+                ),
+                padding="4",
+            ),
+            rx.card(
+                rx.vstack(
+                    rx.heading("EUR formatter", size="4"),
+                    mn.number_formatter(
+                        value=NumberFormatterState.value,
+                        suffix=" €",
+                        decimal_scale=2,
+                        decimal_separator=",",
+                        thousand_separator=".",
+                    ),
+                    rx.text("Value: ", NumberFormatterState.value),
+                    spacing="3",
+                ),
+                padding="4",
+            ),
+            spacing="6",
+            width="100%",
+            padding_y="8",
+        ),
+        size="3",
+    )

@@ -27,6 +27,7 @@ from manakit_mantine.action_icon import action_icon
 from manakit_mantine.json_input import json_input
 from manakit_mantine.button import button
 from manakit_mantine.nav_link import nav_link
+from manakit_mantine.number_formatter import number_formatter
 
 
 __all__ = [
@@ -48,6 +49,7 @@ __all__ = [
     "masked_input",
     "nav_link",
     "navigation_progress",
+    "number_formatter",
     "number_input",
     "password_input",
     "rich_text_editor",

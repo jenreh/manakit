@@ -12,7 +12,9 @@ from examples.pages.combobox_examples import combobox_examples
 from examples.pages.date_input_examples import date_input_examples_page
 from examples.pages.input_examples import form_inputs_showcase
 from examples.pages.json_input_examples import json_input_examples
+from examples.pages.nav_link_examples import nav_link_examples
 from examples.pages.nprogress_examples import nprogress_examples_page
+from examples.pages.number_formatter_examples import number_formatter_examples
 from examples.pages.number_input_examples import number_input_examples_page
 from examples.pages.password_input_examples import password_input_examples_page
 from examples.pages.select_examples import select_examples
@@ -55,6 +57,8 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Action Icon (Group demo)", href="/action-icon")),
                 rx.list.item(rx.link("Button", href="/button")),
                 rx.list.item(rx.link("Json Input", href="/json-input")),
+                rx.list.item(rx.link("Nav Link", href="/nav-link")),
+                rx.list.item(rx.link("Number Formatter", href="/number-formatter")),
             ),
             spacing="2",
             justify="center",
@@ -79,3 +83,9 @@ app.add_page(combobox_examples, title="Combobox", route="/combobox")
 app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
 app.add_page(button_examples, title="Button", route="/button")
 app.add_page(json_input_examples, title="Json Input", route="/json-input")
+app.add_page(nav_link_examples, title="Nav Link", route="/nav-link")
+app.add_page(
+    number_formatter_examples,
+    title="Number Formatter",
+    route="/number-formatter",
+)
