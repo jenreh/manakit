@@ -5,8 +5,9 @@ description = "Production-ready Mantine UI components for Reflex - Demo Applicat
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "reflex>=0.8.13",
+    "reflex>=0.8.14.post1",
     "manakit-mantine",
+    "reflex-enterprise>=0.3.4.post2",
 ]
 
 [dependency-groups]

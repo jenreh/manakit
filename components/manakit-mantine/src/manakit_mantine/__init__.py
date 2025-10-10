@@ -1,38 +1,50 @@
-"""Mantine sub-package."""
-
-from reflex.utils import lazy_loader
-
-_MAPPING = {
-    "manakit_mantine.date": ["date_input"],
-    "manakit_mantine.inputs": ["form_input", "input"],
-    "manakit_mantine.masked_input": ["MaskedInput", "masked_input"],
-    "manakit_mantine.nprogress": ["navigation_progress"],
-    "manakit_mantine.number_input": ["number_input"],
-    "manakit_mantine.password_input": ["password_input"],
-    "manakit_mantine.textarea": ["textarea"],
-    "manakit_mantine.tiptap": [
-        "rich_text_editor",
-        "EditorToolbarConfig",
-        "ToolbarControlGroup",
-    ],
-    "manakit_mantine.select": ["select"],
-    "manakit_mantine.autocomplete": ["autocomplete"],
-    "manakit_mantine.combobox": ["combobox"],
-}
-
-_SUBMODULES = set()
-_SUBMOD_ATTRS = {
-    "".join(k.split("manakit_mantine.")[-1]): v for k, v in _MAPPING.items()
-}
-
-_SUBMOD_ATTRS.update(
-    {
-        "base": ["base", "provider"],
-    }
+from manakit_mantine.base import (
+    MANTINE_LIBARY,
+    MANTINE_VERSION,
+    MantineComponentBase,
+    MantineInputComponentBase,
+    MantineProvider,
+    MemoizedMantineProvider,
 )
+from manakit_mantine.inputs import form_input
+from manakit_mantine.date import date_input
+from manakit_mantine.number_input import number_input
+from manakit_mantine.masked_input import masked_input
+from manakit_mantine.password_input import password_input
+from manakit_mantine.textarea import textarea
 
-__getattr__, __dir__, __all__ = lazy_loader.attach(
-    __name__,
-    submodules=_SUBMODULES,
-    submod_attrs=_SUBMOD_ATTRS,
+from manakit_mantine.combobox import combobox
+from manakit_mantine.select import select
+from manakit_mantine.autocomplete import autocomplete
+
+from manakit_mantine.tiptap import (
+    rich_text_editor,
+    EditorToolbarConfig,
+    ToolbarControlGroup,
 )
+from manakit_mantine.nprogress import navigation_progress
+from manakit_mantine.action_icon import action_icon
+
+
+__all__ = [
+    "MANTINE_LIBARY",
+    "MANTINE_VERSION",
+    "EditorToolbarConfig",
+    "MantineComponentBase",
+    "MantineInputComponentBase",
+    "MantineProvider",
+    "ToolbarControlGroup",
+    "action_icon",
+    "autocomplete",
+    "combobox",
+    "date_input",
+    "form_input",
+    "input",
+    "masked_input",
+    "navigation_progress",
+    "number_input",
+    "password_input",
+    "rich_text_editor",
+    "select",
+    "textarea",
+]

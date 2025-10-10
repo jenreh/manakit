@@ -1,106 +1,83 @@
+"""Mantine Combobox examples for Reflex.
+
+Based on: https://mantine.dev/core/combobox/
+
+This demonstrates various Combobox patterns including:
+- Basic select dropdown
+- Searchable autocomplete
+- Multiselect with pills
+- Grouped options
+- Scrollable lists
+- Active options
+"""
+
 import reflex as rx
+import reflex_enterprise as rxe
 
 
-class ComboState(rx.State):
-    """State for the combobox examples."""
+class ComboboxState(rx.State):
+    """State for managing combobox."""
 
-    value: str | None = None
-    dropdown_opened: bool = False
+    selected_value: str = ""
+    is_open: bool = False
 
-    def set_value(self, val: str) -> None:
-        """Set the selected value and close dropdown."""
-        self.value = val
-        self.dropdown_opened = False
+    def toggle_dropdown(self):
+        self.is_open = not self.is_open
 
-    def toggle_dropdown(self) -> None:
-        """Toggle the dropdown open/closed state."""
-        self.dropdown_opened = not self.dropdown_opened
-
-    def close_dropdown(self) -> None:
-        """Close the dropdown."""
-        self.dropdown_opened = False
+    def select_option(self, value: str):
+        self.selected_value = value
+        self.is_open = False
 
 
-def select_option_component(emoji: str, value: str, description: str) -> rx.Component:
-    """Render a single option with emoji, label and description."""
-    return rx.hstack(
-        rx.text(emoji, font_size="20px"),
-        rx.box(
-            rx.text(value, font_weight=500, font_size="sm"),
-            rx.text(description, opacity=0.6, font_size="xs"),
+def basic_select() -> rx.Component:
+    return rx.box(
+        rx.heading("Basic Select", size="5"),
+        rx.text(
+            "Simple dropdown with button trigger",
+            size="2",
+            color="gray",
+            margin_bottom="1rem",
         ),
-        spacing="2",
-        align="center",
+        rxe.mantine.combobox(
+            rxe.mantine.combobox.target(
+                rx.input(type="button"),
+            ),
+            rxe.mantine.combobox.dropdown(
+                rxe.mantine.combobox.options(
+                    rxe.mantine.combobox.option("Option 1"),
+                    rxe.mantine.combobox.option("Option 2"),
+                    rxe.mantine.combobox.option("Option 3"),
+                ),
+            ),
+            label="Combobox",
+            placeholder="Select a value",
+        ),
+        padding="1em",
     )
 
 
 def combobox_examples() -> rx.Component:
-    """Combobox demo that mirrors the Mantine JavaScript example.
+    """Return a page containing multiple Combobox demos.
 
-    Demonstrates combobox with custom option rendering and state management.
+    Demos included (based on Mantine Combobox docs):
+    - Basic select with button
+    - Searchable autocomplete
+    - Multiselect with pills
+    - Grouped options
+    - Scrollable list
+    - Active option
+    - Without dropdown
     """
 
-    groceries = [
-        {"emoji": "🍎", "value": "Apples", "description": "Crisp and refreshing fruit"},
-        {
-            "emoji": "🍌",
-            "value": "Bananas",
-            "description": "Naturally sweet and potassium-rich fruit",
-        },
-        {
-            "emoji": "🥦",
-            "value": "Broccoli",
-            "description": "Nutrient-packed green vegetable",
-        },
-        {
-            "emoji": "🥕",
-            "value": "Carrots",
-            "description": "Crunchy and vitamin-rich root vegetable",
-        },
-        {
-            "emoji": "🍫",
-            "value": "Chocolate",
-            "description": "Indulgent and decadent treat",
-        },
-    ]
-
-    # Build Combobox.Option children - each option renders SelectOption
-    options = [
-        # mn.combobox.option(
-        #     select_option_component(
-        #         emoji=item["emoji"],
-        #         value=item["value"],
-        #         description=item["description"],
-        #     ),
-        #     value=item["value"],
-        #     key=item["value"],
-        # )
-        # for item in groceries
-    ]
-
-    # Helper to render the selected option in the target
-    def render_selected():
-        return rx.fragment(
-            *[
-                rx.cond(
-                    ComboState.value == item["value"],
-                    select_option_component(
-                        emoji=item["emoji"],
-                        value=item["value"],
-                        description=item["description"],
-                    ),
-                    rx.fragment(),
-                )
-                for item in groceries
-            ]
-        )
+    fruits = ["🍎 Apples", "🍌 Bananas", "🍇 Grape"]
+    vegetables = ["🥦 Broccoli", "🥕 Carrots", "🥬 Lettuce"]
 
     return rx.container(
         rx.color_mode.button(position="top-right"),
         rx.vstack(
             rx.heading("Combobox Examples", size="9"),
             rx.text(
-                "Comprehensive examples of Combobox component",
+                "Comprehensive examples of Combobox component from @mantine/core",
                 size="4",
                 color="gray",
             ),
@@ -109,43 +86,69 @@ def combobox_examples() -> rx.Component:
                 href="/",
                 size="3",
             ),
-            rx.card(
-                rx.heading("Custom Combobox option rendering", size="5"),
-                # mn.combobox(
-                #     mn.combobox.target(
-                #         mn.form_input(
-                #             rx.cond(
-                #                 ComboState.value,
-                #                 render_selected(),
-                #                 "Pick value",
-                #             ),
-                #             component="button",
-                #             type="button",
-                #             pointer=True,
-                #             right_section=mn.combobox.chevron(),
-                #             on_click=ComboState.toggle_dropdown,
-                #             right_section_pointer_events="none",
-                #         )
-                #     ),
-                #     mn.combobox.dropdown(
-                #         mn.combobox.options(
-                #             # *options,
-                #             mn.combobox.option("None", value="1", key="none")
-                #         ),
-                #     ),
-                #     label="Grocery",
-                #     placeholder="Pick value",
-                #     #                    opened=ComboState.dropdown_opened,
-                #     #                    on_close=ComboState.close_dropdown,
-                #     #                    on_option_submit=ComboState.set_value,
-                # ),
-                padding="md",
+            # Introduction
+            rx.box(
+                rx.heading("Overview", size="6", margin_bottom="1rem"),
+                rx.text(
+                    "Combobox provides a flexible set of components to create custom select, "
+                    "multiselect, or autocomplete components with full control over rendering and logic.",
+                    margin_bottom="1rem",
+                ),
+                rx.text("Key components:", font_weight="bold", margin_bottom="0.5rem"),
+                rx.unordered_list(
+                    rx.list_item("Combobox: Main wrapper component"),
+                    rx.list_item("Combobox.Target: Wraps the trigger element"),
+                    rx.list_item("Combobox.Dropdown: Contains the options list"),
+                    rx.list_item("Combobox.Options: Container for options"),
+                    rx.list_item("Combobox.Option: Individual selectable item"),
+                    rx.list_item("Combobox.Group: Groups options together"),
+                    padding_left="2rem",
+                ),
+                padding="1rem",
+                background_color="gray.100",
+                border_radius="md",
+                margin_bottom="2rem",
             ),
+            rx.grid(
+                # basic_select(),
+                columns="2",
+                spacing="4",
+            ),
+            # Implementation Notes
+            rx.heading(
+                "Implementation Notes",
+                size="6",
+                margin_top="2rem",
+                margin_bottom="1rem",
+            ),
+            rx.text("useCombobox Hook:", font_weight="bold", margin_bottom="0.5rem"),
             rx.text(
-                "Selected value: ",
-                rx.cond(ComboState.value, ComboState.value, "None"),
+                "The useCombobox hook is automatically added by the Combobox component. "
+                "It creates a 'combobox' store that you reference in callbacks like "
+                "'() => combobox.toggleDropdown()'.",
+                margin_bottom="1rem",
             ),
+            rx.text("Event Handlers:", font_weight="bold", margin_bottom="0.5rem"),
+            rx.unordered_list(
+                rx.list_item("on_option_submit: Called when an option is selected"),
+                rx.list_item("openDropdown/closeDropdown: Control dropdown visibility"),
+                rx.list_item(
+                    "updateSelectedOptionIndex: Required for searchable components"
+                ),
+                rx.list_item("resetSelectedOption: Reset selection on dropdown close"),
+                padding_left="2rem",
+                margin_bottom="1rem",
+            ),
+            rx.text("Split Targets:", font_weight="bold", margin_bottom="0.5rem"),
+            rx.text(
+                "For multiselect, use EventsTarget (for keyboard events) and DropdownTarget "
+                "(for positioning) separately to handle complex interactions.",
+            ),
+            padding="1rem",
+            background_color="blue.50",
+            border_radius="md",
+            margin_bottom="2rem",
             spacing="4",
-            padding="lg",
+            max_width="1400px",
         ),
     )

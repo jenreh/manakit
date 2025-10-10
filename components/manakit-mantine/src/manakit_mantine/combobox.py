@@ -10,7 +10,7 @@ from typing import Any, Literal
 import reflex as rx
 from reflex.vars.base import Var
 
-from .base import MantineComponentBase, MantineInputComponentBase
+from manakit_mantine.base import MantineComponentBase, MantineInputComponentBase
 
 
 class Combobox(MantineInputComponentBase):
@@ -147,6 +147,10 @@ class ComboboxChevron(MantineComponentBase):
     tag = "Combobox.Chevron"
 
 
+class ComboboxEmpty(MantineComponentBase):
+    tag = "Combobox.Empty"
+
+
 # Convenience functions
 
 
@@ -154,15 +158,16 @@ class ComboboxNamespace(rx.ComponentNamespace):
     """Namespace for Combobox components."""
 
     __call__ = staticmethod(Combobox.create)
-    options = staticmethod(ComboboxOptions.create)
-    option = staticmethod(ComboboxOption.create)
-    target = staticmethod(ComboboxTarget.create)
-    dropdown_target = staticmethod(ComboboxDropdownTarget.create)
-    events_target = staticmethod(ComboboxEventsTarget.create)
-    dropdown = staticmethod(ComboboxDropdown.create)
-    group = staticmethod(ComboboxGroup.create)
-    separator = staticmethod(ComboboxSeparator.create)
     chevron = staticmethod(ComboboxChevron.create)
+    dropdown = staticmethod(ComboboxDropdown.create)
+    dropdown_target = staticmethod(ComboboxDropdownTarget.create)
+    empty = staticmethod(ComboboxEmpty.create)
+    events_target = staticmethod(ComboboxEventsTarget.create)
+    group = staticmethod(ComboboxGroup.create)
+    option = staticmethod(ComboboxOption.create)
+    options = staticmethod(ComboboxOptions.create)
+    separator = staticmethod(ComboboxSeparator.create)
+    target = staticmethod(ComboboxTarget.create)
 
 
 combobox = ComboboxNamespace()

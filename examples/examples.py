@@ -3,7 +3,9 @@
 import logging
 
 import reflex as rx
+import reflex_enterprise as rxe
 
+from examples.pages.action_icon_examples import action_icon_examples
 from examples.pages.autocomplete_examples import autocomplete_examples
 from examples.pages.combobox_examples import combobox_examples
 from examples.pages.date_input_examples import date_input_examples_page
@@ -48,6 +50,7 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Combobox", href="/combobox")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
                 rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
+                rx.list.item(rx.link("Action Icon (Group demo)", href="/action-icon")),
             ),
             spacing="2",
             justify="center",
@@ -56,7 +59,7 @@ def index() -> rx.Component:
     )
 
 
-app = rx.App()
+app = rxe.App()
 app.add_page(index)
 
 app.add_page(password_input_examples_page, title="Password Input", route="/password")
@@ -69,3 +72,4 @@ app.add_page(tiptap_page, title="Rich Text Editor", route="/tiptap")
 app.add_page(select_examples, title="Select", route="/select")
 app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
 app.add_page(combobox_examples, title="Combobox", route="/combobox")
+app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
