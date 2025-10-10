@@ -26,6 +26,7 @@ from manakit_mantine.nprogress import navigation_progress
 from manakit_mantine.action_icon import action_icon
 from manakit_mantine.json_input import json_input
 from manakit_mantine.button import button
+from manakit_mantine.nav_link import nav_link
 
 
 __all__ = [
@@ -45,6 +46,7 @@ __all__ = [
     "input",
     "json_input",
     "masked_input",
+    "nav_link",
     "navigation_progress",
     "number_input",
     "password_input",
