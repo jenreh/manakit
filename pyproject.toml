@@ -1,6 +1,6 @@
 [project]
 name = "manakit"
-version = "0.2.0"
+version = "0.2.1"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -35,7 +35,7 @@ exclude = ["**/__pycache__"]
 manakit-mantine = { workspace = true }
 
 [tool.bumpversion]
-current_version = "0.2.0"
+current_version = "0.2.1"
 commit = false
 tag = false
 allow-dirty = true

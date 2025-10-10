@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/reflex-mantine)
 
-**Production-ready Mantine UI input components for Reflex with type safety and comprehensive examples.**
+**reflex.dev components based on MantineUI**
 
 A Reflex wrapper library focusing on [Mantine UI v8.3.3](https://mantine.dev) input components, designed for building robust forms and data entry interfaces in Python web applications.
 
@@ -52,7 +52,7 @@ uv sync
 reflex run
 ```
 
-> **⚠️ Pre-release Notice:** This library is in active development (v0.1.0). APIs may change before the 1.0 release.
+> **⚠️ Pre-release Notice:** This library is in development. APIs may change before the 1.0 release.
 
 ---
 
@@ -115,6 +115,14 @@ app.add_page(login_form)
 | **`textarea`** | Multi-line text input with auto-resize | [Guide](docs/MANTINE_TEXTAREA_GUIDE.md) |
 | **`rich_text_editor`** | WYSIWYG editor powered by Tiptap | [Guide](docs/MANTINE_TIPTAP_GUIDE.md) |
 | **`navigation_progress`** | Page loading progress indicator | [Examples](/reflex_mantine/pages/nprogress_examples.py) |
+| **`action_icon`** | Lightweight button for icons with size, variant, radius, disabled state | [Examples](/reflex_mantine/pages/action_icon_examples.py) |
+| **`autocomplete`** | Autocomplete input with string data array | [Examples](/reflex_mantine/pages/autocomplete_examples.py) |
+| **`button`** | Button with variants, sizes, gradient, loading states, sections | [Examples](/reflex_mantine/pages/button_examples.py) |
+| **`input`** | Polymorphic base input element with sections, variants, sizes | [Examples](/reflex_mantine/pages/input_examples.py) |
+| **`json_input`** | JSON input with formatting, validation, parser, pretty printing | [Examples](/reflex_mantine/pages/json_input_examples.py) |
+| **`nav_link`** | Navigation link with label, description, icons, nested links, active/disabled states | [Examples](/reflex_mantine/pages/nav_link_examples.py) |
+| **`number_formatter`** | Formats numeric input with parser/formatter, returns parsed value | [Examples](/reflex_mantine/pages/number_formatter_examples.py) |
+| **`select`** | Dropdown select with data array, inherits input props | [Examples](/reflex_mantine/pages/select_examples.py) |
 
 ### Common Props (Inherited by All Inputs)
 
@@ -268,6 +276,130 @@ def editor():
     )
 ```
 
+### Action Icon
+
+```python
+def action_icon_example():
+    return mn.action_icon(
+        rx.icon("heart"),
+        variant="filled",
+        color="red",
+        size="lg",
+        on_click=State.like_item,
+    )
+```
+
+### Autocomplete
+
+```python
+class SearchState(rx.State):
+    query: str = ""
+
+def autocomplete_example():
+    return mn.autocomplete(
+        label="Search",
+        placeholder="Type to search...",
+        data=["Apple", "Banana", "Cherry"],
+        value=SearchState.query,
+        on_change=SearchState.set_query,
+    )
+```
+
+### Button
+
+```python
+def button_example():
+    return mn.button(
+        "Click me",
+        variant="gradient",
+        gradient={"from": "blue", "to": "cyan"},
+        size="lg",
+        on_click=State.handle_click,
+    )
+```
+
+### Combobox
+
+```python
+def combobox_example():
+    return mn.combobox(
+        label="Select option",
+        data=[
+            {"value": "react", "label": "React"},
+            {"value": "vue", "label": "Vue"},
+        ],
+        on_option_submit=State.set_selected,
+    )
+```
+
+### Input
+
+```python
+def input_example():
+    return mn.input(
+        placeholder="Enter text...",
+        left_section=rx.icon("search"),
+        right_section=rx.button("Clear"),
+    )
+```
+
+### JSON Input
+
+```python
+class JsonState(rx.State):
+    data: str = '{"name": "example"}'
+
+def json_input_example():
+    return mn.json_input(
+        label="JSON Data",
+        value=JsonState.data,
+        on_change=JsonState.set_data,
+        format_on_blur=True,
+    )
+```
+
+### Nav Link
+
+```python
+def nav_link_example():
+    return mn.nav_link(
+        label="Dashboard",
+        left_section=rx.icon("home"),
+        active=True,
+        on_click=State.navigate_to_dashboard,
+    )
+```
+
+### Number Formatter
+
+```python
+class PriceState(rx.State):
+    amount: float = 1234.56
+
+def number_formatter_example():
+    return mn.number_formatter(
+        value=PriceState.amount,
+        prefix="$",
+        thousand_separator=",",
+        decimal_scale=2,
+    )
+```
+
+### Select
+
+```python
+class SelectState(rx.State):
+    choice: str = ""
+
+def select_example():
+    return mn.select(
+        label="Choose one",
+        data=["Option 1", "Option 2", "Option 3"],
+        value=SelectState.choice,
+        on_change=SelectState.set_choice,
+    )
+```
+
 ## 📚 Documentation
 
 Comprehensive guides are available in the [`docs/`](docs/) directory:
@@ -341,6 +473,76 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🔗 Links
 
+## Table component
+
+The `table` wrapper provides a flexible data table that mirrors Mantine's
+compound component API. Use the `mn.table` namespace to access the main
+component and its parts: `mn.table.thead`, `mn.table.tbody`, `mn.table.tr`,
+`mn.table.th`, `mn.table.td`, `mn.table.tfoot`, `mn.table.caption`, and
+`mn.table.scroll_container`.
+
+Simple examples
+
+Basic table with head and body:
+
+```python
+def simple_table():
+    return mn.table(
+        children=(
+            mn.table.thead(
+                mn.table.tr(mn.table.th("ID"), mn.table.th("Name"))
+            ),
+            mn.table.tbody(
+                mn.table.tr(mn.table.td(1), mn.table.td("Alice")),
+                mn.table.tr(mn.table.td(2), mn.table.td("Bob")),
+            ),
+        ),
+    )
+```
+
+Using `Table.ScrollContainer` for horizontal scrolling:
+
+```python
+def scroll_table():
+    return mn.table.scroll_container(
+        mn.table(
+            children=(
+                mn.table.thead(mn.table.tr(*[mn.table.th(f"Col {i}") for i in range(1, 12)])),
+                mn.table.tbody(
+                    *[
+                        mn.table.tr(*[mn.table.td(f"r{r}c{c}") for c in range(1, 12)])
+                        for r in range(1, 6)
+                    ]
+                ),
+            ),
+            # Accepts props like sticky_header, sticky_header_offset, with_table_border
+            sticky_header=True,
+        )
+    )
+```
+
+Caption and footer example:
+
+```python
+def captioned_table():
+    return mn.table(
+        children=(
+            mn.table.caption("Sample data"),
+            mn.table.thead(mn.table.tr(mn.table.th("Key"), mn.table.th("Value"))),
+            mn.table.tbody(mn.table.tr(mn.table.td("Name"), mn.table.td("Example"))),
+            mn.table.tfoot(mn.table.tr(mn.table.th("Total"), mn.table.td("1"))),
+        ),
+    )
+```
+
+Notes
+
+- The `data` prop is supported for rendering simple head/body arrays directly.
+- Use `sticky_header` and `sticky_header_offset` to keep headers visible when
+  scrolling.
+- You can style parts via `styles` / `sx` props or pass attributes using
+  Mantine's `attributes` pattern.
+
 ## 🙏 Acknowledgments
 
-**Built with ❤️ for the Reflex community**
+Built with ❤️ for the Reflex community
