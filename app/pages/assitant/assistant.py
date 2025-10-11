@@ -3,33 +3,33 @@
 import logging
 
 import reflex as rx
-from knai_assistant import ASSISTANT_ROLE
-from knai_assistant.backend.model_manager import ModelManager
-from knai_assistant.backend.models import AIModel
-from knai_assistant.backend.processors.ai_models import (
+from knai_common import styles
+
+from manakit_assistant import ASSISTANT_ROLE
+from manakit_assistant.backend.model_manager import ModelManager
+from manakit_assistant.backend.models import AIModel
+from manakit_assistant.backend.processors.ai_models import (
     DEFAULT,
     GPT_5,
     GPT_5_MINI,
     O4_MINI,
     GPT_4o,
 )
-from knai_assistant.backend.processors.knowledgeai_processor import (
+from manakit_assistant.backend.processors.knowledgeai_processor import (
     KnowledgeAIOpenAIProcessor,
 )
-from knai_assistant.backend.processors.lorem_ipsum_processor import (
+from manakit_assistant.backend.processors.lorem_ipsum_processor import (
     LoremIpsumProcessor,
 )
-from knai_assistant.backend.processors.openai_responses_processor import (
+from manakit_assistant.backend.processors.openai_responses_processor import (
     OpenAIResponsesProcessor,
 )
-from knai_assistant.components import (
+from manakit_assistant.components import (
     Suggestion,
 )
-from knai_assistant.components.thread import Assistant
-from knai_assistant.configuration import AssistantConfig
-from knai_assistant.state.thread_state import ThreadListState, ThreadState
-from knai_common import styles
-
+from manakit_assistant.components.thread import Assistant
+from manakit_assistant.configuration import AssistantConfig
+from manakit_assistant.state.thread_state import ThreadListState, ThreadState
 from manakit_commons.registry import service_registry
 from manakit_ui.authentication.components import (
     default_fallback,

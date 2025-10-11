@@ -6,8 +6,9 @@ from enum import StrEnum
 from typing import Any
 
 import reflex as rx
-from knai_assistant.backend.model_manager import ModelManager
-from knai_assistant.backend.models import (
+
+from manakit_assistant.backend.model_manager import ModelManager
+from manakit_assistant.backend.models import (
     AIModel,
     Chunk,
     ChunkType,
@@ -17,7 +18,7 @@ from knai_assistant.backend.models import (
     ThreadModel,
     ThreadStatus,
 )
-from knai_assistant.backend.repositories import MCPServerRepository
+from manakit_assistant.backend.repositories import MCPServerRepository
 
 logger = logging.getLogger(__name__)
 

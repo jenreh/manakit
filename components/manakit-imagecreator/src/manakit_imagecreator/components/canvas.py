@@ -1,7 +1,7 @@
 import reflex as rx
 
-from manakit_imagegen.components.react_zoom import image_zoom
-from manakit_imagegen.states import CopyLocalState, GeneratorState, copy_script
+from manakit_imagecreator.components.react_zoom import image_zoom
+from manakit_imagecreator.states import CopyLocalState, GeneratorState, copy_script
 
 image_props = {
     "decoding": "auto",

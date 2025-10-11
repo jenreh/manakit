@@ -9,7 +9,7 @@ import anyio  # Added import
 from pydantic import BaseModel
 
 from manakit_commons.registry import service_registry
-from manakit_imagegen.configuration import ImageGeneratorConfig
+from manakit_imagecreator.configuration import ImageGeneratorConfig
 
 logger = logging.getLogger(__name__)
 TMP_PATH: Final[str] = service_registry().get(ImageGeneratorConfig).tmp_dir

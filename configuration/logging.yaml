@@ -38,7 +38,7 @@ loggers:
     level: DEBUG
     handlers: [console]
     propagate: 0
-  manakit_imagegen:
+  manakit_imagecreator:
     level: DEBUG
     handlers: [console]
     propagate: 0

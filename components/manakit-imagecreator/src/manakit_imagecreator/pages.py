@@ -1,14 +1,14 @@
 import reflex as rx
 
-from manakit_imagegen.components.canvas import (
+from manakit_imagecreator.components.canvas import (
     button_props,
     copy_button,
     download_button,
     image_list,
     image_ui,
 )
-from manakit_imagegen.components.sidebar import sidebar
-from manakit_imagegen.states import CopyLocalState
+from manakit_imagecreator.components.sidebar import sidebar
+from manakit_imagecreator.states import CopyLocalState
 
 
 def image_generator_page() -> rx.Component:

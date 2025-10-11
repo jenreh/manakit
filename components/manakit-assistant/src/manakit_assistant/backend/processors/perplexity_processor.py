@@ -4,8 +4,8 @@ import os
 from collections.abc import AsyncGenerator
 from typing import Any
 
-from knai_assistant.backend.models import AIModel, Chunk, MCPServer, Message
-from knai_assistant.backend.processors.openai_chat_completion_processor import (
+from manakit_assistant.backend.models import AIModel, Chunk, MCPServer, Message
+from manakit_assistant.backend.processors.openai_chat_completion_processor import (
     OpenAIChatCompletionsProcessor,
 )
 

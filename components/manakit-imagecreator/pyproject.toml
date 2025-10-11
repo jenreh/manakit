@@ -1,5 +1,5 @@
 [project]
-name = "manakit-imagegen"
+name = "manakit-imagecreator"
 version = "0.21.0"
 description = "Add your description here"
 readme = "README.md"
@@ -9,7 +9,6 @@ dependencies = [
     "google-genai>=1.26.0",
     "httpx>=0.28.1",
     "manakit-commons",
-    "manakit-ui",
     "openai>=2.3.0",
 ]
 
@@ -18,10 +17,9 @@ where = ["src"]
 
 [tool.uv.sources]
 manakit-commons = { workspace = true }
-manakit-ui = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/manakit_imagegen"]
+packages = ["src/manakit_imagecreator"]
 
 [build-system]
 requires = ["hatchling"]

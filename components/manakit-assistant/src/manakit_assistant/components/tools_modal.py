@@ -1,8 +1,9 @@
 """Component for MCP server selection modal."""
 
 import reflex as rx
-from knai_assistant.backend.models import MCPServer
-from knai_assistant.state.thread_state import ThreadState
+
+from manakit_assistant.backend.models import MCPServer
+from manakit_assistant.state.thread_state import ThreadState
 
 
 def render_mcp_server_item(server: MCPServer) -> rx.Component:

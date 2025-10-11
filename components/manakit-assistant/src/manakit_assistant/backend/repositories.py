@@ -3,7 +3,8 @@
 import logging
 
 import reflex as rx
-from knai_assistant.backend.models import MCPServer
+
+from manakit_assistant.backend.models import MCPServer
 
 logger = logging.getLogger(__name__)
 

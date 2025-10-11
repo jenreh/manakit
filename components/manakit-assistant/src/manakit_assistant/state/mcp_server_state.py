@@ -6,15 +6,16 @@ from collections.abc import AsyncGenerator
 from typing import Any
 
 import reflex as rx
-from knai_assistant.backend.models import MCPServer
-from knai_assistant.backend.repositories import (
+
+from manakit_assistant.backend.models import MCPServer
+from manakit_assistant.backend.repositories import (
     MCPServerRepository,
 )
 
 logger = logging.getLogger(__name__)
 
 
-class MCPServerState(rx.State):
+class MCPServersState(rx.State):
     """State class for managing MCP servers."""
 
     servers: list[MCPServer] = []

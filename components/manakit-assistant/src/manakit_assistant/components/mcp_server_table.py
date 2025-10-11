@@ -1,14 +1,15 @@
 """Table component for displaying MCP servers."""
 
 import reflex as rx
-from knai_assistant.backend.models import MCPServer
-from knai_assistant.components.mcp_server_dialogs import (
+from reflex.components.radix.themes.components.table import TableRow
+
+from manakit_assistant.backend.models import MCPServer
+from manakit_assistant.components.mcp_server_dialogs import (
     add_mcp_server_button,
     delete_mcp_server_dialog,
     update_mcp_server_dialog,
 )
-from knai_assistant.state.mcp_server_state import MCPServerState
-from reflex.components.radix.themes.components.table import TableRow
+from manakit_assistant.state.mcp_server_state import MCPServersState
 
 
 def mcp_server_table_row(server: MCPServer) -> TableRow:
@@ -66,10 +67,10 @@ def mcp_servers_table() -> rx.Fragment:
                     rx.table.column_header_cell("", width="140px"),
                 ),
             ),
-            rx.table.body(rx.foreach(MCPServerState.servers, mcp_server_table_row)),
+            rx.table.body(rx.foreach(MCPServersState.servers, mcp_server_table_row)),
             size="3",
             width="100%",
             table_layout="fixed",
-            on_mount=MCPServerState.load_servers_with_toast,
+            on_mount=MCPServersState.load_servers_with_toast,
         ),
     )

@@ -1,4 +1,4 @@
-profile: container
+profile: devcontainer
 
 reflex:
   deploy_url: http://localhost

@@ -2,8 +2,8 @@ import logging
 import threading
 from typing import Optional
 
-from knai_assistant.backend.models import AIModel
-from knai_assistant.backend.processor import Processor
+from manakit_assistant.backend.models import AIModel
+from manakit_assistant.backend.processor import Processor
 
 logger = logging.getLogger(__name__)
 

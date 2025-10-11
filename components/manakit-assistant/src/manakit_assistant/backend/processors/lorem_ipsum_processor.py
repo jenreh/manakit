@@ -7,8 +7,14 @@ import logging
 import random
 from collections.abc import AsyncGenerator
 
-from knai_assistant.backend.models import AIModel, Chunk, ChunkType, MCPServer, Message
-from knai_assistant.backend.processor import Processor
+from manakit_assistant.backend.models import (
+    AIModel,
+    Chunk,
+    ChunkType,
+    MCPServer,
+    Message,
+)
+from manakit_assistant.backend.processor import Processor
 
 logger = logging.getLogger(__name__)
 

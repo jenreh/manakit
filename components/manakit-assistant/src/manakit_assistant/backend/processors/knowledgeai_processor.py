@@ -3,7 +3,10 @@ import logging
 from collections.abc import AsyncGenerator
 from typing import Any
 
-from knai_assistant.backend.models import (
+from openai import AsyncOpenAI, AsyncStream
+from openai.types.chat import ChatCompletionMessageParam
+
+from manakit_assistant.backend.models import (
     AIModel,
     Chunk,
     ChunkType,
@@ -11,9 +14,7 @@ from knai_assistant.backend.models import (
     Message,
     MessageType,
 )
-from knai_assistant.backend.processor import Processor
-from openai import AsyncOpenAI, AsyncStream
-from openai.types.chat import ChatCompletionMessageParam
+from manakit_assistant.backend.processor import Processor
 
 logger = logging.getLogger(__name__)
 

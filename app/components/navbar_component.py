@@ -1,13 +1,28 @@
 import logging
 
 import reflex as rx
-from knai_common import styles
 
-from manakit_ui.authentication.components import requires_admin
-from manakit_ui.authentication.states import LoginState
 from manakit_ui.global_states import LoadingState
+from manakit_user.authentication.components import requires_admin
+from manakit_user.authentication.states import LoginState
 
 logger = logging.getLogger(__name__)
+
+accent_bg_color = rx.color("accent", 2)
+gray_bg_color = rx.color("gray", 3)
+
+accent_color = rx.color("accent", 3)
+text_color = rx.color("gray", 11)
+accent_text_color = rx.color("accent", 9)
+
+border = f"1px solid {rx.color('gray', 5)}"
+border_radius = "var(--radius-2)"
+
+box_shadow_right_light = "inset -5px -5px 15px -5px rgba(0, 0, 0, 0.1)"
+box_shadow_right_dark = "inset -5px -5px 15px -5px rgba(0.9, 0.9, 0.9, 0.1)"
+
+sidebar_width = ["100%", "100%", "100%", "375px", "450px"]
+
 
 sub_heading_styles = {
     "text_transform": "uppercase",
@@ -38,21 +53,21 @@ def admin_sidebar_item(
             rx.text(label, size="2", weight="regular"),
             color=rx.cond(
                 active,
-                styles.accent_text_color,
-                styles.text_color,
+                accent_text_color,
+                text_color,
             ),
-            background_color=rx.cond(active, styles.accent_bg_color, "transparent"),
+            background_color=rx.cond(active, accent_bg_color, "transparent"),
             style={
                 "_hover": {
                     "background_color": rx.cond(
                         active,
-                        styles.accent_bg_color,
-                        styles.gray_bg_color,
+                        accent_bg_color,
+                        gray_bg_color,
                     ),
                     "color": rx.cond(
                         active,
-                        styles.accent_text_color,
-                        styles.text_color,
+                        accent_text_color,
+                        text_color,
                     ),
                     "opacity": "1",
                 },
@@ -63,7 +78,7 @@ def admin_sidebar_item(
                 ),
             },
             align="center",
-            border_radius=styles.border_radius,
+            border_radius=border_radius,
             width="100%",
             padding="3px",
         ),
@@ -87,21 +102,21 @@ def sidebar_item(label: str, icon: str, url: str) -> rx.Component:
             rx.text(label, size="3", weight="regular"),
             color=rx.cond(
                 active,
-                styles.accent_text_color,
-                styles.text_color,
+                accent_text_color,
+                text_color,
             ),
-            background_color=rx.cond(active, styles.accent_bg_color, "transparent"),
+            background_color=rx.cond(active, accent_bg_color, "transparent"),
             style={
                 "_hover": {
                     "background_color": rx.cond(
                         active,
-                        styles.accent_bg_color,
-                        styles.gray_bg_color,
+                        accent_bg_color,
+                        gray_bg_color,
                     ),
                     "color": rx.cond(
                         active,
-                        styles.accent_text_color,
-                        styles.text_color,
+                        accent_text_color,
+                        text_color,
                     ),
                     "opacity": "1",
                 },
@@ -112,7 +127,7 @@ def sidebar_item(label: str, icon: str, url: str) -> rx.Component:
                 ),
             },
             align="center",
-            border_radius=styles.border_radius,
+            border_radius=border_radius,
             width="100%",
             spacing="2",
             padding="0.35em",
@@ -141,21 +156,21 @@ def sidebar_icon_button(
                 rx.icon(icon, size=17),
                 color=rx.cond(
                     active,
-                    styles.accent_text_color,
-                    styles.text_color,
+                    accent_text_color,
+                    text_color,
                 ),
-                background_color=rx.cond(active, styles.accent_bg_color, "transparent"),
+                background_color=rx.cond(active, accent_bg_color, "transparent"),
                 style={
                     "_hover": {
                         "background_color": rx.cond(
                             active,
-                            styles.accent_bg_color,
-                            styles.gray_bg_color,
+                            accent_bg_color,
+                            gray_bg_color,
                         ),
                         "color": rx.cond(
                             active,
-                            styles.accent_text_color,
-                            styles.text_color,
+                            accent_text_color,
+                            text_color,
                         ),
                         "opacity": "1",
                     },
@@ -182,11 +197,11 @@ def logout_button() -> rx.Component:
         rx.tooltip(
             rx.hstack(
                 rx.icon("log-out", size=18),
-                color=styles.text_color,
+                color=text_color,
                 style={
                     "_hover": {
-                        "background_color": styles.gray_bg_color,
-                        "color": styles.text_color,
+                        "background_color": gray_bg_color,
+                        "color": text_color,
                         "opacity": "1",
                     },
                     "opacity": "0.95",
@@ -279,7 +294,7 @@ def navbar(
             height="100dvh",
             padding="1em",
         ),
-        max_width=styles.sidebar_width,
+        max_width=sidebar_width,
         width="100%",
         height="100%",
         position="sticky",
@@ -289,10 +304,10 @@ def navbar(
         flex="1",
         spacing="0",
         bg=rx.color("gray", 2),
-        border_right=styles.border,
+        border_right=border,
         box_shadow=rx.color_mode_cond(
-            light=styles.box_shadow_right_light,
-            dark=styles.box_shadow_right_dark,
+            light=box_shadow_right_light,
+            dark=box_shadow_right_dark,
         ),
         **kwargs,
     )

@@ -6,7 +6,7 @@ import abc
 import logging
 from collections.abc import AsyncGenerator
 
-from knai_assistant.backend.models import AIModel, Chunk, MCPServer, Message
+from manakit_assistant.backend.models import AIModel, Chunk, MCPServer, Message
 
 logger = logging.getLogger(__name__)
 

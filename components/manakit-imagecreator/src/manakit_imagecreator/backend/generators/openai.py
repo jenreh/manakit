@@ -4,7 +4,7 @@ from typing import Final
 
 from openai import AsyncAzureOpenAI
 
-from manakit_imagegen.backend.models import (
+from manakit_imagecreator.backend.models import (
     GenerationInput,
     ImageGenerator,
     ImageGeneratorResponse,

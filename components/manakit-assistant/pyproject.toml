@@ -7,7 +7,6 @@ authors = [{ name = "Jens Rehpöhler" }]
 requires-python = ">=3.13"
 dependencies = [
     "manakit-commons",
-    "manakit-ui",
     "openai>=2.3.0",
 ]
 
@@ -16,7 +15,6 @@ where = ["src"]
 
 [tool.uv.sources]
 manakit-commons = { workspace = true }
-manakit-ui = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/manakit_assistant"]

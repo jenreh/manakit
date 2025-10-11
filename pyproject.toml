@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "manakit-assistant",
     "manakit-commons",
-    "manakit-imagegen",
+    "manakit-imagecreator",
     "manakit-mantine",
     "manakit-ui",
     "manakit-user",
@@ -21,7 +21,7 @@ dev = ["pytest==8.4.1", "ruff==0.12.4", "bump-my-version>=1.2.1", "detect-secret
 where = [
     "components/manakit-assistant/src",
     "components/manakit-commons/src",
-    "components/manakit-imagegen/src",
+    "components/manakit-imagecreator/src",
     "components/manakit-mantine/src",
     "components/manakit-ui/src",
     "components/manakit-user/src",
@@ -32,7 +32,7 @@ packages = [
     "app",
     "manakit_assistant",
     "manakit_commons",
-    "manakit_imagegen",
+    "manakit_imagecreator",
     "manakit_mantine",
     "manakit_ui",
     "manakit_user",
@@ -48,7 +48,7 @@ exclude = ["**/__pycache__"]
 [tool.uv.sources]
 manakit-assistant = { workspace = true }
 manakit-commons = { workspace = true }
-manakit-imagegen = { workspace = true }
+manakit-imagecreator = { workspace = true }
 manakit-mantine = { workspace = true }
 manakit-ui = { workspace = true }
 manakit-user = { workspace = true }

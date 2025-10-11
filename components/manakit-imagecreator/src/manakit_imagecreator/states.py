@@ -6,15 +6,15 @@ import httpx
 import reflex as rx
 from reflex.event import EventSpec
 
-from manakit_imagegen.backend.generator_registry import generator_registry
-from manakit_imagegen.backend.models import (
+from manakit_imagecreator.backend.generator_registry import generator_registry
+from manakit_imagecreator.backend.models import (
     GenerationInput,
     ImageGenerator,
     ImageGeneratorResponse,
     ImageResponseState,
 )
-from manakit_imagegen.components.styles_preset import styles_preset
-from manakit_imagegen.configuration import prompt_list
+from manakit_imagecreator.components.styles_preset import styles_preset
+from manakit_imagecreator.configuration import prompt_list
 
 DEFAULT_IMAGE = "/img/default.jpg"
 API_TOKEN_ENV_VAR = "TOGETHER_API_KEY"  # noqa

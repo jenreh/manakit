@@ -7,14 +7,15 @@ from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator
 from typing import Any
 
-from knai_assistant.backend.models import (
+from openai import AsyncAzureOpenAI, AsyncOpenAI
+
+from manakit_assistant.backend.models import (
     AIModel,
     Chunk,
     MCPServer,
     Message,
 )
-from knai_assistant.backend.processor import Processor
-from openai import AsyncAzureOpenAI, AsyncOpenAI
+from manakit_assistant.backend.processor import Processor
 
 logger = logging.getLogger(__name__)
 

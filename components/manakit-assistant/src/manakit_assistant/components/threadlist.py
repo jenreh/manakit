@@ -1,6 +1,6 @@
 import reflex as rx
-from knai_assistant.state.thread_state import ThreadListState, ThreadModel
-from knai_common import styles
+
+from manakit_assistant.state.thread_state import ThreadListState, ThreadModel
 
 
 class ThreadList:
@@ -77,7 +77,7 @@ class ThreadList:
             ),
             border=rx.cond(
                 thread.active,
-                styles.border,
+                f"1px solid {rx.color('gray', 5)}",
                 "0",
             ),
             style={

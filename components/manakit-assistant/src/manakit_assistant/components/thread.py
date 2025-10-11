@@ -1,17 +1,17 @@
 from collections.abc import Callable
 
 import reflex as rx
-from knai_assistant.backend.models import Suggestion
-from knai_assistant.components.composer import ComposerComponent
-from knai_assistant.components.message import MessageComponent
-from knai_assistant.components.threadlist import ThreadList
-from knai_assistant.state.thread_state import (
+
+from manakit_assistant.backend.models import Suggestion
+from manakit_assistant.components.composer import ComposerComponent
+from manakit_assistant.components.message import MessageComponent
+from manakit_assistant.components.threadlist import ThreadList
+from manakit_assistant.state.thread_state import (
     Message,
     MessageType,
     ThreadListState,
     ThreadState,
 )
-from knai_common import styles
 
 
 class Assistant:
@@ -183,8 +183,8 @@ class Assistant:
                     dark=f"1px solid {rx.color('white', 7, alpha=True)}",
                 ),
                 box_shadow=rx.color_mode_cond(
-                    light=styles.box_shadow_light,
-                    dark=styles.box_shadow_dark,
+                    light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
+                    dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
                 ),
                 border_radius="10px",
                 background_color=rx.color_mode_cond(

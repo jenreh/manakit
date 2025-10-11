@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "sys_platform == 'darwin'",
@@ -12,7 +12,7 @@ members = [
     "manakit",
     "manakit-assistant",
     "manakit-commons",
-    "manakit-imagegen",
+    "manakit-imagecreator",
     "manakit-mantine",
     "manakit-ui",
     "manakit-user",
@@ -569,7 +569,7 @@ source = { editable = "." }
 dependencies = [
     { name = "manakit-assistant" },
     { name = "manakit-commons" },
-    { name = "manakit-imagegen" },
+    { name = "manakit-imagecreator" },
     { name = "manakit-mantine" },
     { name = "manakit-ui" },
     { name = "manakit-user" },
@@ -588,7 +588,7 @@ dev = [
 requires-dist = [
     { name = "manakit-assistant", editable = "components/manakit-assistant" },
     { name = "manakit-commons", editable = "components/manakit-commons" },
-    { name = "manakit-imagegen", editable = "components/manakit-imagegen" },
+    { name = "manakit-imagecreator", editable = "components/manakit-imagecreator" },
     { name = "manakit-mantine", editable = "components/manakit-mantine" },
     { name = "manakit-ui", editable = "components/manakit-ui" },
     { name = "manakit-user", editable = "components/manakit-user" },
@@ -609,14 +609,12 @@ version = "0.21.0"
 source = { editable = "components/manakit-assistant" }
 dependencies = [
     { name = "manakit-commons" },
-    { name = "manakit-ui" },
     { name = "openai" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "manakit-commons", editable = "components/manakit-commons" },
-    { name = "manakit-ui", editable = "components/manakit-ui" },
     { name = "openai", specifier = ">=2.3.0" },
 ]
 
@@ -653,14 +651,13 @@ requires-dist = [
 provides-extras = ["azure"]
 
 [[package]]
-name = "manakit-imagegen"
+name = "manakit-imagecreator"
 version = "0.21.0"
-source = { editable = "components/manakit-imagegen" }
+source = { editable = "components/manakit-imagecreator" }
 dependencies = [
     { name = "google-genai" },
     { name = "httpx" },
     { name = "manakit-commons" },
-    { name = "manakit-ui" },
     { name = "openai" },
 ]
 
@@ -669,7 +666,6 @@ requires-dist = [
     { name = "google-genai", specifier = ">=1.26.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "manakit-commons", editable = "components/manakit-commons" },
-    { name = "manakit-ui", editable = "components/manakit-ui" },
     { name = "openai", specifier = ">=2.3.0" },
 ]
 

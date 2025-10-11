@@ -3,7 +3,7 @@ import logging
 from collections.abc import AsyncGenerator
 from typing import Any
 
-from knai_assistant.backend.models import (
+from manakit_assistant.backend.models import (
     AIModel,
     Chunk,
     ChunkType,
@@ -11,7 +11,7 @@ from knai_assistant.backend.models import (
     Message,
     MessageType,
 )
-from knai_assistant.backend.processors.openai_base import BaseOpenAIProcessor
+from manakit_assistant.backend.processors.openai_base import BaseOpenAIProcessor
 
 logger = logging.getLogger(__name__)
 

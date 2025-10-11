@@ -3,7 +3,7 @@ import logging
 
 import httpx
 
-from manakit_imagegen.backend.models import (
+from manakit_imagecreator.backend.models import (
     GenerationInput,
     ImageGenerator,
     ImageGeneratorResponse,

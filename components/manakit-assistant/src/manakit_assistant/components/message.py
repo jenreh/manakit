@@ -1,5 +1,7 @@
 import reflex as rx
-from knai_assistant.state.thread_state import (
+
+import manakit_ui.components as knai
+from manakit_assistant.state.thread_state import (
     Message,
     MessageType,
     Thinking,
@@ -7,9 +9,6 @@ from knai_assistant.state.thread_state import (
     ThinkingType,
     ThreadState,
 )
-from knai_common import styles
-
-import manakit_ui.components as knai
 
 message_styles = {
     "spacing": "4",
@@ -186,12 +185,12 @@ class MessageComponent:
                 radius="full",
                 padding="10px",
                 size="3",
-                border=styles.border,
+                border=f"1px solid {rx.color('gray', 5)}",
                 color=rx.color("gray", 9),
                 background_color=rx.color("gray", 1),
                 box_shadow=rx.color_mode_cond(
-                    light=styles.box_shadow_light,
-                    dark=styles.box_shadow_dark,
+                    light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
+                    dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
                 ),
             ),
             rx.script(src="/js/bottom_scroll.js"),

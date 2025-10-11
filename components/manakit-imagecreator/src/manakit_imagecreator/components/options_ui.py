@@ -1,6 +1,6 @@
 import reflex as rx
 
-from manakit_imagegen.states import GeneratorState, OptionsState
+from manakit_imagecreator.states import GeneratorState, OptionsState
 
 
 def prompt_input() -> rx.Component:

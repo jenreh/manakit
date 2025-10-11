@@ -1,6 +1,6 @@
 from typing import Final
 
-from knai_assistant.backend.models import AIModel
+from manakit_assistant.backend.models import AIModel
 
 DEFAULT: Final = AIModel(
     id="default",

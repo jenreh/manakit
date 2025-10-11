@@ -1,7 +1,7 @@
 import reflex as rx
 from reflex.components.radix.themes.layout.box import Box
 
-from manakit_imagegen.components.options_ui import (
+from manakit_imagecreator.components.options_ui import (
     advanced_options,
     enhance_prompt_checkbox,
     generate_button,

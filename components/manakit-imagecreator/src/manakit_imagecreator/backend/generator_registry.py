@@ -3,12 +3,12 @@ from typing import Final
 
 from manakit_commons.configuration.configuration import ReflexConfig
 from manakit_commons.registry import service_registry
-from manakit_imagegen.backend.generators import (
+from manakit_imagecreator.backend.generators import (
     GoogleImageGenerator,
 )
-from manakit_imagegen.backend.generators.openai import OpenAIImageGenerator
-from manakit_imagegen.backend.models import ImageGenerator
-from manakit_imagegen.configuration import ImageGeneratorConfig
+from manakit_imagecreator.backend.generators.openai import OpenAIImageGenerator
+from manakit_imagecreator.backend.models import ImageGenerator
+from manakit_imagecreator.configuration import ImageGeneratorConfig
 from rxconfig import config
 
 logger = logging.getLogger(__name__)

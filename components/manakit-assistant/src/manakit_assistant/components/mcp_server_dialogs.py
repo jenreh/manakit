@@ -3,11 +3,11 @@
 from typing import Any
 
 import reflex as rx
-from knai_assistant.backend.models import MCPServer
-from knai_assistant.state.mcp_server_state import MCPServerState
 from reflex.vars import var_operation, var_operation_return
 from reflex.vars.base import RETURN, CustomVarOperationReturn
 
+from manakit_assistant.backend.models import MCPServer
+from manakit_assistant.state.mcp_server_state import MCPServersState
 from manakit_ui.components.dialogs import (
     delete_dialog,
     dialog_buttons,
@@ -106,7 +106,7 @@ def add_mcp_server_button() -> rx.Component:
                 rx.form.root(
                     mcp_server_form_fields(),
                     dialog_buttons("MCP Server anlegen"),
-                    on_submit=MCPServerState.add_server,
+                    on_submit=MCPServersState.add_server,
                     reset_on_submit=False,
                 ),
                 width="100%",
@@ -123,7 +123,7 @@ def delete_mcp_server_dialog(server: MCPServer) -> rx.Component:
     return delete_dialog(
         title="MCP Server löschen",
         content=server.name,
-        on_click=lambda: MCPServerState.delete_server(server.id),
+        on_click=lambda: MCPServersState.delete_server(server.id),
         icon_button=True,
         size="2",
         variant="ghost",
@@ -139,7 +139,7 @@ def update_mcp_server_dialog(server: MCPServer) -> rx.Component:
                 rx.icon("square-pen", size=20),
                 size="2",
                 variant="ghost",
-                on_click=lambda: MCPServerState.get_server(server.id),
+                on_click=lambda: MCPServersState.get_server(server.id),
             ),
         ),
         rx.dialog.content(
@@ -152,7 +152,7 @@ def update_mcp_server_dialog(server: MCPServer) -> rx.Component:
                 rx.form.root(
                     mcp_server_form_fields(server),
                     dialog_buttons("MCP Server aktualisieren"),
-                    on_submit=MCPServerState.modify_server,
+                    on_submit=MCPServersState.modify_server,
                     reset_on_submit=False,
                 ),
                 width="100%",

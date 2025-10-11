@@ -1,6 +1,7 @@
 import reflex as rx
-from knai_assistant.components.tools_modal import tools_popover
-from knai_assistant.state.thread_state import AIModel, ThreadState
+
+from manakit_assistant.components.tools_modal import tools_popover
+from manakit_assistant.state.thread_state import AIModel, ThreadState
 
 
 def render_model_option(model: AIModel) -> rx.Component:

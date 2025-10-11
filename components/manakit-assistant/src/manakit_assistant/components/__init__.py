@@ -1,7 +1,7 @@
-from knai_assistant.backend.models import Suggestion
-from knai_assistant.components.thread import ComposerComponent, Assistant
-from knai_assistant.components.message import MessageComponent
-from knai_assistant.state.thread_state import (
+from manakit_assistant.backend.models import Suggestion
+from manakit_assistant.components.thread import ComposerComponent, Assistant
+from manakit_assistant.components.message import MessageComponent
+from manakit_assistant.state.thread_state import (
     Message,
     MessageType,
     ThreadModel,
@@ -10,7 +10,7 @@ from knai_assistant.state.thread_state import (
     ThreadState,
     ThreadListState,
 )
-from knai_assistant.components.mcp_server_table import mcp_servers_table
+from manakit_assistant.components.mcp_server_table import mcp_servers_table
 
 __all__ = [
     "AIModel",

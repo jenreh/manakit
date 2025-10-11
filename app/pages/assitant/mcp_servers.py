@@ -1,8 +1,8 @@
 """MCP server management page."""
 
 import reflex as rx
-from knai_assistant.components import mcp_servers_table
 
+from manakit_assistant.components import mcp_servers_table
 from manakit_ui.authentication.components import requires_admin
 from manakit_ui.authentication.templates import authenticated
 from manakit_ui.components.header import header

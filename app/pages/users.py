@@ -1,12 +1,12 @@
 import reflex as rx
 from knai_anonymizer.pages import ANONYMIZER_ROLE
-from knai_assistant import ASSISTANT_ROLE
 from knai_avvia import AVVIA_ROLES
 from knai_avvia.components.user_rights import user_rights
 from knai_hours import TEAM_MANAGER_ROLE
 from knai_nmxdia import NMXDIA_ROLES
 
-from manakit_imagegen.pages import IMAGE_GENERATOR_ROLE
+from manakit_assistant import ASSISTANT_ROLE
+from manakit_imagecreator.pages import IMAGE_GENERATOR_ROLE
 from manakit_ui.authentication.components import requires_admin
 from manakit_ui.authentication.templates import authenticated
 from manakit_ui.components.header import header
