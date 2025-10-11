@@ -2,7 +2,7 @@
 
 ## Import
 ```python
-from knowledgeai_commons_ui.components import numeric_format, pattern_format
+from manakit_ui.components import numeric_format, pattern_format
 ```
 
 ## NumericFormat - Quick Examples

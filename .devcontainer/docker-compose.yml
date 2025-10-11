@@ -1,0 +1,37 @@
+services:
+  app:
+    container_name: manakit-dev
+    image: manakit/ui-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        VARIANT: 3.13-bookworm
+    volumes:
+      - ../..:/workspaces:rw,cached
+    command: sleep infinity
+    networks:
+      - manakit-network
+
+  db:
+    container_name: manakit-db
+    image: pgvector/pgvector:pg15
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: manakit-db
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    networks:
+      - manakit-network
+
+volumes:
+  postgres-data:
+    name: manakit-postgres-data
+
+networks:
+  manakit-network:
+    driver: bridge

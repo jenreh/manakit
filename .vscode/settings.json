@@ -42,7 +42,6 @@
     },
     "python.analysis.include": [
         "components/*/src/**",
-        "knowledgeai/*/src/**"
     ],
     "python.analysis.indexing": true,
     "python.analysis.inlayHints.pytestParameters": false,
@@ -52,7 +51,6 @@
     "python.analysis.inlayHints.variableTypes": false,
     "python.autoComplete.extraPaths": [
         "components/*/src",
-        "knowledgeai/*/src",
     ],
     "python.createEnvironment.contentButton": "show",
     "python.envFile": "${workspaceFolder}/.env",

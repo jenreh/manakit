@@ -1,0 +1,84 @@
+profile: default
+
+reflex:
+  deploy_url: http://localhostx
+  frontend_port: 8080
+  backend_port: 3030
+  workers: 1
+
+app:
+  version: 0.21.0
+  name: Avvia Intelligence Admin
+  logging: logging.prod.yaml
+  environment: dev
+  backend_timeout: 180 # seconds
+
+  database:
+    username: secret:avui-db-user # pragma: allowlist secret
+    password: secret:avui-db-password # pragma: allowlist secret
+    host: secret:avui-db-host # pragma: allowlist secret
+    port: 5432
+    name: secret:avui-db-name # pragma: allowlist secret
+    encryption_key: secret:avui-db-encryption-key # pragma: allowlist secret
+    pool_size: 10 # change only when needed
+    max_overflow: 30 # change only when needed
+    echo: False # Set to True to enable SQL logging
+
+  authentication:
+    session_timeout: 25 # minutes
+    auth_token_refresh_delta: 10 # minutes
+    server_url: https://knownledgeai-admin.azurewebsites.net
+    server_port: 80
+
+    oauth_providers:
+      - provider: "github"
+        client_id: secret:avui-oauth-github-client-id # pragma: allowlist secret
+        client_secret: secret:avui-oauth-github-client-secret # pragma: allowlist secret
+        redirect_url: https://knownledgeai-admin.azurewebsites.net/oauth/github/callback
+
+  assistant:
+    avvia_server: https://aik-dev-app-web-app-azlt.azurewebsites.net
+    avvia_api_key: secret:avui-avvia-tenant-key-1
+    avvia_tenant_keys:
+      - secret:avui-avvia-tenant-key-1 # pragma: allowlist secret
+      - secret:avui-avvia-tenant-key-2 # pragma: allowlist secret
+    perplexity_api_key: secret:avui-perplexity-api-key # pragma: allowlist secret
+    openai_base_url: secret:avui-openai-api-endpoint
+    openai_api_key: secret:avui-openai-api-key # pragma: allowlist secret
+
+  confluence:
+    url: https://arvato-systems-group.atlassian.net
+    user: secret:avui-confluence-user # pragma: allowlist secret
+    user_token: secret:avui-confluence-token # pragma: allowlist secret
+    space_key: AILA
+    projects_folder_id: "1521582140"
+    poc_folder_id: "1521811537"
+
+  github_app:
+    app_id: secret:avui-github-app-id # pragma: allowlist secret
+    installation_id: secret:avui-github-installation-id # pragma: allowlist secret
+    organization: arvato-systems-aila-solutions
+
+  #  openai:
+  #    deployment: gpt-4o-mini
+  #    api_key: secret:avui-openai-api-key # pragma: allowlist secret
+  #    api_version: "2025-04-01-preview"
+  #    endpoint: secret:avui-openai-endpoint # pragma: allowlist secret
+  #    max_tokens: 1024
+
+  imagegenerator:
+    togetherai_api_key: secret:avui-togetherai-api-key # pragma: allowlist secret
+    google_api_key: secret:avui-google-api-key # pragma: allowlist secret
+    blackforestlabs_api_key: secret:avui-blackforestlabs-api-key # pragma allowlist secret
+    openai_api_key: secret:avui-openai-api-key # pragma: allowlist secret
+    openai_base_url: secret:avui-openai-api-endpoint # pragma: allowlist secret
+    tmp_dir: ./uploaded_files
+
+  markdown_converter:
+    api_endpoint: https://westeurope.api.cognitive.microsoft.com/
+    api_key: secret:avui-markdown-api-key
+    openai_api_key: secret:avui-openai-api-key # pragma: allowlist secret
+
+  anonymizer:
+    server_url: https://aik-dev-app-web-app-azlt.azurewebsites.net/
+    api_key: secret:avui-avvia-tenant-key-1
