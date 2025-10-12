@@ -14,6 +14,7 @@ dependencies = [
     "psycopg>=3.2.10",
     "psycopg-binary>=3.2.10",
     "reflex>=0.8.14.post1",
+    "reflex-enterprise>=0.3.4.post2",
 ]
 
 [dependency-groups]
