@@ -9,11 +9,10 @@ from typing import Any, Literal
 
 import reflex as rx
 
-from .base import MantineInputComponentBase
-from .combobox import Combobox
+from manakit_mantine.base import MantineInputComponentBase
 
 
-class Autocomplete(Combobox):
+class Autocomplete(MantineInputComponentBase):
     """Reflex wrapper for Mantine Autocomplete.
 
     Note: Mantine Autocomplete accepts string arrays as `data`. It does not
@@ -22,35 +21,37 @@ class Autocomplete(Combobox):
 
     tag = "Autocomplete"
 
-    auto_select_on_blur: rx.Var[bool]
-    clear_button_props: rx.Var[dict]
-    clearable: rx.Var[bool]
-    combobox_props: rx.Var[dict]
+    # Autocomplete-specific props
     data: rx.Var[list[str] | list[dict[str, Any]]]
-    default_dropdown_opened: rx.Var[bool]
-    default_value: rx.Var[list[str]]
-    disabled: rx.Var[bool]
-    dropdown_opened: rx.Var[bool]
-    size: rx.Var[Literal["xs", "sm", "md", "lg", "xl"]]
     value: rx.Var[str]
-    render_option: rx.Var[Any]
+    default_value: rx.Var[str]
+    placeholder: rx.Var[str]
+    disabled: rx.Var[bool]
+    size: rx.Var[Literal["xs", "sm", "md", "lg", "xl"]]
+    limit: rx.Var[int]
     max_dropdown_height: rx.Var[int | str]
+    dropdown_opened: rx.Var[bool]
+    default_dropdown_opened: rx.Var[bool]
+    render_option: rx.Var[Any]
+    filter: rx.Var[Any]
+    clearable: rx.Var[bool]
+    auto_select_on_blur: rx.Var[bool]
 
+    # Event handlers
+    on_change: rx.EventHandler[lambda value: [value]]
     on_dropdown_close: rx.EventHandler[rx.event.no_args_event_spec]
     on_dropdown_open: rx.EventHandler[rx.event.no_args_event_spec]
-    on_option_submit: rx.EventHandler[lambda item: [item]]
+    on_option_submit: rx.EventHandler[lambda value, option: [value, option]]
 
     _rename_props = {
         **MantineInputComponentBase._rename_props,  # noqa: SLF001
     }
 
     def get_event_triggers(self) -> dict[str, Any]:
-        def _on_change(value: rx.Var) -> list[rx.Var]:
-            return [rx.Var(f"({value} ?? '')", _var_type=str)]
-
         return {
             **super().get_event_triggers(),
-            "on_change": _on_change,
+            "on_change": lambda value: [value],
+            "on_option_submit": lambda value, option: [value, option],
         }
 
 
