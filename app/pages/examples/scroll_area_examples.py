@@ -7,9 +7,13 @@ and overflow detection.
 
 from __future__ import annotations
 
+from typing import Any
+
 import reflex as rx
 
 import manakit_mantine as mn
+
+SCROLL_VIEWPORT_ID = "custom-scroll-viewport"
 
 
 class ScrollAreaState(rx.State):
@@ -25,9 +29,32 @@ class ScrollAreaState(rx.State):
         self.overflow_state = overflow
 
     @rx.event
-    def scroll_to_top(self) -> None:
-        # This would work with viewport_ref in a real implementation
-        pass
+    def scroll_to_bottom(self) -> Any:
+        return rx.call_script(
+            f"""
+            const viewport = document.getElementById('{SCROLL_VIEWPORT_ID}');
+            if (viewport) {{
+                viewport.scrollTo({{
+                    top: viewport.scrollHeight,
+                    behavior: 'smooth'
+                }});
+            }}
+            """
+        )
+
+    @rx.event
+    def scroll_to_top(self) -> Any:
+        return rx.call_script(
+            f"""
+            const viewport = document.getElementById('{SCROLL_VIEWPORT_ID}');
+            if (viewport) {{
+                viewport.scrollTo({{
+                    top: 0,
+                    behavior: 'smooth'
+                }});
+            }}
+            """
+        )
 
 
 def scroll_area_examples() -> rx.Component:
@@ -181,6 +208,13 @@ def scroll_area_examples() -> rx.Component:
                             width="100%",
                             type="always",
                             offset_scrollbars=False,
+                            id=SCROLL_VIEWPORT_ID,
+                        ),
+                        rx.hstack(
+                            rx.button("Top", on_click=ScrollAreaState.scroll_to_top),
+                            rx.button(
+                                "Bottom", on_click=ScrollAreaState.scroll_to_bottom
+                            ),
                         ),
                         rx.text(
                             "Padding added to offset scrollbars", size="2", color="gray"
