@@ -3,21 +3,23 @@
 import logging
 
 import reflex as rx
-from examples.pages.action_icon_examples import action_icon_examples
-from examples.pages.autocomplete_examples import autocomplete_examples
-from examples.pages.button_examples import button_examples
-from examples.pages.date_input_examples import date_input_examples_page
-from examples.pages.input_examples import form_inputs_showcase
-from examples.pages.json_input_examples import json_input_examples
-from examples.pages.nav_link_examples import nav_link_examples
-from examples.pages.nprogress_examples import nprogress_examples_page
-from examples.pages.number_formatter_examples import number_formatter_examples
-from examples.pages.number_input_examples import number_input_examples_page
-from examples.pages.password_input_examples import password_input_examples_page
-from examples.pages.select_examples import select_examples
-from examples.pages.table_examples import table_examples
-from examples.pages.textarea_examples import textarea_examples_page
-from examples.pages.tiptap_examples import tiptap_page
+
+from app.pages.examples.action_icon_examples import action_icon_examples
+from app.pages.examples.autocomplete_examples import autocomplete_examples
+from app.pages.examples.button_examples import button_examples
+from app.pages.examples.date_input_examples import date_input_examples_page
+from app.pages.examples.input_examples import form_inputs_showcase
+from app.pages.examples.json_input_examples import json_input_examples
+from app.pages.examples.nav_link_examples import nav_link_examples
+from app.pages.examples.nprogress_examples import nprogress_examples_page
+from app.pages.examples.number_formatter_examples import number_formatter_examples
+from app.pages.examples.number_input_examples import number_input_examples_page
+from app.pages.examples.password_input_examples import password_input_examples_page
+from app.pages.examples.scroll_area_examples import scroll_area_examples
+from app.pages.examples.select_examples import select_examples
+from app.pages.examples.table_examples import table_examples
+from app.pages.examples.textarea_examples import textarea_examples_page
+from app.pages.examples.tiptap_examples import tiptap_page
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -62,6 +64,7 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Navigation Progress", href="/nprogress")),
                 rx.list.item(rx.link("Nav Link", href="/nav-link")),
                 rx.list.item(rx.link("Number Formatter", href="/number-formatter")),
+                rx.list.item(rx.link("ScrollArea", href="/scroll-area")),
                 rx.list.item(rx.link("Table", href="/table")),
             ),
             spacing="2",
@@ -93,3 +96,4 @@ app.add_page(
     route="/number-formatter",
 )
 app.add_page(table_examples, title="Table", route="/table")
+app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")

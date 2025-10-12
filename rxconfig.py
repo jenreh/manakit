@@ -30,4 +30,5 @@ config = rx.Config(
         # rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(),
     ],
+    disable_plugins=[rx.plugins.SitemapPlugin()],
 )

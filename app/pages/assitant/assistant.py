@@ -3,7 +3,6 @@
 import logging
 
 import reflex as rx
-from knai_common import styles
 
 from manakit_assistant import ASSISTANT_ROLE
 from manakit_assistant.backend.model_manager import ModelManager
@@ -31,12 +30,12 @@ from manakit_assistant.components.thread import Assistant
 from manakit_assistant.configuration import AssistantConfig
 from manakit_assistant.state.thread_state import ThreadListState, ThreadState
 from manakit_commons.registry import service_registry
-from manakit_ui.authentication.components import (
+from manakit_ui.components.header import header
+from manakit_user.authentication.components.components import (
     default_fallback,
     requires_role,
 )
-from manakit_ui.authentication.templates import authenticated
-from manakit_ui.components.header import header
+from manakit_user.authentication.components.templates import authenticated
 
 from app.components.navbar import app_navbar
 
@@ -142,7 +141,7 @@ def assistant_page() -> rx.Component:
                     flex_shrink=0,
                     width="248px",
                     padding="0px 12px",
-                    border_right=styles.border,
+                    border_right=f"1px solid {rx.color('gray', 5)}",
                     background_color=rx.color("gray", 1),
                 ),
                 rx.vstack(

@@ -7,7 +7,6 @@ from collections.abc import Callable
 import reflex as rx
 
 from manakit_ui.global_states import LoadingState
-from manakit_ui.styles import splash_container
 from manakit_user.authentication.states import (
     LOGIN_ROUTE,
     LoginState,
@@ -88,7 +87,7 @@ def require_login(page: rx.app.ComponentCallable) -> rx.app.ComponentCallable:
                     ),
                     width="100%",
                     height="100vh",
-                    style=splash_container,
+                    class_name="splash_container",
                 ),
             ),
         )
@@ -139,7 +138,7 @@ def default_layout(
                 page_content(),
                 width="100%",
                 height="100vh",
-                style=splash_container,
+                class_name="splash_container",
             )
 
         @rx.page(

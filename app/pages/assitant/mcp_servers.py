@@ -3,9 +3,9 @@
 import reflex as rx
 
 from manakit_assistant.components import mcp_servers_table
-from manakit_ui.authentication.components import requires_admin
-from manakit_ui.authentication.templates import authenticated
 from manakit_ui.components.header import header
+from manakit_user.authentication.components.components import requires_admin
+from manakit_user.authentication.components.templates import authenticated
 
 from app.components.navbar import app_navbar
 

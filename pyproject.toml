@@ -11,6 +11,8 @@ dependencies = [
     "manakit-mantine",
     "manakit-ui",
     "manakit-user",
+    "psycopg>=3.2.10",
+    "psycopg-binary>=3.2.10",
     "reflex>=0.8.14.post1",
 ]
 

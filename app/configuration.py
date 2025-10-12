@@ -8,7 +8,7 @@ from manakit_commons.configuration.configuration import (
 )
 from manakit_commons.registry import service_registry
 from manakit_imagecreator.configuration import ImageGeneratorConfig
-from manakit_user.authentication.configuration import AuthenticationConfiguration
+from manakit_user.configuration import AuthenticationConfiguration
 
 logger = logging.getLogger(__name__)
 
