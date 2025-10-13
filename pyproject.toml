@@ -5,9 +5,15 @@ description = "Production-ready Mantine UI components for Reflex - Demo Applicat
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "reflex>=0.8.14.post1",
+    "manakit-assistant",
+    "manakit-commons",
+    "manakit-imagecreator",
     "manakit-mantine",
-    "reflex-enterprise>=0.3.4.post2",
+    "manakit-ui",
+    "manakit-user",
+    "psycopg>=3.2.10",
+    "psycopg-binary>=3.2.10",
+    "reflex>=0.8.14.post1",
 ]
 
 [dependency-groups]
@@ -15,13 +21,23 @@ dev = ["pytest==8.4.1", "ruff==0.12.4", "bump-my-version>=1.2.1", "detect-secret
 
 [tool.setuptools.packages.find]
 where = [
+    "components/manakit-assistant/src",
+    "components/manakit-commons/src",
+    "components/manakit-imagecreator/src",
     "components/manakit-mantine/src",
+    "components/manakit-ui/src",
+    "components/manakit-user/src",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "examples",
+    "app",
+    "manakit_assistant",
+    "manakit_commons",
+    "manakit_imagecreator",
     "manakit_mantine",
+    "manakit_ui",
+    "manakit_user",
 ]
 
 [tool.uv]
@@ -32,7 +48,12 @@ members = ["components/*"]
 exclude = ["**/__pycache__"]
 
 [tool.uv.sources]
+manakit-assistant = { workspace = true }
+manakit-commons = { workspace = true }
+manakit-imagecreator = { workspace = true }
 manakit-mantine = { workspace = true }
+manakit-ui = { workspace = true }
+manakit-user = { workspace = true }
 
 [tool.bumpversion]
 current_version = "0.2.3"
@@ -129,7 +150,7 @@ exclude = ["*.pyi"]
 
 [tool.ruff.lint.isort]
 known-local-folder = ["app", "alembic"]
-known-first-party = ["knowledgeai_*", "knai_*"]
+known-first-party = ["manakit_*"]
 
 [tool.pytest.ini_options]
 cache_dir = ".cache/pytest"

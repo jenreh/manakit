@@ -1,0 +1,31 @@
+/* Tailwind directives — processed by PostCSS with tailwindcss plugin */
+@import "tailwindcss";
+
+@layer components {
+
+    /* Splash container styles for login screens */
+    .splash-container {
+        background: linear-gradient(99deg, var(--blue-4), var(--pink-3), var(--mauve-3));
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    /* Dialog styles */
+    .dialog {
+        max-width: 540px;
+        padding: 1.5em;
+        border: 2px solid var(--accent-9);
+        border-radius: 25px;
+    }
+
+    /* Form label styles */
+    .label {
+        text-align: center;
+        gap: 1em;
+        margin-bottom: 3px;
+    }
+}

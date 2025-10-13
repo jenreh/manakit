@@ -13,7 +13,7 @@ Architecture:
 Example:
     Creating a new Mantine input component:
     ```python
-    from knowledgeai_commons_ui.components.mantine_base import MantineInputComponentBase
+    from manakit_ui.components.mantine_base import MantineInputComponentBase
 
 
     class MyCustomInput(MantineInputComponentBase):

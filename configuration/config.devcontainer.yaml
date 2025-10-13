@@ -1,0 +1,32 @@
+profile: devcontainer
+
+reflex:
+  deploy_url: http://localhost
+  frontend_port: 8080
+  backend_port: 3030
+  workers: 1
+
+app:
+  environment: container
+  logging: logging.yaml
+
+  database:
+    host: db # pragma: allowlist secret
+    port: 5432
+    echo: True
+    name: manakit-db
+
+  authentication:
+    server_url: http://localhost
+    server_port: 8080
+
+    oauth_providers:
+      - provider: "github"
+        client_id: secret:mn-oauth-github-client-id # pragma: allowlist secret
+        client_secret: secret:mn-oauth-github-client-secret # pragma: allowlist secret
+        redirect_url: http://localhost:8080/oauth/github/callback
+      - provider: "azure"
+        client_id: secret:mn-oauth-azure-client-id # pragma: allowlist secret
+        client_secret: secret:mn-oauth-azure-client-secret # pragma: allowlist secret
+        tenant_id: secret:mn-oauth-azure-tenant-id # pragma: allowlist secret
+        redirect_url: http://localhost:8080/oauth/azure/callback

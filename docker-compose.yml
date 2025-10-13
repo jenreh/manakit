@@ -1,0 +1,48 @@
+services:
+  manakit-app:
+    container_name: manakit-app
+    image: manakit-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Use the docker-specific env file (contains DB connection info for compose)
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+    # Put the app into the same network as the DB so it can reach the DB at host 'db'
+    networks:
+      - manakit-network
+    # Optional explicit DB defaults (overridden by .env.docker if present)
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=manakit-db
+    ports:
+      - "3030:3030"
+      - "8080:8080"
+
+  db:
+    container_name: manakit-db
+    image: pgvector/pgvector:pg15
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: manakit-db
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    networks:
+      - manakit-network
+
+volumes:
+  postgres-data:
+    name: manakit-postgres-data
+
+networks:
+  manakit-network:
+    driver: bridge

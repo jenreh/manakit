@@ -11,7 +11,7 @@
 **ALL Mantine components MUST be wrapped in `mantine_provider`!**
 
 ```python
-from knowledgeai_commons_ui.components import mantine_provider, mantine_textarea
+from manakit_ui.components import mantine_provider, mantine_textarea
 
 def my_page():
     return mantine_provider(
@@ -27,7 +27,7 @@ def my_page():
 
 ```python
 import reflex as rx
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_provider,
     mantine_textarea,
 )
@@ -56,7 +56,7 @@ def comment_form():
 ### Import
 
 ```python
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_provider,    # Required wrapper
     mantine_textarea,    # Textarea component
 )

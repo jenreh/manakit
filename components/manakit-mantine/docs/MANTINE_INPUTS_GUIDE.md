@@ -25,7 +25,7 @@
 **ALL Mantine components MUST be wrapped in `mantine_provider`!**
 
 ```python
-from knowledgeai_commons_ui.components import mantine_provider, mantine_input
+from manakit_ui.components import mantine_provider, mantine_input
 
 def my_page():
     return mantine_provider(
@@ -39,7 +39,7 @@ def my_page():
 
 ```python
 import reflex as rx
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_provider,
     mantine_input,
     mantine_input_wrapper,
@@ -72,7 +72,7 @@ def contact_form():
 
 ```python
 # Basic inputs
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_provider,        # Required wrapper
     mantine_input,           # Base input
     mantine_input_wrapper,   # Complete form field
@@ -83,7 +83,7 @@ from knowledgeai_commons_ui.components import (
 )
 
 # Masked inputs
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_imask_input,     # Phone, credit card, date formatting
 )
 ```
@@ -672,7 +672,7 @@ mantine_input(
 
 ```python
 import reflex as rx
-from knowledgeai_commons_ui.components import (
+from manakit_ui.components import (
     mantine_provider,
     mantine_input_wrapper,
     mantine_input,
