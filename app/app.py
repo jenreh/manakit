@@ -18,7 +18,7 @@ from app.pages.examples.number_input_examples import number_input_examples_page
 from app.pages.examples.password_input_examples import password_input_examples_page
 from app.pages.examples.scroll_area_examples import scroll_area_examples
 from app.pages.examples.select_examples import select_examples
-from app.pages.examples.table_examples import table_examples
+from app.pages.examples.tags_input_examples import tags_input_examples
 from app.pages.examples.textarea_examples import textarea_examples_page
 from app.pages.examples.tiptap_examples import tiptap_page
 
@@ -50,10 +50,11 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Date Input", href="/date")),
                 rx.list.item(rx.link("Number Input", href="/number")),
                 rx.list.item(rx.link("Textarea", href="/textarea")),
+                rx.list.item(rx.link("Json Input", href="/json-input")),
                 rx.list.item(rx.link("Select", href="/select")),
                 rx.list.item(rx.link("MultiSelect", href="/multi-select")),
+                rx.list.item(rx.link("TagsInput", href="/tags-input")),
                 rx.list.item(rx.link("Autocomplete", href="/autocomplete")),
-                rx.list.item(rx.link("Json Input", href="/json-input")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
             ),
             rx.text.strong("Buttons:", size="3"),
@@ -88,6 +89,7 @@ app.add_page(nprogress_examples_page, title="Navigation Progress", route="/nprog
 app.add_page(tiptap_page, title="Rich Text Editor", route="/tiptap")
 app.add_page(select_examples, title="Select", route="/select")
 app.add_page(multi_select_examples, title="MultiSelect", route="/multi-select")
+app.add_page(tags_input_examples, title="TagsInput", route="/tags-input")
 app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
 app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
 app.add_page(button_examples, title="Button", route="/button")
@@ -98,5 +100,4 @@ app.add_page(
     title="Number Formatter",
     route="/number-formatter",
 )
-app.add_page(table_examples, title="Table", route="/table")
 app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")
