@@ -7,10 +7,10 @@ import reflex as rx
 from app.pages.examples.action_icon_examples import action_icon_examples
 from app.pages.examples.autocomplete_examples import autocomplete_examples
 from app.pages.examples.button_examples import button_examples
-from app.pages.examples.combobox_examples import combobox_examples
 from app.pages.examples.date_input_examples import date_input_examples_page
 from app.pages.examples.input_examples import form_inputs_showcase
 from app.pages.examples.json_input_examples import json_input_examples
+from app.pages.examples.multi_select_examples import multi_select_examples
 from app.pages.examples.nav_link_examples import nav_link_examples
 from app.pages.examples.nprogress_examples import nprogress_examples_page
 from app.pages.examples.number_formatter_examples import number_formatter_examples
@@ -51,7 +51,7 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Number Input", href="/number")),
                 rx.list.item(rx.link("Textarea", href="/textarea")),
                 rx.list.item(rx.link("Select", href="/select")),
-                rx.list.item(rx.link("Combobox", href="/combobox")),
+                rx.list.item(rx.link("MultiSelect", href="/multi-select")),
                 rx.list.item(rx.link("Autocomplete", href="/autocomplete")),
                 rx.list.item(rx.link("Json Input", href="/json-input")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
@@ -87,6 +87,7 @@ app.add_page(form_inputs_showcase, title="Inputs", route="/inputs")
 app.add_page(nprogress_examples_page, title="Navigation Progress", route="/nprogress")
 app.add_page(tiptap_page, title="Rich Text Editor", route="/tiptap")
 app.add_page(select_examples, title="Select", route="/select")
+app.add_page(multi_select_examples, title="MultiSelect", route="/multi-select")
 app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
 app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
 app.add_page(button_examples, title="Button", route="/button")
@@ -99,4 +100,3 @@ app.add_page(
 )
 app.add_page(table_examples, title="Table", route="/table")
 app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")
-app.add_page(combobox_examples, title="Combobox", route="/combobox")
