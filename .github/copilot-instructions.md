@@ -310,7 +310,7 @@ from mantine.my_input import MyInput, my_input
 __all__ = ["MyInput", "my_input", ...]
 ```
 
-4. **Create example page in `reflex_mantine/pages/`:**
+4. **Create example page in `app/pages/examples/`:**
 
 ```python
 import reflex as rx
@@ -333,11 +333,12 @@ def my_input_page() -> rx.Component:
     )
 ```
 
-5. **Register page in `reflex_mantine/reflex_mantine.py`:**
+5. **Register page in your application (e.g. `app/app.py`):**
 
 ```python
-from reflex_mantine.pages.my_input_examples import my_input_page
+from app.pages.examples.my_input_examples import my_input_page
 
+# Then add the page to your Reflex app:
 app.add_page(my_input_page, title="My Input", route="/myinput")
 ```
 

@@ -9,14 +9,14 @@ from typing import Any
 
 from requests_oauthlib import OAuth2Session
 
-from manakit_commons.configuration import (
+from manakit_commons.registry import service_registry
+from manakit_user.configuration import (
     AuthenticationConfiguration,
     AzureOAuthConfig,
     GithubOAuthConfig,
     OAuthConfig,
     OAuthProvider,
 )
-from manakit_commons.registry import service_registry
 
 logger = logging.getLogger(__name__)
 

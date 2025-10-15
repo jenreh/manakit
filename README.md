@@ -1,9 +1,9 @@
-# Reflex-Mantine
+# manakit
 
-[![PyPI version](https://badge.fury.io/py/reflex-mantine.svg)](https://badge.fury.io/py/reflex-mantine)
+[![PyPI version](https://badge.fury.io/py/manakit-mantine.svg)](https://badge.fury.io/py/manakit-mantine)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/reflex-mantine)
+[![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/manakit)
 
 **Production-ready Mantine UI input components for Reflex with type safety and comprehensive examples.**
 
@@ -42,8 +42,8 @@ For local development or to run the demo application:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jenreh/reflex-mantine.git
-cd reflex-mantine
+git clone https://github.com/jenreh/manakit.git
+cd manakit
 
 # Install with uv (installs workspace components)
 uv sync

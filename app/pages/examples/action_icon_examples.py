@@ -13,6 +13,9 @@ from __future__ import annotations
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class ActionIconState(rx.State):
@@ -25,6 +28,12 @@ class ActionIconState(rx.State):
         self.clicks += 1
 
 
+@navbar_layout(
+    route="/action-icon",
+    title="ActionIcon Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def action_icon_examples() -> rx.Component:
     """Page showing examples of `action_icon` usage."""
     return rx.container(

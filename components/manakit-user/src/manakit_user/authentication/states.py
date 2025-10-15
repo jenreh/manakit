@@ -12,7 +12,7 @@ import manakit_user.authentication.backend.oauthstate_repository as oauth_state_
 import manakit_user.authentication.backend.user_repository as user_repo
 from manakit_commons.database.session import get_asyncdb_session
 from manakit_commons.registry import service_registry
-from manakit_user.authentication import user_session_repository as session_repo
+from manakit_user.authentication.backend import user_session_repository as session_repo
 from manakit_user.authentication.backend.entities import OAuthStateEntity
 from manakit_user.authentication.backend.models import User
 from manakit_user.authentication.backend.oauth_service import OAuthService

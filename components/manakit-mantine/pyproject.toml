@@ -1,6 +1,6 @@
 [project]
 name = "manakit-mantine"
-version = "0.2.3"
+version = "0.3.0"
 description = "Mantine UI input components for Reflex with type safety and comprehensive examples"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -30,10 +30,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jenreh/reflex-mantine"
-Documentation = "https://github.com/jenreh/reflex-mantine/tree/main/docs"
-Repository = "https://github.com/jenreh/reflex-mantine"
-Issues = "https://github.com/jenreh/reflex-mantine/issues"
+Homepage = "https://github.com/jenreh/manakit"
+Documentation = "https://github.com/jenreh/manakit/tree/main/docs"
+Repository = "https://github.com/jenreh/manakit"
+Issues = "https://github.com/jenreh/manakit/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

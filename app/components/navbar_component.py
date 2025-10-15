@@ -3,7 +3,7 @@ import logging
 import reflex as rx
 
 from manakit_ui.global_states import LoadingState
-from manakit_user.authentication.components import requires_admin
+from manakit_user.authentication.components.components import requires_admin
 from manakit_user.authentication.states import LoginState
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ border_radius = "var(--radius-2)"
 box_shadow_right_light = "inset -5px -5px 15px -5px rgba(0, 0, 0, 0.1)"
 box_shadow_right_dark = "inset -5px -5px 15px -5px rgba(0.9, 0.9, 0.9, 0.1)"
 
-sidebar_width = ["100%", "100%", "100%", "375px", "450px"]
+sidebar_width = "375px"
 
 
 sub_heading_styles = {

@@ -4,6 +4,11 @@ import logging
 
 import reflex as rx
 
+from manakit_user.authentication.components.templates import (
+    navbar_layout,
+)
+
+from app.components.navbar import app_navbar
 from app.pages.examples.action_icon_examples import action_icon_examples
 from app.pages.examples.autocomplete_examples import autocomplete_examples
 from app.pages.examples.button_examples import button_examples
@@ -18,6 +23,7 @@ from app.pages.examples.number_input_examples import number_input_examples_page
 from app.pages.examples.password_input_examples import password_input_examples_page
 from app.pages.examples.scroll_area_examples import scroll_area_examples
 from app.pages.examples.select_examples import select_examples
+from app.pages.examples.table_examples import table_examples
 from app.pages.examples.tags_input_examples import tags_input_examples
 from app.pages.examples.textarea_examples import textarea_examples_page
 from app.pages.examples.tiptap_examples import tiptap_page
@@ -29,10 +35,15 @@ class State(rx.State):
     """The app state."""
 
 
+@navbar_layout(
+    route="/index",
+    title="Home",
+    description="A demo page for the ManaKit components",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def index() -> rx.Component:
-    # Welcome Page (Index)
     return rx.container(
-        rx.color_mode.button(position="top-right"),
         rx.vstack(
             rx.heading("Welcome to ManaKit!", size="9"),
             rx.text(
@@ -72,13 +83,13 @@ def index() -> rx.Component:
             ),
             spacing="2",
             justify="center",
-            min_height="85vh",
+            margin_top="0",
         ),
     )
 
 
 app = rx.App()
-app.add_page(index)
+# app.add_page(index)
 
 app.add_page(password_input_examples_page, title="Password Input", route="/password")
 app.add_page(date_input_examples_page, title="Date Input", route="/date")
@@ -101,3 +112,4 @@ app.add_page(
     route="/number-formatter",
 )
 app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")
+app.add_page(table_examples, title="Table", route="/table")

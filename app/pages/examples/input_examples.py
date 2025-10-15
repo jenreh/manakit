@@ -19,6 +19,9 @@ from typing import Any
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 # Constants
 MIN_USERNAME_LENGTH = 3
@@ -302,6 +305,12 @@ def input_radius_example() -> rx.Component:
 # ============================================================================
 
 
+@navbar_layout(
+    route="/inputs",
+    title="Input Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def form_inputs_showcase() -> rx.Component:
     """Complete showcase of all Mantine Input examples."""
     return rx.container(

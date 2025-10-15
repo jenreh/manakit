@@ -42,8 +42,8 @@ For local development or to run the demo application:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jenreh/reflex-mantine.git
-cd reflex-mantine
+git clone https://github.com/jenreh/manakit.git
+cd manakit
 
 # Install with uv (installs workspace components)
 uv sync
@@ -57,8 +57,6 @@ reflex run
 ---
 
 ## 🚀 Quick Start
-
-All Mantine components require wrapping in `MantineProvider` (automatically injected):
 
 ```python
 import reflex as rx
@@ -105,24 +103,40 @@ app.add_page(login_form)
 
 ## 📋 Available Components
 
+### Inputs
+
 | Component | Description | Documentation |
 |-----------|-------------|---------------|
-| **`form_input`** | Basic text input with variants (default, filled, unstyled) | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
-| **`password_input`** | Password field with visibility toggle | [Examples](/reflex_mantine/pages/password_input_examples.py) |
-| **`number_input`** | Numeric input with formatting, min/max, step controls | [Examples](/reflex_mantine/pages/number_input_examples.py) |
-| **`date_input`** | Date picker with range constraints and formatting | [Examples](/reflex_mantine/pages/date_input_examples.py) |
-| **`masked_input`** | Input masking for phone numbers, credit cards, custom patterns | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
+| **`form_input`** | Basic text input / text inputs showcase | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
+| **`input`** | Polymorphic base input element with sections, variants, sizes | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/input_examples.py) |
+| **`password_input`** | Password field with visibility toggle | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/password_input_examples.py) |
+| **`date_input`** | Date picker with range constraints and formatting | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/date_input_examples.py) |
+| **`number_input`** | Numeric input with formatting, min/max, step controls | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/number_input_examples.py) |
 | **`textarea`** | Multi-line text input with auto-resize | [Guide](docs/MANTINE_TEXTAREA_GUIDE.md) |
+| **`json_input`** | JSON input with formatting, validation, parser, pretty printing | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/json_input_examples.py) |
+| **`select`** | Dropdown select with data array, inherits input props | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/select_examples.py) |
+| **`multi_select`** | Multi-select dropdown for selecting multiple values | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/multi_select_examples.py) |
+| **`tags_input`** | Free-form tags input component | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/tags_input_examples.py) |
+| **`autocomplete`** | Autocomplete input with string data array | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/autocomplete_examples.py) |
 | **`rich_text_editor`** | WYSIWYG editor powered by Tiptap | [Guide](docs/MANTINE_TIPTAP_GUIDE.md) |
-| **`navigation_progress`** | Page loading progress indicator | [Examples](/reflex_mantine/pages/nprogress_examples.py) |
-| **`action_icon`** | Lightweight button for icons with size, variant, radius, disabled state | [Examples](/reflex_mantine/pages/action_icon_examples.py) |
-| **`autocomplete`** | Autocomplete input with string data array | [Examples](/reflex_mantine/pages/autocomplete_examples.py) |
-| **`button`** | Button with variants, sizes, gradient, loading states, sections | [Examples](/reflex_mantine/pages/button_examples.py) |
-| **`input`** | Polymorphic base input element with sections, variants, sizes | [Examples](/reflex_mantine/pages/input_examples.py) |
-| **`json_input`** | JSON input with formatting, validation, parser, pretty printing | [Examples](/reflex_mantine/pages/json_input_examples.py) |
-| **`nav_link`** | Navigation link with label, description, icons, nested links, active/disabled states | [Examples](/reflex_mantine/pages/nav_link_examples.py) |
-| **`number_formatter`** | Formats numeric input with parser/formatter, returns parsed value | [Examples](/reflex_mantine/pages/number_formatter_examples.py) |
-| **`select`** | Dropdown select with data array, inherits input props | [Examples](/reflex_mantine/pages/select_examples.py) |
+| **`masked_input`** | Input masking for phone numbers, credit cards, custom patterns | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
+
+### Buttons
+
+| Component | Description | Documentation |
+|-----------|-------------|---------------|
+| **`action_icon`** | Lightweight button for icons with size, variant, radius, disabled state | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/action_icon_examples.py) |
+| **`button`** | Button with variants, sizes, gradient, loading states, sections | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/button_examples.py) |
+
+### Others
+
+| Component | Description | Documentation |
+|-----------|-------------|---------------|
+| **`navigation_progress`** | Page loading progress indicator | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/nprogress_examples.py) |
+| **`nav_link`** | Navigation link with label, description, icons, nested links, active/disabled states | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/nav_link_examples.py) |
+| **`number_formatter`** | Formats numeric input with parser/formatter, returns parsed value | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/number_formatter_examples.py) |
+| **`scroll_area`** | Scrollable container with custom scrollbars and virtualization | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/scroll_area_examples.py) |
+| **`table`** | Table component for tabular data display | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/table_examples.py) |
 
 ### Common Props (Inherited by All Inputs)
 
@@ -398,73 +412,6 @@ def select_example():
         value=SelectState.choice,
         on_change=SelectState.set_choice,
     )
-```
-
-## 📚 Documentation
-
-Comprehensive guides are available in the [`docs/`](docs/) directory:
-
-### Live Examples
-
-Run the demo app to explore interactive examples:
-
-```bash
-# Clone the repository
-git clone https://github.com/jenreh/reflex-mantine.git
-cd reflex-mantine
-
-# Install dependencies
-uv sync
-
-# Run the demo app
-reflex run
-```
-
-Visit `http://localhost:3000` and navigate through the example pages:
-
-## 🤝 Contributing
-
-Contributions are welcome! This project follows a structured development workflow:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-component`)
-3. **Follow** the architecture guidelines in `.github/copilot-instructions.md`
-4. **Add** examples to `reflex_mantine/pages/`
-5. **Test** your changes with `reflex run`
-6. **Commit** with clear messages (`git commit -m 'Add amazing component'`)
-7. **Push** to your branch (`git push origin feature/amazing-component`)
-8. **Open** a Pull Request
-
-### Development Setup
-
-```bash
-# Clone repository
-git clone https://github.com/jenreh/reflex-mantine.git
-cd reflex-mantine
-
-# Install with uv (recommended) - automatically installs workspace components
-uv sync
-
-# Run demo app with hot reload
-reflex run
-
-# Run with debug logging
-reflex run --loglevel debug
-```
-
-### Publishing the Component
-
-The `manakit-mantine` component can be published independently:
-
-```bash
-# Navigate to component directory
-cd components/manakit-mantine
-
-# Build the package
-uv build
-
-# Publish to PyPI
-uv publish
 ```
 
 ## 📄 License

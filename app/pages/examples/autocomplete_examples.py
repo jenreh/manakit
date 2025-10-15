@@ -3,6 +3,9 @@ import json
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class AutocompleteState(rx.State):
@@ -10,8 +13,12 @@ class AutocompleteState(rx.State):
 
     selected_employee: str = ""
 
-    def handle_option_submit(self, value: str):
+    def handle_option_submit(self, value: str) -> None:
         """Handle when an option is selected."""
+        self.selected_employee = value
+
+    def set_selected_employee(self, value: str) -> None:
+        """Set the selected employee."""
         self.selected_employee = value
 
 
@@ -25,6 +32,10 @@ class LibraryState(rx.State):
         {"group": "Frontend", "items": ["React", "Vue", "Svelte"]},
         {"group": "Backend", "items": ["Django", "FastAPI", "Express"]},
     ]
+
+    def set_selected_library(self, value: str) -> None:
+        """Set the selected library."""
+        self.selected_library = value
 
 
 class AutoState(rx.State):
@@ -146,6 +157,12 @@ def render_options_example() -> rx.Component:
     )
 
 
+@navbar_layout(
+    route="/autocomplete",
+    title="Autocomplete Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def autocomplete_examples() -> rx.Component:
     # Employees dict keyed by an id; values are dicts with name/email/avatar
     return rx.container(
