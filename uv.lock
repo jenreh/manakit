@@ -564,7 +564,7 @@ wheels = [
 
 [[package]]
 name = "manakit"
-version = "0.3.0"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "manakit-assistant" },
@@ -675,7 +675,7 @@ requires-dist = [
 
 [[package]]
 name = "manakit-mantine"
-version = "0.3.0"
+version = "0.3.1"
 source = { editable = "components/manakit-mantine" }
 dependencies = [
     { name = "reflex" },
