@@ -28,6 +28,9 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
     variant,
     withTypographyStyles,
     labels,
+    // NEW: Styles and classNames for Mantine Styles API
+    styles,
+    classNames,
     // Toolbar configuration props
     controlGroups,
     showToolbar,
@@ -140,7 +143,9 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
       stickyOffset,
       editable,
       placeholder,
-      variant
+      variant,
+      styles,
+      classNames
     });
   }
 
@@ -197,15 +202,33 @@ export const RichTextEditorWrapper = memo(function Wrapper(props) {
     )
   ) : null;
 
+  // NEW: Build mantine props with styles and classNames
+  // Merge user styles with default overflow handling for content
+  const mergedStyles = {
+    ...styles,
+    content: {
+      ...(styles?.content || {}),
+      overflow: 'auto',
+    },
+  };
+
+  const mantineProps = {
+    editor: editor,
+    variant: variant,
+    withTypographyStyles: withTypographyStyles,
+    labels: labels,
+    styles: mergedStyles,
+    ...restProps,
+  };
+
+  // Add classNames if provided
+  if (classNames) {
+    mantineProps.classNames = classNames;
+  }
+
   return createElement(
     MantineRichTextEditor,
-    {
-      editor: editor,
-      variant: variant,
-      withTypographyStyles: withTypographyStyles,
-      labels: labels,
-      ...restProps,
-    },
+    mantineProps,
     toolbarContent,
     createElement(MantineRichTextEditor.Content, null)
   );

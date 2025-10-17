@@ -18,7 +18,7 @@ from reflex.components.component import NoSSRComponent
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
-from .base import MANTINE_VERSION
+from manakit_mantine.base import MANTINE_VERSION, MemoizedMantineProvider
 
 TIPTAP_REACT_VERSION: Final[str] = "^2.10.4"
 TIPTAP_VERSION: Final[str] = (
@@ -148,6 +148,16 @@ class RichTextEditor(NoSSRComponent):
         variant: Visual style - "default" or "subtle"
         with_typography_styles: Apply typography styles (default: True)
         labels: Localization labels
+        styles: CSS styles for sub-components (e.g., content area height)
+
+    Example with height control:
+        ```python
+        mn.rich_text_editor(
+            content=State.content,
+            on_update=State.update_content,
+            styles={"content": {"minHeight": "300px", "maxHeight": "600px"}},
+        )
+        ```
     """
 
     tag = "RichTextEditorWrapper"
@@ -214,6 +224,38 @@ class RichTextEditor(NoSSRComponent):
     sticky_offset: Var[str | int] = None
     """Sticky offset in pixels. Default: '0px'."""
 
+    # NEW: Styles API for customizing component appearance
+    styles: Var[dict] = None
+    """CSS styles for sub-components (Mantine Styles API).
+
+    Use to customize heights, widths, and other CSS properties of editor parts.
+
+    Sub-component keys include:
+    - 'content': Styles for the editor content area (where text is edited)
+    - 'toolbar': Styles for the toolbar
+
+    Example:
+        styles={"content": {"minHeight": "300px", "maxHeight": "600px"}}
+    """
+
+    # NEW: Class names for styling (Mantine classNames API)
+    class_names: Var[dict] = None
+    """Class names for sub-components (Mantine classNames API).
+
+    Allows you to apply custom CSS classes to editor parts.
+    """
+
+    @staticmethod
+    def _get_app_wrap_components() -> dict[tuple[int, str], rx.Component]:
+        """Ensure MantineProvider is wrapped around the entire app.
+
+        This is required for Mantine components to work properly, including
+        the RichTextEditor and all its sub-components.
+        """
+        return {
+            (44, "MantineProvider"): MemoizedMantineProvider.create(),
+        }
+
     @classmethod
     def create(
         cls, toolbar_config: EditorToolbarConfig | None = None, **props
@@ -249,6 +291,11 @@ class RichTextEditor(NoSSRComponent):
                 ]
             )
             rich_text_editor(content=State.content, toolbar_config=config)
+
+            # With custom height
+            rich_text_editor(
+                content=State.content, styles={"content": {"minHeight": "300px"}}
+            )
             ```
         """
         if toolbar_config is not None:

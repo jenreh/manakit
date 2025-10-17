@@ -103,7 +103,7 @@ def tiptap_page() -> rx.Component:
             # Simple editor with default toolbar
             rx.heading("Rich Text Editor", size="7", mt="6"),
             rx.text(
-                "Full-featured editor with pre-configured toolbar.",
+                "Full-featured editor with pre-configured toolbar, min/max height, and sticky toolbar.",
                 size="3",
                 color_scheme="gray",
                 mb="3",
@@ -114,6 +114,7 @@ def tiptap_page() -> rx.Component:
                 placeholder="Start typing...",
                 sticky_toolbar=True,
                 sticky_offset="0px",
+                styles={"content": {"minHeight": "100px", "maxHeight": "160px"}},
                 width="100%",
             ),
             rx.text(
