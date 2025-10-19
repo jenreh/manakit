@@ -29,7 +29,7 @@ from manakit_mantine.number_formatter import number_formatter
 from manakit_mantine.table import table
 from manakit_mantine.scroll_area import scroll_area
 from manakit_mantine.tags_input import tags_input
-
+from manakit_mantine.rich_select import rich_select
 
 __all__ = [
     "MANTINE_LIBARY",
@@ -52,6 +52,7 @@ __all__ = [
     "number_formatter",
     "number_input",
     "password_input",
+    "rich_select",
     "rich_text_editor",
     "scroll_area",
     "select",

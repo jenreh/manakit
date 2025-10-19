@@ -21,6 +21,7 @@ from app.pages.examples.nprogress_examples import nprogress_examples_page
 from app.pages.examples.number_formatter_examples import number_formatter_examples
 from app.pages.examples.number_input_examples import number_input_examples_page
 from app.pages.examples.password_input_examples import password_input_examples_page
+from app.pages.examples.rich_select_examples import rich_select_example
 from app.pages.examples.scroll_area_examples import scroll_area_examples
 from app.pages.examples.select_examples import select_examples
 from app.pages.examples.table_examples import table_examples
@@ -113,3 +114,4 @@ app.add_page(
 )
 app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")
 app.add_page(table_examples, title="Table", route="/table")
+app.add_page(rich_select_example, title="Rich Select", route="/rich_select")
