@@ -20,30 +20,31 @@ class RichSelect(rx.Component):
 
     # Props wie gehabt:
     value: Var[str | None]
-    on_change: EventHandler[lambda value: [value]] = None
     placeholder: Var[str] = "Pick value"
+    nothing_found: Var[str] = "Nothing found"
+
     searchable: Var[bool] = True
     clearable: Var[bool] = False
-    nothing_found: Var[str] = "Nothing found"
+
     max_dropdown_height: Var[int] = 280
-    # Kinder: RichSelectItem
 
-    def get_event_triggers(self) -> dict[str, Any]:
-        """Ensure event handlers forward Mantine values as list[Var].
+    on_change: EventHandler[lambda value: [value]]
+    """Called when value changes (receives array of selected values)."""
 
-        Mantine sends simple values (not events) for on_change/on_option_submit
-        so we must return them as a single-item list for Reflex event system.
-        """
+    on_search_change: EventHandler[lambda value: [value]]
+    """Called when search value changes."""
 
-        def _forward(value: Var) -> list[Var]:
-            return [value]
+    on_clear: EventHandler[list]
+    """Called when the clear button is clicked."""
 
-        return {
-            **super().get_event_triggers(),
-            "on_change": _forward,
-            "on_option_submit": _forward,
-            "on_search_change": _forward,
-        }
+    on_dropdown_close: EventHandler[list]
+    """Called when dropdown closes."""
+
+    on_dropdown_open: EventHandler[list]
+    """Called when dropdown opens."""
+
+    on_option_submit: EventHandler[lambda value: [value]]
+    """Called when option is submitted from dropdown."""
 
 
 class RichSelectItem(rx.Component):
@@ -54,7 +55,7 @@ class RichSelectItem(rx.Component):
 
     value: Var[str]
     option: Var[Any]
-    disabled: Var[bool] = False
+    disabled: Var[bool | None] = False
     keywords: Var[list[str] | None]
     payload: Var[dict[str, Any] | None]
 
@@ -118,7 +119,7 @@ class RichSelectNamespace(rx.ComponentNamespace):
                 keywords_var = None
 
             # Extract payload Var
-            if payload is not None:
+            if payload is not None:  # noqa: SIM108
                 payload_var = payload(row)
             else:
                 # Default payload is the row itself if it's a dict-like object

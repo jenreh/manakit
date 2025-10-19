@@ -7,7 +7,10 @@ from app.components.navbar import app_navbar
 
 
 class State(rx.State):
-    value: str | None = None
+    value: str
+
+    def set_value(self, value: str) -> None:
+        self.value = value
 
 
 def render_option(row: dict) -> rx.Component:
@@ -85,21 +88,16 @@ def rich_select_example() -> rx.Component:
                         mn.rich_select.map(
                             data,
                             renderer=render_option,
-                            # optional:
-                            # value=lambda r: f"id:{r['value']}",
-                            # disabled=lambda r: rx.cond(
-                            #     r.get("disabled", False), True, False
-                            # ),
-                            # keywords=lambda r: [r["label"], "food"],
-                            # payload=lambda r: {"id": r["value"], "label": r["label"]},
                         ),
                         value=State.value,
                         on_change=State.set_value,
                         searchable=True,
                         clearable=True,
                         placeholder="Pick value",
+                        width="100%",
                     ),
                     rx.text("Selected: ", rx.cond(State.value, State.value, "-")),
+                    width="360px",
                     height="300px",
                 ),
                 columns="2",

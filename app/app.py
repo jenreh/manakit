@@ -64,6 +64,7 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("Textarea", href="/textarea")),
                 rx.list.item(rx.link("Json Input", href="/json-input")),
                 rx.list.item(rx.link("Select", href="/select")),
+                rx.list.item(rx.link("Rich Select", href="/rich_select")),
                 rx.list.item(rx.link("MultiSelect", href="/multi-select")),
                 rx.list.item(rx.link("TagsInput", href="/tags-input")),
                 rx.list.item(rx.link("Autocomplete", href="/autocomplete")),

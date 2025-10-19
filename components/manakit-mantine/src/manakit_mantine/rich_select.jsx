@@ -1,96 +1,78 @@
-import React, { useState, useMemo } from 'react';
-import { Combobox, Group, Input, InputBase, Text, useCombobox, Tooltip } from '@mantine/core';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Combobox, Input, InputBase, Text, useCombobox, CloseButton } from '@mantine/core';
 
 export function RichSelect({
   value = null,
-  on_change,
-  on_option_submit,
-  on_search_change,
+  onChange,            // ← CamelCase
+  onOptionSubmit,      // ← CamelCase
+  onSearchChange,      // ← CamelCase
   placeholder = 'Pick value',
   searchable = true,
   clearable = false,
-  nothing_found = 'Nothing found',
+  nothing_found = 'Nothing found',     // nicht-Event-Props lassen wir wie gehabt
   max_dropdown_height = 280,
   children,
 }) {
   const [search, setSearch] = useState('');
+  const [internalValue, setInternalValue] = useState(value);
+  useEffect(() => { setInternalValue(value); }, [value]);
+
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  // Normalize children to array
   const items = React.Children.toArray(children).filter(Boolean);
 
-  console.log('RichSelect - items:', items.length);
-  console.log('RichSelect - current value:', value);
-
-  // Filter items based on search + keywords
   const filteredItems = useMemo(() => {
     if (!searchable || !search.trim()) return items;
-
-    const searchLower = search.toLowerCase();
+    const q = search.toLowerCase();
     return items.filter((item) => {
-      const itemValue = item.props.value?.toLowerCase() || '';
-      const keywords = item.props.keywords || [];
-      const keywordMatch = Array.isArray(keywords)
-        ? keywords.some((kw) => String(kw).toLowerCase().includes(searchLower))
-        : false;
-      return itemValue.includes(searchLower) || keywordMatch;
+      const v = String(item.props.value ?? '').toLowerCase();
+      const kws = Array.isArray(item.props.keywords) ? item.props.keywords : [];
+      return v.includes(q) || kws.some((kw) => String(kw).toLowerCase().includes(q));
     });
   }, [search, items, searchable]);
 
-  const selectedItem = items.find((item) => item.props.value === value);
+  const selectedValue = internalValue;
+  const selectedItem = items.find((i) => i.props.value === selectedValue);
 
   const handleSelect = (val) => {
-    console.log('handleSelect called with:', val);
-    console.log('on_change exists:', !!on_change);
-    console.log('on_option_submit exists:', !!on_option_submit);
+    if (onChange) onChange(val);         // kontrolliert: Parent-State updaten
+    else setInternalValue(val);          // unkontrolliert: interner Fallback
 
-    if (on_change) {
-      console.log('Calling on_change with:', val);
-      on_change(val);
-    }
-    if (on_option_submit) {
-      console.log('Calling on_option_submit with:', val);
-      on_option_submit(val);
-    }
+    if (onOptionSubmit) onOptionSubmit(val);
     combobox.closeDropdown();
   };
 
-  const handleSearchChange = (val) => {
+  const handleSearch = (val) => {
     setSearch(val);
     combobox.resetSelectedOption();
-    if (on_search_change) {
-      on_search_change(val);
-    }
+    if (onSearchChange) onSearchChange(val);
   };
 
   const handleClear = (e) => {
     e.stopPropagation();
-    if (on_change) {
-      on_change(null);
-    }
+    if (onChange) onChange(null);
+    else setInternalValue(null);
     setSearch('');
   };
 
-  const options = filteredItems.map((item, index) => {
-    console.log(`Option ${index}:`, item.props.value, 'disabled:', item.props.disabled);
-    return (
-      <Combobox.Option
-        value={item.props.value}
-        key={item.key || `option-${index}`}
-        disabled={item.props.disabled || false}
-      >
-        {item.props.option}
-      </Combobox.Option>
-    );
-  });
+  const options = filteredItems.map((item, index) => (
+    <Combobox.Option
+      key={item.key ?? `option-${index}`}
+      value={String(item.props.value)}         // Mantine erwartet String
+      disabled={!!item.props.disabled}
+      onClick={() => handleSelect(item.props.value)}
+    >
+      {item.props.option}
+    </Combobox.Option>
+  ));
 
   return (
     <Combobox
       store={combobox}
       withinPortal={false}
-      onOptionSubmit={handleSelect}
+      onOptionSubmit={handleSelect}            // Keyboard/Enter
     >
       <Combobox.Target>
         <InputBase
@@ -98,7 +80,7 @@ export function RichSelect({
           type="button"
           pointer
           rightSection={
-            clearable && value ? (
+            clearable && selectedValue ? (
               <CloseButton
                 size="sm"
                 onMouseDown={(event) => event.preventDefault()}
@@ -110,28 +92,25 @@ export function RichSelect({
             )
           }
           onClick={() => combobox.toggleDropdown()}
-          rightSectionPointerEvents={clearable && value ? "auto" : "none"}
+          rightSectionPointerEvents={clearable && selectedValue ? 'auto' : 'none'}
           multiline
         >
-          {selectedItem ? (
-            selectedItem.props.option
-          ) : (
+          {selectedItem ? selectedItem.props.option : (
             <Input.Placeholder>{placeholder}</Input.Placeholder>
           )}
         </InputBase>
       </Combobox.Target>
+
       <Combobox.Dropdown>
         {searchable && (
           <Combobox.Search
             value={search}
-            onChange={(e) => handleSearchChange(e.currentTarget.value)}
+            onChange={(e) => handleSearch(e.currentTarget.value)}
             placeholder="Search..."
             rightSection={null}
           />
         )}
-        <Combobox.Options
-          style={{ maxHeight: max_dropdown_height, overflowY: 'auto' }}
-        >
+        <Combobox.Options style={{ maxHeight: max_dropdown_height, overflowY: 'auto' }}>
           {options.length > 0 ? options : <Text p="xs">{nothing_found}</Text>}
         </Combobox.Options>
       </Combobox.Dropdown>
@@ -140,5 +119,6 @@ export function RichSelect({
 }
 
 export function RichSelectItem({ value, option, disabled = false, keywords, payload }) {
-  return <div>{option}</div>;
+  // reines Träger-Element
+  return <div style={{ display: 'contents' }}>{option}</div>;
 }
