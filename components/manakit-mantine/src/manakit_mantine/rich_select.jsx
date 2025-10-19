@@ -3,13 +3,16 @@ import { Combobox, Input, InputBase, Text, useCombobox, CloseButton } from '@man
 
 export function RichSelect({
   value = null,
-  onChange,            // ← CamelCase
-  onOptionSubmit,      // ← CamelCase
-  onSearchChange,      // ← CamelCase
+  onChange,
+  onOptionSubmit,
+  onSearchChange,
+  onClear,              // NEW
+  onDropdownOpen,       // NEW
+  onDropdownClose,      // NEW
   placeholder = 'Pick value',
   searchable = true,
   clearable = false,
-  nothing_found = 'Nothing found',     // nicht-Event-Props lassen wir wie gehabt
+  nothing_found = 'Nothing found',
   max_dropdown_height = 280,
   children,
 }) {
@@ -18,7 +21,12 @@ export function RichSelect({
   useEffect(() => { setInternalValue(value); }, [value]);
 
   const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
+    // Mantine ruft diese Callbacks auf, wenn der Store den Zustand ändert
+    onDropdownOpen: () => { if (onDropdownOpen) onDropdownOpen(); },   // NEW
+    onDropdownClose: () => {                                           // NEW
+      if (onDropdownClose) onDropdownClose();
+      combobox.resetSelectedOption();
+    },
   });
 
   const items = React.Children.toArray(children).filter(Boolean);
@@ -37,9 +45,7 @@ export function RichSelect({
   const selectedItem = items.find((i) => i.props.value === selectedValue);
 
   const handleSelect = (val) => {
-    if (onChange) onChange(val);         // kontrolliert: Parent-State updaten
-    else setInternalValue(val);          // unkontrolliert: interner Fallback
-
+    if (onChange) onChange(val); else setInternalValue(val);
     if (onOptionSubmit) onOptionSubmit(val);
     combobox.closeDropdown();
   };
@@ -52,15 +58,16 @@ export function RichSelect({
 
   const handleClear = (e) => {
     e.stopPropagation();
-    if (onChange) onChange(null);
-    else setInternalValue(null);
+    const prev = selectedValue;
+    if (onChange) onChange(null); else setInternalValue(null);
     setSearch('');
+    if (onClear) onClear(prev);             // NEW
   };
 
   const options = filteredItems.map((item, index) => (
     <Combobox.Option
       key={item.key ?? `option-${index}`}
-      value={String(item.props.value)}         // Mantine erwartet String
+      value={String(item.props.value)}
       disabled={!!item.props.disabled}
       onClick={() => handleSelect(item.props.value)}
     >
@@ -71,8 +78,8 @@ export function RichSelect({
   return (
     <Combobox
       store={combobox}
-      withinPortal={false}
-      onOptionSubmit={handleSelect}            // Keyboard/Enter
+
+      onOptionSubmit={handleSelect}
     >
       <Combobox.Target>
         <InputBase
@@ -119,6 +126,5 @@ export function RichSelect({
 }
 
 export function RichSelectItem({ value, option, disabled = false, keywords, payload }) {
-  // reines Träger-Element
   return <div style={{ display: 'contents' }}>{option}</div>;
 }
