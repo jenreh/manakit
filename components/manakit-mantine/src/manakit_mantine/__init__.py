@@ -29,7 +29,6 @@ from manakit_mantine.number_formatter import number_formatter
 from manakit_mantine.table import table
 from manakit_mantine.scroll_area import scroll_area
 from manakit_mantine.tags_input import tags_input
-from manakit_mantine.combobox import combobox
 
 
 __all__ = [
@@ -43,7 +42,6 @@ __all__ = [
     "action_icon",
     "autocomplete",
     "button",
-    "combobox",
     "date_input",
     "input",
     "json_input",

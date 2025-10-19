@@ -107,7 +107,7 @@ app.add_page(login_form)
 
 | Component | Description | Documentation |
 |-----------|-------------|---------------|
-| **`form_input`** | Basic text input / text inputs showcase | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
+| **`text_input`** | Basic text input / text inputs showcase | [Guide](docs/MANTINE_INPUTS_GUIDE.md) |
 | **`input`** | Polymorphic base input element with sections, variants, sizes | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/input_examples.py) |
 | **`password_input`** | Password field with visibility toggle | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/password_input_examples.py) |
 | **`date_input`** | Date picker with range constraints and formatting | [Examples](https://github.com/jenreh/manakit/tree/main/app/pages/examples/date_input_examples.py) |
