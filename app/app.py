@@ -12,6 +12,7 @@ from app.components.navbar import app_navbar
 from app.pages.examples.action_icon_examples import action_icon_examples
 from app.pages.examples.autocomplete_examples import autocomplete_examples
 from app.pages.examples.button_examples import button_examples
+from app.pages.examples.combobox_examples import combobox_examples
 from app.pages.examples.date_input_examples import date_input_examples_page
 from app.pages.examples.input_examples import form_inputs_showcase
 from app.pages.examples.json_input_examples import json_input_examples
@@ -66,6 +67,7 @@ def index() -> rx.Component:
                 rx.list.item(rx.link("MultiSelect", href="/multi-select")),
                 rx.list.item(rx.link("TagsInput", href="/tags-input")),
                 rx.list.item(rx.link("Autocomplete", href="/autocomplete")),
+                rx.list.item(rx.link("Combobox", href="/combobox")),
                 rx.list.item(rx.link("Rich Text Editor (Tiptap)", href="/tiptap")),
             ),
             rx.text.strong("Buttons:", size="3"),
@@ -102,6 +104,7 @@ app.add_page(select_examples, title="Select", route="/select")
 app.add_page(multi_select_examples, title="MultiSelect", route="/multi-select")
 app.add_page(tags_input_examples, title="TagsInput", route="/tags-input")
 app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
+app.add_page(combobox_examples, title="Combobox", route="/combobox")
 app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
 app.add_page(button_examples, title="Button", route="/button")
 app.add_page(json_input_examples, title="Json Input", route="/json-input")

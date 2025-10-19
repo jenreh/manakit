@@ -6,7 +6,7 @@ import reflex as rx
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
-from .base import MantineInputComponentBase
+from manakit_mantine.base import MantineInputComponentBase
 
 
 class Input(MantineInputComponentBase):
@@ -200,4 +200,4 @@ class InputNamespace(rx.ComponentNamespace):
     clear_button = staticmethod(InputClearButton.create)
 
 
-form_input = InputNamespace()
+text_input = InputNamespace()

@@ -6,7 +6,7 @@ from manakit_mantine.base import (
     MantineProvider,
     MemoizedMantineProvider,
 )
-from manakit_mantine.inputs import form_input
+from manakit_mantine.inputs import text_input
 from manakit_mantine.date import date_input
 from manakit_mantine.number_input import number_input
 from manakit_mantine.masked_input import masked_input
@@ -29,6 +29,7 @@ from manakit_mantine.number_formatter import number_formatter
 from manakit_mantine.table import table
 from manakit_mantine.scroll_area import scroll_area
 from manakit_mantine.tags_input import tags_input
+from manakit_mantine.combobox import combobox
 
 
 __all__ = [
@@ -42,8 +43,8 @@ __all__ = [
     "action_icon",
     "autocomplete",
     "button",
+    "combobox",
     "date_input",
-    "form_input",
     "input",
     "json_input",
     "masked_input",
@@ -58,5 +59,6 @@ __all__ = [
     "select",
     "table",
     "tags_input",
+    "text_input",
     "textarea",
 ]
