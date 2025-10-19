@@ -100,6 +100,7 @@ def rich_select_example() -> rx.Component:
                         placeholder="Pick value",
                     ),
                     rx.text("Selected: ", rx.cond(State.value, State.value, "-")),
+                    height="300px",
                 ),
                 columns="2",
                 spacing="4",

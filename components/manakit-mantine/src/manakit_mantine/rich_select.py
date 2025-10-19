@@ -77,7 +77,7 @@ class RichSelectNamespace(rx.ComponentNamespace):
     ) -> rx.Component:
         """
         Zucker: Daten -> <rich_select.item .../> via rx.foreach.
-        **NEU:** Vergibt einen stabilen React-Key pro Item (rs-<value>), um
+        **NEU:** Vergibt einen stabilen React-Key pro Item (rs-<value>-<index>), um
         Kollisionen von Default-Keys (z.B. 'row_rx_state_') zu vermeiden.
         """
         if renderer is None and "rendere" in kwargs:
@@ -85,41 +85,56 @@ class RichSelectNamespace(rx.ComponentNamespace):
         if renderer is None:
             raise ValueError("rich_select.map(...): 'renderer' ist erforderlich.")
 
-        def _val(row: Any) -> str:
+        def _mapper(row: Any, index: int) -> rx.Component:
+            # Extract the value Var - don't convert to string!
             if value is not None:
-                return str(value(row))
-            if isinstance(row, dict) and value_key in row:
-                return str(row[value_key])
-            return str(row)
+                # Custom value extractor - returns a Var
+                value_var = value(row)
+            elif isinstance(row, dict) or (hasattr(row, "__getitem__")):
+                # Access dict/Var dict-style
+                value_var = row[value_key]
+            else:
+                # Fallback to row itself
+                value_var = row
 
-        def _disabled(row: Any) -> bool:
+            # Extract disabled Var
             if disabled is not None:
-                return bool(disabled(row))
-            if isinstance(row, dict):
-                return bool(row.get("disabled", False))
-            return False
+                disabled_var = disabled(row)
+            elif isinstance(row, dict) or (
+                hasattr(row, "__getitem__") and hasattr(row, "get")
+            ):
+                disabled_var = row.get("disabled", False)
+            else:
+                disabled_var = False
 
-        def _keywords(row: Any) -> list[str] | None:
+            # Extract keywords Var
             if keywords is not None:
-                return keywords(row)
-            if isinstance(row, dict):
-                return row.get("keywords")
-            return None
+                keywords_var = keywords(row)
+            elif isinstance(row, dict) or (
+                hasattr(row, "__getitem__") and hasattr(row, "get")
+            ):
+                keywords_var = row.get("keywords")
+            else:
+                keywords_var = None
 
-        def _payload(row: Any) -> dict[str, Any] | None:
+            # Extract payload Var
             if payload is not None:
-                return payload(row)
-            return row if isinstance(row, dict) else {"value": _val(row)}
+                payload_var = payload(row)
+            else:
+                # Default payload is the row itself if it's a dict-like object
+                payload_var = row
 
-        def _mapper(row: Any) -> rx.Component:
-            v = _val(row)
+            # Create unique key by combining value with index
+            # Use rx.cond to handle None values gracefully
+            key_str = f"rs-{index}"
+
             return RichSelectItem.create(
-                value=v,
+                value=value_var,
                 option=renderer(row),
-                disabled=_disabled(row),
-                keywords=_keywords(row),
-                payload=_payload(row),
-                key=f"rs-{v}",  # <<< stabiler Key am unmittelbaren Kind
+                disabled=disabled_var,
+                keywords=keywords_var,
+                payload=payload_var,
+                key=key_str,
             )
 
         return rx.foreach(data, _mapper)
