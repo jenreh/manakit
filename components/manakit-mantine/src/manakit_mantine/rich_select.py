@@ -83,7 +83,14 @@ class RichSelect(rx.Component):
 
     # Dropdown sizing
     max_dropdown_height: Var[int] = 280
-    max_height: Var[int]
+    max_height: Var[str | int]
+    min_height: Var[str | int]
+    height: Var[str | int]
+
+    # Size and appearance
+    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
+    radius: Var[str | int]
+    disabled: Var[bool] = False
 
     # Styles API / appearance
     class_names: Var[dict[str, str] | None] = None

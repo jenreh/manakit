@@ -6,24 +6,48 @@ export function RichSelect({
   onChange,
   onOptionSubmit,
   onSearchChange,
-  onClear,              // NEW
-  onDropdownOpen,       // NEW
-  onDropdownClose,      // NEW
+  onClear,
+  onDropdownOpen,
+  onDropdownClose,
   placeholder = 'Pick value',
   searchable = true,
   clearable = false,
   nothing_found = 'Nothing found',
   max_dropdown_height = 280,
+
+  // Combobox props
+  position,
+  middlewares,
+  hidden,
+
+  // Size and style props
+  width,
+  min_height,
+  max_height,
+  height,
+  size,
+  radius,
+  className,
+  classNames,
+  styles,
+  unstyled,
+
+  // Additional props
+  id,
+  name,
+  aria_label,
+  disabled,
+
   children,
+  ...rest  // Catch any other props
 }) {
   const [search, setSearch] = useState('');
   const [internalValue, setInternalValue] = useState(value);
   useEffect(() => { setInternalValue(value); }, [value]);
 
   const combobox = useCombobox({
-    // Mantine ruft diese Callbacks auf, wenn der Store den Zustand ändert
-    onDropdownOpen: () => { if (onDropdownOpen) onDropdownOpen(); },   // NEW
-    onDropdownClose: () => {                                           // NEW
+    onDropdownOpen: () => { if (onDropdownOpen) onDropdownOpen(); },
+    onDropdownClose: () => {
       if (onDropdownClose) onDropdownClose();
       combobox.resetSelectedOption();
     },
@@ -61,7 +85,7 @@ export function RichSelect({
     const prev = selectedValue;
     if (onChange) onChange(null); else setInternalValue(null);
     setSearch('');
-    if (onClear) onClear(prev);             // NEW
+    if (onClear) onClear(prev);
   };
 
   const options = filteredItems.map((item, index) => (
@@ -75,17 +99,45 @@ export function RichSelect({
     </Combobox.Option>
   ));
 
+  // Build style object for InputBase
+  const inputBaseStyle = {
+    minHeight: min_height,
+    maxHeight: max_height,
+    height: height,
+  };
+
+  // Build style object for Combobox wrapper
+  const comboboxStyle = {
+    width: width,
+  };
+
   return (
     <Combobox
       store={combobox}
-
       onOptionSubmit={handleSelect}
+      position={position}
+      middlewares={middlewares}
+      hidden={hidden}
+      classNames={classNames}
+      styles={styles}
+      unstyled={unstyled}
+      style={comboboxStyle}
+      disabled={disabled}
+      {...rest}
     >
       <Combobox.Target>
         <InputBase
           component="button"
           type="button"
           pointer
+          id={id}
+          name={name}
+          aria-label={aria_label}
+          disabled={disabled}
+          size={size}
+          radius={radius}
+          style={inputBaseStyle}
+          className={className}
           rightSection={
             clearable && selectedValue ? (
               <CloseButton

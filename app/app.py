@@ -9,25 +9,33 @@ from manakit_user.authentication.components.templates import (
 )
 
 from app.components.navbar import app_navbar
-from app.pages.examples.action_icon_examples import action_icon_examples
-from app.pages.examples.autocomplete_examples import autocomplete_examples
-from app.pages.examples.button_examples import button_examples
-from app.pages.examples.date_input_examples import date_input_examples_page
-from app.pages.examples.input_examples import form_inputs_showcase
-from app.pages.examples.json_input_examples import json_input_examples
-from app.pages.examples.multi_select_examples import multi_select_examples
-from app.pages.examples.nav_link_examples import nav_link_examples
-from app.pages.examples.nprogress_examples import nprogress_examples_page
-from app.pages.examples.number_formatter_examples import number_formatter_examples
-from app.pages.examples.number_input_examples import number_input_examples_page
-from app.pages.examples.password_input_examples import password_input_examples_page
-from app.pages.examples.rich_select_examples import rich_select_example
-from app.pages.examples.scroll_area_examples import scroll_area_examples
-from app.pages.examples.select_examples import select_examples
-from app.pages.examples.table_examples import table_examples
-from app.pages.examples.tags_input_examples import tags_input_examples
-from app.pages.examples.textarea_examples import textarea_examples_page
-from app.pages.examples.tiptap_examples import tiptap_page
+from app.pages.examples.action_icon_examples import action_icon_examples  # noqa: F401
+from app.pages.examples.autocomplete_examples import autocomplete_examples  # noqa: F401
+from app.pages.examples.button_examples import button_examples  # noqa: F401
+from app.pages.examples.date_input_examples import (
+    date_input_examples_page,  # noqa: F401
+)
+from app.pages.examples.input_examples import form_inputs_showcase  # noqa: F401
+from app.pages.examples.json_input_examples import json_input_examples  # noqa: F401
+from app.pages.examples.multi_select_examples import multi_select_examples  # noqa: F401
+from app.pages.examples.nav_link_examples import nav_link_examples  # noqa: F401
+from app.pages.examples.nprogress_examples import nprogress_examples_page  # noqa: F401
+from app.pages.examples.number_formatter_examples import (
+    number_formatter_examples,  # noqa: F401
+)
+from app.pages.examples.number_input_examples import (
+    number_input_examples_page,  # noqa: F401
+)
+from app.pages.examples.password_input_examples import (
+    password_input_examples_page,  # noqa: F401
+)
+from app.pages.examples.rich_select_examples import rich_select_example  # noqa: F401
+from app.pages.examples.scroll_area_examples import scroll_area_examples  # noqa: F401
+from app.pages.examples.select_examples import select_examples  # noqa: F401
+from app.pages.examples.table_examples import table_examples  # noqa: F401
+from app.pages.examples.tags_input_examples import tags_input_examples  # noqa: F401
+from app.pages.examples.textarea_examples import textarea_examples_page  # noqa: F401
+from app.pages.examples.tiptap_examples import tiptap_page  # noqa: F401
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -92,27 +100,3 @@ def index() -> rx.Component:
 
 app = rx.App()
 # app.add_page(index)
-
-app.add_page(password_input_examples_page, title="Password Input", route="/password")
-app.add_page(date_input_examples_page, title="Date Input", route="/date")
-app.add_page(number_input_examples_page, title="Number Input", route="/number")
-app.add_page(textarea_examples_page, title="Textarea", route="/textarea")
-app.add_page(form_inputs_showcase, title="Inputs", route="/inputs")
-app.add_page(nprogress_examples_page, title="Navigation Progress", route="/nprogress")
-app.add_page(tiptap_page, title="Rich Text Editor", route="/tiptap")
-app.add_page(select_examples, title="Select", route="/select")
-app.add_page(multi_select_examples, title="MultiSelect", route="/multi-select")
-app.add_page(tags_input_examples, title="TagsInput", route="/tags-input")
-app.add_page(autocomplete_examples, title="Autocomplete", route="/autocomplete")
-app.add_page(action_icon_examples, title="Action Icon", route="/action-icon")
-app.add_page(button_examples, title="Button", route="/button")
-app.add_page(json_input_examples, title="Json Input", route="/json-input")
-app.add_page(nav_link_examples, title="Nav Link", route="/nav-link")
-app.add_page(
-    number_formatter_examples,
-    title="Number Formatter",
-    route="/number-formatter",
-)
-app.add_page(scroll_area_examples, title="ScrollArea", route="/scroll-area")
-app.add_page(table_examples, title="Table", route="/table")
-app.add_page(rich_select_example, title="Rich Select", route="/rich_select")

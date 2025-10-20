@@ -91,7 +91,7 @@ def rich_select_example() -> rx.Component:
         rx.vstack(
             rx.heading("RichSelect Examples", size="9"),
             rx.text(
-                "Comprehensive examples of FormInput component from @mantine/core",
+                "Comprehensive examples component from @mantine/core",
                 size="4",
                 color="gray",
             ),
@@ -113,6 +113,7 @@ def rich_select_example() -> rx.Component:
                         clearable=True,
                         placeholder="Pick value",
                         width="100%",
+                        height="68px",
                     ),
                     rx.text("Selected: ", rx.cond(State.value, State.value, "-")),
                     width="100%",
@@ -130,7 +131,9 @@ def rich_select_example() -> rx.Component:
                         position="top",
                         searchable=False,
                         width="100%",
-                        min_height="60px",
+                        min_height="50px",
+                        size="sm",
+                        radius="lg",
                     ),
                     rx.text("Selected: ", rx.cond(State.value2, State.value2, "-")),
                     width="100%",
