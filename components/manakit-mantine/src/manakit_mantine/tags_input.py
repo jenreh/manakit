@@ -52,30 +52,29 @@ class TagsInput(MantineInputComponentBase):
     """Uncontrolled component default value."""
 
     # Tag creation behavior
-    accept_value_on_blur: Var[bool] = False
-    """If set, the value is accepted when the input loses focus."""
+    # Defaults match Mantine TagsInput (see mantine source)
+    accept_value_on_blur: Var[bool] = True
+    """If set, the value is accepted when the input loses focus. Defaults to True."""
 
-    allow_duplicates: Var[bool] = True
-    """If set, duplicate tags are allowed."""
+    allow_duplicates: Var[bool] = False
+    """If set, duplicate tags are allowed. Defaults to False."""
 
     max_tags: Var[int] = None
-    """Maximum number of tags that can be added."""
+    """Maximum number of tags that can be added.
+    Mantine default is Infinity when omitted.
+    """
 
-    split_chars: Var[list[str]] = None
-    """Characters that should be used to split input value into tags."""
+    split_chars: Var[list[str]] = [","]
+    """Characters that should be used to split input value into tags.
+    Defaults to [','].
+    """
 
-    # Search and filtering
-    searchable: Var[bool] = False
-    """Allows searching/filtering options by user input."""
-
+    # Search and filtering - Mantine supports controlled searchValue and onSearchChange
     search_value: Var[str] = None
     """Controlled search value."""
 
     default_search_value: Var[str] = None
     """Default search value."""
-
-    clear_search_on_change: Var[bool] = False
-    """Clear search value when tag is added."""
 
     filter: Var[Any] = None
     """Function based on which items are filtered and sorted."""
@@ -86,21 +85,19 @@ class TagsInput(MantineInputComponentBase):
 
     # Clear functionality
     clearable: Var[bool] = False
-    """If set, the clear button is displayed in the right section."""
-
-    # Messages
-    nothing_found_message: Var[str] = "No options"
-    """Message displayed when no option matches the current search query."""
+    """If set, the clear button is displayed in the right section. Defaults to False."""
 
     # Dropdown behavior
     limit: Var[int] = None
     """Maximum number of options displayed at a time."""
 
-    max_dropdown_height: Var[str | int] = "200px"
-    """Max height of the dropdown."""
+    # Align with Mantine's common dropdown default (OptionsDropdown uses 220px mah)
+    max_dropdown_height: Var[str | int] = 220
 
     with_scroll_area: Var[bool] = True
-    """Determines whether the options should be wrapped with ScrollArea."""
+    """Determines whether the options should be wrapped with ScrollArea.
+    Defaults to True.
+    """
 
     # Combobox integration
     combobox_props: Var[dict[str, Any]] = None
@@ -112,6 +109,12 @@ class TagsInput(MantineInputComponentBase):
 
     on_search_change: EventHandler[lambda value: [value]] = None
     """Called when search value changes."""
+
+    on_duplicate: EventHandler[lambda value: [value]] = None
+    """Called when user attempts to add a duplicate tag."""
+
+    on_remove: EventHandler[lambda value: [value]] = None
+    """Called when a tag is removed (alias for Mantine onRemove)."""
 
     on_clear: EventHandler[list] = None
     """Called when the clear button is clicked."""
@@ -125,8 +128,7 @@ class TagsInput(MantineInputComponentBase):
     on_option_submit: EventHandler[lambda value: [value]] = None
     """Called when option is submitted from dropdown."""
 
-    on_tag_remove: EventHandler[lambda value: [value]] = None
-    """Called when a tag is removed."""
+    # (on_remove is the Mantine prop name; keep that as primary)
 
     def get_event_triggers(self) -> dict[str, Any]:
         """Transform events to work with Reflex state system.

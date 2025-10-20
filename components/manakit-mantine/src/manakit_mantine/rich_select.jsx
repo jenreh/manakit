@@ -14,6 +14,9 @@ export function RichSelect({
   clearable = false,
   nothing_found = 'Nothing found',
   max_dropdown_height = 280,
+  // CamelCase aliases (Reflex may pass camelCased props)
+  nothingFound,
+  maxDropdownHeight,
 
   // Combobox props
   position,
@@ -23,6 +26,7 @@ export function RichSelect({
   // Size and style props
   width,
   min_height,
+  minHeight,
   max_height,
   height,
   size,
@@ -37,9 +41,16 @@ export function RichSelect({
   name,
   aria_label,
   disabled,
-
   children,
-  ...rest  // Catch any other props
+  // Catch other props but avoid spreading them to DOM elements where they would
+  // produce React warnings. We'll only forward recognized props to Mantine
+  // components and avoid passing unknown ones to native DOM elements.
+  extra_props = {},
+  search_placeholder,
+  searchValue,
+  search_value,
+  creatable,
+  ...rest  // keep rest for internal use but don't spread to DOM
 }) {
   const [search, setSearch] = useState('');
   const [internalValue, setInternalValue] = useState(value);
@@ -101,7 +112,7 @@ export function RichSelect({
 
   // Build style object for InputBase
   const inputBaseStyle = {
-    minHeight: min_height,
+    minHeight: minHeight ?? min_height,
     maxHeight: max_height,
     height: height,
   };
@@ -110,6 +121,11 @@ export function RichSelect({
   const comboboxStyle = {
     width: width,
   };
+
+  // Resolve camelCase / snake_case merged props
+  const max_dropdown_height_final = maxDropdownHeight ?? max_dropdown_height;
+  const nothing_found_final = extra_props.nothing_found || nothingFound || nothing_found;
+  const search_placeholder_final = extra_props.search_placeholder || search_placeholder || search_value || searchValue || 'Search...';
 
   return (
     <Combobox
@@ -123,9 +139,11 @@ export function RichSelect({
       unstyled={unstyled}
       style={comboboxStyle}
       disabled={disabled}
-      {...rest}
+      // Do NOT spread unknown props to Combobox/DOM. If callers need to
+      // pass combobox-specific props from JS, use `extra_props` explicitly.
+      {...(extra_props.combobox || {})}
     >
-      <Combobox.Target>
+        <Combobox.Target>
         <InputBase
           component="button"
           type="button"
@@ -153,6 +171,8 @@ export function RichSelect({
           onClick={() => combobox.toggleDropdown()}
           rightSectionPointerEvents={clearable && selectedValue ? 'auto' : 'none'}
           multiline
+          // Avoid passing unknown props to the underlying button element.
+          {...(extra_props.input_base || {})}
         >
           {selectedItem ? selectedItem.props.option : (
             <Input.Placeholder>{placeholder}</Input.Placeholder>
@@ -165,12 +185,14 @@ export function RichSelect({
           <Combobox.Search
             value={search}
             onChange={(e) => handleSearch(e.currentTarget.value)}
-            placeholder="Search..."
+            placeholder={search_placeholder_final}
             rightSection={null}
+            // forward any additional props for the search input explicitly
+            {...(extra_props.search || {})}
           />
         )}
-        <Combobox.Options style={{ maxHeight: max_dropdown_height, overflowY: 'auto' }}>
-          {options.length > 0 ? options : <Text p="xs">{nothing_found}</Text>}
+        <Combobox.Options style={{ maxHeight: max_dropdown_height_final, overflowY: 'auto' }}>
+          {options.length > 0 ? options : <Text p="xs">{nothing_found_final}</Text>}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

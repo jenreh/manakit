@@ -469,7 +469,7 @@ def form_validation_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/password-input-examples",
+    route="/password",
     title="Input Examples",
     navbar=app_navbar(),
     with_header=False,

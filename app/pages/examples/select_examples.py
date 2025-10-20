@@ -41,7 +41,7 @@ class SelectState(rx.State):
 
 
 @navbar_layout(
-    route="/select_examples",
+    route="/select",
     title="Input Examples",
     navbar=app_navbar(),
     with_header=False,

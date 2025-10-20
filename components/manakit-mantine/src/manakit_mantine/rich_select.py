@@ -46,8 +46,8 @@ class RichSelect(rx.Component):
     # Search and clear
     searchable: Var[bool] = True
     clearable: Var[bool] = False
-    search_placeholder: Var[str]
-    search_value: Var[str]
+    search_placeholder: Var[str] = "Search..."
+    search_value: Var[str] | None = None
 
     # Dropdown control (useCombobox options)
     default_opened: Var[bool]
@@ -132,6 +132,9 @@ class RichSelect(rx.Component):
 
     on_dropdown_open: EventHandler[lambda source: [source]]
     """Called when dropdown is opened or closed."""
+    # Extra props passthrough - JS side expects `extra_props` dict for safe
+    # forwarding of nested props (combobox, input_base, search, nothing_found).
+    extra_props: Var[dict[str, Any] | None] = None
 
 
 class RichSelectItem(rx.Component):

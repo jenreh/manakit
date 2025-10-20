@@ -491,7 +491,7 @@ def disabled_readonly_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/number-input-examples",
+    route="/number",
     title="Input Examples",
     navbar=app_navbar(),
     with_header=False,

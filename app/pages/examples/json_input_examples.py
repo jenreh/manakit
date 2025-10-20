@@ -31,7 +31,7 @@ class JsonInputState(rx.State):
 
 
 @navbar_layout(
-    route="/json_input_examples",
+    route="/json-input",
     title="Input Examples",
     navbar=app_navbar(),
     with_header=False,
