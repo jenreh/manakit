@@ -5,6 +5,9 @@ from __future__ import annotations
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class NumberFormatterState(rx.State):
@@ -15,6 +18,12 @@ class NumberFormatterState(rx.State):
         self.value = v or ""
 
 
+@navbar_layout(
+    route="/number-formatter",
+    title="Rich Select Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def number_formatter_examples() -> rx.Component:
     return rx.container(
         rx.color_mode.button(position="top-right"),
@@ -22,36 +31,42 @@ def number_formatter_examples() -> rx.Component:
             rx.heading("NumberFormatter Examples", size="8"),
             rx.text("Basic formatters and custom parser/format examples."),
             rx.link("← Back to Home", href="/"),
-            rx.card(
-                rx.vstack(
-                    rx.heading("Basic formatter", size="4"),
-                    mn.number_formatter(
-                        value=NumberFormatterState.value,
-                        prefix="$ ",
+            rx.grid(
+                rx.card(
+                    rx.vstack(
+                        rx.heading("Basic formatter", size="4"),
+                        mn.number_formatter(
+                            value=NumberFormatterState.value,
+                            prefix="$ ",
+                        ),
+                        rx.text("Value: ", NumberFormatterState.value),
+                        spacing="3",
                     ),
-                    rx.text("Value: ", NumberFormatterState.value),
-                    spacing="3",
+                    padding="4",
                 ),
-                padding="4",
-            ),
-            rx.card(
-                rx.vstack(
-                    rx.heading("EUR formatter", size="4"),
-                    mn.number_formatter(
-                        value=NumberFormatterState.value,
-                        suffix=" €",
-                        decimal_scale=2,
-                        decimal_separator=",",
-                        thousand_separator=".",
+                rx.card(
+                    rx.vstack(
+                        rx.heading("EUR formatter", size="4"),
+                        mn.number_formatter(
+                            value=NumberFormatterState.value,
+                            suffix=" €",
+                            decimal_scale=2,
+                            decimal_separator=",",
+                            thousand_separator=".",
+                        ),
+                        rx.text("Value: ", NumberFormatterState.value),
+                        spacing="3",
                     ),
-                    rx.text("Value: ", NumberFormatterState.value),
-                    spacing="3",
+                    padding="4",
                 ),
-                padding="4",
+                columns="2",
+                spacing="4",
+                width="100%",
             ),
             spacing="6",
             width="100%",
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )

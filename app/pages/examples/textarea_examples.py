@@ -10,6 +10,9 @@ from typing import Any
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class TextareaState(rx.State):
@@ -339,6 +342,12 @@ def complete_form_example() -> rx.Component:
     )
 
 
+@navbar_layout(
+    route="/textarea",
+    title="Input Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def textarea_examples_page() -> rx.Component:
     """Main examples page."""
     return rx.container(
@@ -372,4 +381,5 @@ def textarea_examples_page() -> rx.Component:
             padding_y="4rem",
         ),
         size="4",
+        width="100%",
     )

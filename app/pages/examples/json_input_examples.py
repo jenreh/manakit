@@ -7,6 +7,9 @@ import json
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class JsonInputState(rx.State):
@@ -27,6 +30,12 @@ class JsonInputState(rx.State):
             self.error = str(e)
 
 
+@navbar_layout(
+    route="/json_input_examples",
+    title="Input Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def json_input_examples() -> rx.Component:
     return rx.container(
         rx.color_mode.button(position="top-right"),
@@ -82,4 +91,5 @@ def json_input_examples() -> rx.Component:
             width="100%",
             padding_y="8",
         ),
+        width="100%",
     )

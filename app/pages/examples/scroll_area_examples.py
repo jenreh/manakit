@@ -12,6 +12,9 @@ from typing import Any
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 SCROLL_VIEWPORT_ID = "custom-scroll-viewport"
 
@@ -57,6 +60,12 @@ class ScrollAreaState(rx.State):
         )
 
 
+@navbar_layout(
+    route="/scroll-area",
+    title="Rich Select Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def scroll_area_examples() -> rx.Component:
     # Sample content for scrolling
     lorem_content = rx.vstack(
@@ -208,7 +217,7 @@ def scroll_area_examples() -> rx.Component:
                             width="100%",
                             type="always",
                             offset_scrollbars=False,
-                            id=SCROLL_VIEWPORT_ID,
+                            viewport_props={"id": SCROLL_VIEWPORT_ID},
                         ),
                         rx.hstack(
                             rx.button("Top", on_click=ScrollAreaState.scroll_to_top),
@@ -253,4 +262,6 @@ def scroll_area_examples() -> rx.Component:
             margin="0 auto",
             padding="6",
         ),
+        spacint="3",
+        width="100%",
     )

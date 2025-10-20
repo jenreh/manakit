@@ -8,14 +8,18 @@ from app.components.navbar import app_navbar
 
 class State(rx.State):
     value: str
+    value2: str
 
     def set_value(self, value: str) -> None:
         self.value = value
 
+    def set_value2(self, value: str) -> None:
+        self.value2 = value
+
 
 def render_option(row: dict) -> rx.Component:
     return rx.hstack(
-        rx.text(row.get("emoji", "")),
+        rx.text(row.get("emoji", ""), width="24px"),
         rx.vstack(
             rx.text(row["label"], weight="bold"),
             rx.text(row.get("description", ""), color="gray"),
@@ -23,6 +27,15 @@ def render_option(row: dict) -> rx.Component:
             spacing="1",
         ),
         spacing="3",
+    )
+
+
+def render_option2(row: dict) -> rx.Component:
+    return rx.hstack(
+        rx.text(row.get("emoji", ""), width="24px"),
+        rx.text(row["label"], weight="bold"),
+        align_items="start",
+        spacing="1",
     )
 
 
@@ -60,9 +73,15 @@ def rich_select_example() -> rx.Component:
             "description": "Crunchy and vitamin-rich root vegetable",
         },
         {
-            "value": "chocolate",
-            "emoji": "🍫",
-            "label": "Chocolate",
+            "value": "pear",
+            "emoji": "🍐",
+            "label": "Pear",
+            "description": "Indulgent and decadent treat",
+        },
+        {
+            "value": "cherry",
+            "emoji": "🍒",
+            "label": "Cherry",
             "description": "Indulgent and decadent treat",
         },
     ]
@@ -70,7 +89,7 @@ def rich_select_example() -> rx.Component:
     return rx.container(
         rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading("Input Examples", size="9"),
+            rx.heading("RichSelect Examples", size="9"),
             rx.text(
                 "Comprehensive examples of FormInput component from @mantine/core",
                 size="4",
@@ -84,7 +103,6 @@ def rich_select_example() -> rx.Component:
             rx.grid(
                 rx.card(
                     mn.rich_select(
-                        # Zucker-Funktion map: erzeugt Items via rx.foreach
                         mn.rich_select.map(
                             data,
                             renderer=render_option,
@@ -97,8 +115,26 @@ def rich_select_example() -> rx.Component:
                         width="100%",
                     ),
                     rx.text("Selected: ", rx.cond(State.value, State.value, "-")),
-                    width="360px",
-                    height="300px",
+                    width="100%",
+                    spacing="3",
+                ),
+                rx.card(
+                    mn.rich_select(
+                        mn.rich_select.map(
+                            data,
+                            renderer=render_option2,
+                        ),
+                        value=State.value2,
+                        on_change=State.set_value2,
+                        placeholder="Pick value",
+                        position="top",
+                        searchable=False,
+                        width="100%",
+                        min_height="60px",
+                    ),
+                    rx.text("Selected: ", rx.cond(State.value2, State.value2, "-")),
+                    width="100%",
+                    spacing="3",
                 ),
                 columns="2",
                 spacing="4",
@@ -109,4 +145,5 @@ def rich_select_example() -> rx.Component:
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )

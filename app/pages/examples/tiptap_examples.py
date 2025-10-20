@@ -6,6 +6,9 @@ Demonstrates various use cases and features of the RichTextEditor component.
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class TiptapState(rx.State):
@@ -84,6 +87,12 @@ class TiptapState(rx.State):
         self.minimal_content = ""
 
 
+@navbar_layout(
+    route="/tiptap",
+    title="Rich Select Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def tiptap_page() -> rx.Component:
     """Main Tiptap examples page."""
     return rx.container(
@@ -363,5 +372,6 @@ def tiptap_page() -> rx.Component:
             max_width="900px",
             padding="4",
         ),
-        size="4",
+        size="3",
+        width="100%",
     )

@@ -1,6 +1,9 @@
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class MultiSelectState(rx.State):
@@ -46,6 +49,12 @@ class MultiSelectState(rx.State):
         self.check_icon_selections = value
 
 
+@navbar_layout(
+    route="/multi-select",
+    title="Rich Select Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def multi_select_examples() -> rx.Component:
     """Return a page containing multiple MultiSelect demos.
 
@@ -221,4 +230,5 @@ def multi_select_examples() -> rx.Component:
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )

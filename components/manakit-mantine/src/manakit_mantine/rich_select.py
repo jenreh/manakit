@@ -1,8 +1,9 @@
 # components/manakit-mantine/src/manakit_mantine/rich_select.py
+
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.event import EventHandler
@@ -12,24 +13,100 @@ from reflex.vars.base import Var
 _JSX = rx.asset("rich_select.jsx", shared=True)
 
 
+"""Mantine Combobox (RichSelect) wrapper for Reflex.
+
+This module exposes a comprehensive set of props that map to Mantine's
+`Combobox` / `useCombobox` options and Combobox subcomponents. See:
+https://mantine.dev/core/combobox/
+
+Notes:
+- Python prop names use snake_case and map to Mantine camelCase props.
+- `store` is exposed as a passthrough Var[Any] so callers can provide a JS
+  combobox store created via Mantine's `useCombobox` hook.
+"""
+
+
 class RichSelect(rx.Component):
-    """Reflex wrapper um die JSX-Komponente."""
+    """Reflex wrapper um die JSX-Komponente (Mantine Combobox mapping).
+
+    Mantine prop -> Python mapping examples:
+    - defaultOpened -> default_opened
+    - onDropdownOpen -> on_dropdown_open
+    - classNames -> class_names
+    """
 
     library = f"$/public{_JSX}"
     tag = "RichSelect"
 
-    # Props wie gehabt:
+    # Core props (existing)
     value: Var[str | None]
-    placeholder: Var[str] = "Pick value"
+    placeholder: Var[str]
     nothing_found: Var[str] = "Nothing found"
 
+    # Search and clear
     searchable: Var[bool] = True
     clearable: Var[bool] = False
+    search_placeholder: Var[str]
+    search_value: Var[str]
 
+    # Dropdown control (useCombobox options)
+    default_opened: Var[bool]
+    opened: Var[bool]
+    loop: Var[bool]
+    scroll_behavior: Var[Literal["auto", "instant", "smooth"]]
+
+    # Store passthrough - allows passing Mantine's useCombobox store from JS
+    store: Var[Any]
+
+    # Popover/dropdown passthroughs
+    position: (
+        Var[
+            Literal[
+                "top",
+                "bottom",
+                "left",
+                "right",
+                "top-start",
+                "top-end",
+                "bottom-start",
+                "bottom-end",
+                "left-start",
+                "left-end",
+                "right-start",
+                "right-end",
+            ]
+        ]
+        | None
+    ) = None
+    middlewares: Var[list[Any] | None] = None
+    hidden: Var[bool]
+
+    # Dropdown sizing
     max_dropdown_height: Var[int] = 280
+    max_height: Var[int]
+
+    # Styles API / appearance
+    class_names: Var[dict[str, str] | None] = None
+    styles: Var[dict[str, Any] | None] = None
+    unstyled: Var[bool] = False
+
+    # Creatable / new option support
+    creatable: Var[bool] = False
+
+    # Multiselect (optional)
+    values: Var[list[str] | None] = None
+
+    # Form / accessibility
+    aria_label: Var[str] | None = None
+    name: Var[str] | None = None
+    id: Var[str] | None = None
+
+    # Events
+    on_create: EventHandler[lambda value: [value]]
+    """Called when a new option is created (receives created value)."""
 
     on_change: EventHandler[lambda value: [value]]
-    """Called when value changes (receives array of selected values)."""
+    """Called when value changes (receives selected value or list of values)."""
 
     on_search_change: EventHandler[lambda value: [value]]
     """Called when search value changes."""
@@ -37,14 +114,17 @@ class RichSelect(rx.Component):
     on_clear: EventHandler[list]
     """Called when the clear button is clicked."""
 
-    on_dropdown_close: EventHandler[list]
-    """Called when dropdown closes."""
-
-    on_dropdown_open: EventHandler[list]
-    """Called when dropdown opens."""
-
     on_option_submit: EventHandler[lambda value: [value]]
     """Called when option is submitted from dropdown."""
+
+    on_opened_change: EventHandler[lambda opened: [opened]]
+    """Called when opened state changes."""
+
+    on_dropdown_close: EventHandler[lambda source: [source]]
+    """Called when dropdown is closed."""
+
+    on_dropdown_open: EventHandler[lambda source: [source]]
+    """Called when dropdown is opened or closed."""
 
 
 class RichSelectItem(rx.Component):
@@ -58,6 +138,8 @@ class RichSelectItem(rx.Component):
     disabled: Var[bool | None] = False
     keywords: Var[list[str] | None]
     payload: Var[dict[str, Any] | None]
+    active: Var[bool] | None = None
+    group: Var[str] | None = None
 
 
 class RichSelectNamespace(rx.ComponentNamespace):
@@ -78,7 +160,7 @@ class RichSelectNamespace(rx.ComponentNamespace):
     ) -> rx.Component:
         """
         Zucker: Daten -> <rich_select.item .../> via rx.foreach.
-        **NEU:** Vergibt einen stabilen React-Key pro Item (rs-<value>-<index>), um
+        **NEU:** Vergibt einen stabilen React-Key pro Item (rs-<index>), um
         Kollisionen von Default-Keys (z.B. 'row_rx_state_') zu vermeiden.
         """
         if renderer is None and "rendere" in kwargs:
@@ -87,18 +169,13 @@ class RichSelectNamespace(rx.ComponentNamespace):
             raise ValueError("rich_select.map(...): 'renderer' ist erforderlich.")
 
         def _mapper(row: Any, index: int) -> rx.Component:
-            # Extract the value Var - don't convert to string!
             if value is not None:
-                # Custom value extractor - returns a Var
                 value_var = value(row)
             elif isinstance(row, dict) or (hasattr(row, "__getitem__")):
-                # Access dict/Var dict-style
                 value_var = row[value_key]
             else:
-                # Fallback to row itself
                 value_var = row
 
-            # Extract disabled Var
             if disabled is not None:
                 disabled_var = disabled(row)
             elif isinstance(row, dict) or (
@@ -108,7 +185,6 @@ class RichSelectNamespace(rx.ComponentNamespace):
             else:
                 disabled_var = False
 
-            # Extract keywords Var
             if keywords is not None:
                 keywords_var = keywords(row)
             elif isinstance(row, dict) or (
@@ -118,15 +194,12 @@ class RichSelectNamespace(rx.ComponentNamespace):
             else:
                 keywords_var = None
 
-            # Extract payload Var
             if payload is not None:  # noqa: SIM108
                 payload_var = payload(row)
             else:
-                # Default payload is the row itself if it's a dict-like object
                 payload_var = row
 
-            # Create unique key by combining value with index
-            # Use rx.cond to handle None values gracefully
+            # Create unique key using index
             key_str = f"rs-{index}"
 
             return RichSelectItem.create(

@@ -9,6 +9,9 @@ from __future__ import annotations
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 elements = [
     {"position": 6, "mass": 12.011, "symbol": "C", "name": "Carbon"},
@@ -66,6 +69,12 @@ def table_rows() -> rx.Component:
     )  # type: ignore
 
 
+@navbar_layout(
+    route="/table",
+    title="Rich Select Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def table_examples() -> rx.Component:
     return (
         rx.container(
@@ -118,8 +127,9 @@ def table_examples() -> rx.Component:
                     width="100%",
                 ),
                 spacing="3",
+                width="100%",
             ),
-            padding="4",
+            spacing="3",
             width="100%",
         ),
     )

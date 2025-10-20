@@ -1,6 +1,9 @@
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 
 class SelectState(rx.State):
@@ -37,6 +40,12 @@ class SelectState(rx.State):
         self.grouped = v
 
 
+@navbar_layout(
+    route="/select_examples",
+    title="Input Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def select_examples() -> rx.Component:
     """Return a page containing multiple Select demos.
 
@@ -181,4 +190,5 @@ def select_examples() -> rx.Component:
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )

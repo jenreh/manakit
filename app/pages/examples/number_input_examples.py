@@ -14,6 +14,9 @@ from typing import Any
 import reflex as rx
 
 import manakit_mantine as mn
+from manakit_user.authentication.components.templates import navbar_layout
+
+from app.components.navbar import app_navbar
 
 # ============================================================================
 # Example 1: Basic Number Input
@@ -487,6 +490,12 @@ def disabled_readonly_example() -> rx.Component:
 # ============================================================================
 
 
+@navbar_layout(
+    route="/number-input-examples",
+    title="Input Examples",
+    navbar=app_navbar(),
+    with_header=False,
+)
 def number_input_examples_page() -> rx.Component:
     """Main page showcasing all NumberInput examples."""
     return rx.container(
@@ -561,5 +570,6 @@ def number_input_examples_page() -> rx.Component:
             width="100%",
             padding_y="4rem",
         ),
-        size="4",
+        size="3",
+        width="100%",
     )

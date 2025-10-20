@@ -148,4 +148,5 @@ def button_examples() -> rx.Component:
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )

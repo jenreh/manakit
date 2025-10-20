@@ -380,4 +380,5 @@ def form_inputs_showcase() -> rx.Component:
             padding_y="8",
         ),
         size="3",
+        width="100%",
     )
