@@ -28,6 +28,7 @@ from manakit_mantine.nav_link import nav_link
 from manakit_mantine.number_formatter import number_formatter
 from manakit_mantine.table import table
 from manakit_mantine.scroll_area import scroll_area
+from manakit_mantine.scroll_area_with_controls import scroll_area_with_controls
 from manakit_mantine.tags_input import tags_input
 from manakit_mantine.rich_select import rich_select
 
@@ -55,6 +56,7 @@ __all__ = [
     "rich_select",
     "rich_text_editor",
     "scroll_area",
+    "scroll_area_with_controls",
     "select",
     "table",
     "tags_input",

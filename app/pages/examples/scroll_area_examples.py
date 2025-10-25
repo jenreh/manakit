@@ -26,6 +26,29 @@ class ScrollAreaState(rx.State):
     at_top: bool = True
     at_bottom: bool = False
 
+    # Scroll metrics for buffer-based detection
+    scroll_y: float = 0
+    scroll_height: float = 0
+    client_height: float = 0
+
+    def is_at_bottom(self, buffer: float = 0) -> bool:
+        """Check if scroll position is within buffer distance of bottom."""
+        if self.scroll_height == 0 or self.client_height == 0:
+            return False
+        max_scroll = self.scroll_height - self.client_height
+        return self.scroll_y >= (max_scroll - buffer)
+
+    def is_at_top(self, buffer: float = 0) -> bool:
+        """Check if scroll position is within buffer distance of top."""
+        return self.scroll_y <= buffer
+
+    @rx.event
+    def update_scroll_metrics(self, data: dict) -> None:
+        """Update scroll metrics for buffer-based position detection."""
+        self.scroll_y = data.get("scrollY", 0)
+        self.scroll_height = data.get("scrollHeight", 0)
+        self.client_height = data.get("clientHeight", 0)
+
     @rx.event
     def update_scroll_position(self, position: dict) -> None:
         # position is expected as {'x': number, 'y': number}
@@ -234,36 +257,25 @@ def scroll_area_examples() -> rx.Component:
                     padding="4",
                     border_radius="md",
                 ),
-                # ScrollArea with offset scrollbars
+                # ScrollArea with 12px bottom buffer (using new component)
                 rx.card(
                     rx.vstack(
-                        rx.heading("Offset Scrollbars", size="4"),
-                        mn.scroll_area(
+                        rx.heading("12px Bottom Buffer", size="4"),
+                        mn.scroll_area_with_controls(
                             lorem_content,
                             height="150px",
-                            width="100%",
+                            top_buffer=12,
+                            bottom_buffer=12,
                             type="always",
                             offset_scrollbars=False,
-                            viewport_props={"id": SCROLL_VIEWPORT_ID},
-                            # report scroll position and top/bottom reached events
-                            on_scroll_position_change=ScrollAreaState.update_scroll_position,
-                            on_top_reached=ScrollAreaState.set_at_top,
-                            on_bottom_reached=ScrollAreaState.set_at_bottom,
-                        ),
-                        rx.hstack(
-                            rx.button(
-                                "Top",
-                                on_click=ScrollAreaState.scroll_to_top,
-                                disabled=ScrollAreaState.at_top,
-                            ),
-                            rx.button(
-                                "Bottom",
-                                on_click=ScrollAreaState.scroll_to_bottom,
-                                disabled=ScrollAreaState.at_bottom,
-                            ),
+                            controls_position="bottom",
+                            top_button_text="↑ Top",
+                            bottom_button_text="↓ Bottom",
                         ),
                         rx.text(
-                            "Padding added to offset scrollbars", size="2", color="gray"
+                            "Buttons automatically hide within 12px of edges",
+                            size="2",
+                            color="gray",
                         ),
                         spacing="3",
                         width="100%",
@@ -283,6 +295,105 @@ def scroll_area_examples() -> rx.Component:
                             scrollbar_size=20,
                         ),
                         rx.text("Thicker scrollbars (20px)", size="2", color="gray"),
+                        spacing="3",
+                        width="100%",
+                    ),
+                    padding="4",
+                    border_radius="md",
+                ),
+                # ScrollArea with 24px bottom buffer (using new component)
+                rx.card(
+                    rx.vstack(
+                        rx.heading("24px Bottom Buffer", size="4"),
+                        mn.scroll_area_with_controls(
+                            lorem_content,
+                            height="150px",
+                            top_buffer=0,
+                            bottom_buffer=36,
+                            type="hover",
+                            offset_scrollbars=False,
+                            controls_position="bottom",
+                            top_button_text="↑ Top",
+                            bottom_button_text="↓ Bottom",
+                        ),
+                        rx.text(
+                            "Buttons automatically hide within 24px of edges",
+                            size="2",
+                            color="gray",
+                        ),
+                        spacing="3",
+                        width="100%",
+                    ),
+                    padding="4",
+                    border_radius="md",
+                ),
+                # ScrollArea with top control only
+                rx.card(
+                    rx.vstack(
+                        rx.heading("Top Control Only", size="4"),
+                        mn.scroll_area_with_controls(
+                            lorem_content,
+                            height="150px",
+                            controls="top",
+                            type="always",
+                            offset_scrollbars=False,
+                            controls_position="bottom",
+                            top_button_text="↑ Top",
+                        ),
+                        rx.text(
+                            "Only scroll-to-top button is shown",
+                            size="2",
+                            color="gray",
+                        ),
+                        spacing="3",
+                        width="100%",
+                    ),
+                    padding="4",
+                    border_radius="md",
+                ),
+                # ScrollArea with bottom control only
+                rx.card(
+                    rx.vstack(
+                        rx.heading("Bottom Control Only", size="4"),
+                        mn.scroll_area_with_controls(
+                            lorem_content,
+                            height="150px",
+                            type="always",
+                            offset_scrollbars=False,
+                            controls="bottom",
+                            controls_position="top",
+                            bottom_button_text="↓ Bottom",
+                        ),
+                        rx.text(
+                            "Only scroll-to-bottom button is shown",
+                            size="2",
+                            color="gray",
+                        ),
+                        spacing="3",
+                        width="100%",
+                    ),
+                    padding="4",
+                    border_radius="md",
+                ),
+                # ScrollArea with both controls (default)
+                rx.card(
+                    rx.vstack(
+                        rx.heading("Both Controls (Default)", size="4"),
+                        mn.scroll_area_with_controls(
+                            lorem_content,
+                            height="150px",
+                            controls="top-bottom",
+                            type="always",
+                            offset_scrollbars=False,
+                            controls_position="bottom",
+                            top_button_text="↑ Top",
+                            bottom_button_text="↓ Bottom",
+                        ),
+                        rx.text(
+                            "Both scroll buttons are shown (default behavior)",
+                            size="2",
+                            color="gray",
+                        ),
                         spacing="3",
                         width="100%",
                     ),
