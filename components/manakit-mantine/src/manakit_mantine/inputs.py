@@ -191,7 +191,7 @@ class InputClearButton(MantineInputComponentBase):
 class InputNamespace(rx.ComponentNamespace):
     """Namespace for Combobox components."""
 
-    __call__ = staticmethod(Input.create)
+    input = staticmethod(Input.create)
     wrapper = staticmethod(InputWrapper.create)
     label = staticmethod(InputLabel.create)
     description = staticmethod(InputDescription.create)
@@ -200,4 +200,4 @@ class InputNamespace(rx.ComponentNamespace):
     clear_button = staticmethod(InputClearButton.create)
 
 
-text_input = InputNamespace()
+form = InputNamespace()

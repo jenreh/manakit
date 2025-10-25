@@ -72,7 +72,7 @@ def login_form() -> rx.Component:
             rx.heading("Login"),
 
             # Basic input with validation
-            mn.text_input(
+            mn.form.input(
                 label="Email",
                 placeholder="you@example.com",
                 value=FormState.email,
@@ -197,7 +197,7 @@ class EmailState(rx.State):
             self.error = ""
 
 def email_input():
-    return mn.text_input(
+    return mn.form.input(
         label="Email Address",
         description="We'll never share your email",
         placeholder="you@example.com",

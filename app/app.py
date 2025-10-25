@@ -4,11 +4,21 @@ import logging
 
 import reflex as rx
 
-from manakit_user.authentication.components.templates import (
+from manakit_user.authentication.pages import (  # noqa: F401
+    azure_oauth_callback_page,
+    github_oauth_callback_page,
+)
+from manakit_user.authentication.templates import (
     navbar_layout,
+)
+from manakit_user.user_management.pages import (  # noqa: F401
+    create_profile_page,
+    login_page,
 )
 
 from app.components.navbar import app_navbar
+
+# from app.pages.assitant.assistant import assistant_page  # noqa: F401
 from app.pages.examples.action_icon_examples import action_icon_examples  # noqa: F401
 from app.pages.examples.autocomplete_examples import autocomplete_examples  # noqa: F401
 from app.pages.examples.button_examples import button_examples  # noqa: F401
@@ -36,6 +46,8 @@ from app.pages.examples.table_examples import table_examples  # noqa: F401
 from app.pages.examples.tags_input_examples import tags_input_examples  # noqa: F401
 from app.pages.examples.textarea_examples import textarea_examples_page  # noqa: F401
 from app.pages.examples.tiptap_examples import tiptap_page  # noqa: F401
+from app.pages.image_creator import image_creator_page  # noqa: F401
+from app.pages.users import users_page  # noqa: F401
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -98,5 +110,23 @@ def index() -> rx.Component:
     )
 
 
-app = rx.App()
+base_stylesheets = [
+    "https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@400;500;600;700;800&display=swap",
+    "https://fonts.googleapis.com/css2?family=Audiowide&family=Honk:SHLN@5&family=Major+Mono+Display&display=swap",
+    "css/manakit.css",
+    #    "css/styles.css",
+    "css/react-zoom.css",
+]
+
+base_style = {
+    "font_family": "Roboto Flex",
+    rx.icon: {
+        "stroke_width": "1.5px",
+    },
+}
+
+app = rx.App(
+    stylesheets=base_stylesheets,
+    style=base_style,
+)
 # app.add_page(index)

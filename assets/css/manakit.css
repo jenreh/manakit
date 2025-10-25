@@ -1,6 +1,8 @@
 /* Tailwind directives — processed by PostCSS with tailwindcss plugin */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer components {
 
     /* Splash container styles for login screens */
@@ -27,5 +29,163 @@
         text-align: center;
         gap: 1em;
         margin-bottom: 3px;
+    }
+
+    /* Rainbow gradient bar styles */
+
+    .rainbow-gradient-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 18em;
+        height: 4px;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .rainbow-gradient-bar-100 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        overflow: hidden;
+        z-index: 100ß0;
+    }
+
+    .rainbow-gradient-bar-100::before,
+    .rainbow-gradient-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+                #da5965,
+                #e5aa57,
+                #95f0b2,
+                #4476af,
+                #da5965);
+        background-size: 200% 100%;
+        animation: rotate-gradient 2s linear infinite;
+    }
+
+
+    @keyframes rotate-gradient {
+        0% {
+            background-position: 200% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .default-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 18em;
+        height: 4px;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .default-bar-100 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        overflow: hidden;
+        z-index: 10ß00;
+    }
+
+    /* Cursor wait style */
+
+    .cursor-wait {
+        cursor: progress !important;
+    }
+
+    /* Markdown table styles */
+
+    .markdown table {
+        border-radius: 9px;
+        box-shadow: 0 0 8px var(--gray-3);
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border: 1px solid var(--gray-5);
+        background-color: var(--white-12);
+        width: calc(100% + 41px);
+        max-width: 921px;
+        margin-left: -15px;
+        margin-right: auto;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+
+    .markdown th,
+    .markdown td {
+        padding: 12px 15px;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--gray-5);
+        font-size: 0.85em;
+    }
+
+    .markdown th {
+        background-color: var(--gray-2);
+        font-weight: 600;
+        color: var(--gray-11);
+    }
+
+    .markdown tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .markdown tbody tr:hover {
+        background-color: var(--gray-2);
+    }
+
+    /* Loading animation styles */
+
+    .loading span {
+        display: inline-block;
+        vertical-align: middle;
+        width: .6em;
+        height: .6em;
+        margin: -2px;
+        background: var(--gray-6);
+        border-radius: .6em;
+        animation: loading 1s infinite alternate;
+        margin-top: 7px;
+    }
+
+    .loading span:nth-of-type(2) {
+        background: var(--gray-5);
+        animation-delay: 0.2s;
+    }
+
+    .loading span:nth-of-type(3) {
+        background: var(--gray-4);
+        animation-delay: 0.4s;
+    }
+
+    .loading span:nth-of-type(4) {
+        background: var(--gray-5);
+        animation-delay: 0.6s;
+    }
+
+
+    @keyframes loading {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
 }

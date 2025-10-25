@@ -44,7 +44,8 @@ def delete_dialog(
                     rx.button(
                         "Abbrechen",
                         class_name=(
-                            "bg-gray-100 text-gray-700 hover:bg-gray-200 "
+                            "bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-300 "
+                            "hover:bg-gray-200 dark:hover:bg-neutral-600 "
                             "px-4 py-2 rounded"
                         ),
                     ),
@@ -70,17 +71,26 @@ def dialog_header(icon: str, title: str, description: str) -> rx.Component:
     return rx.hstack(
         rx.badge(
             rx.icon(tag=icon, size=34),
-            class_name="bg-green-500 text-white rounded-full p-3",
+            color_scheme="grass",
+            radius="full",
+            padding="0.65rem",
         ),
         rx.vstack(
             rx.dialog.title(
                 title,
-                class_name="font-bold m-0",
+                weight="bold",
+                margin="0",
             ),
             rx.dialog.description(description),
-            class_name="space-y-1 h-full items-start",
+            spacing="1",
+            height="100%",
+            align_items="start",
         ),
-        class_name="h-full space-x-4 mb-6 items-center w-full",
+        height="100%",
+        spacing="4",
+        margin_bottom="1.5em",
+        align_items="center",
+        width="100%",
     )
 
 
@@ -91,7 +101,9 @@ def dialog_buttons(submit_text: str, spacing: str = "3") -> rx.Component:
             rx.button(
                 "Abbrechen",
                 class_name=(
-                    "bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                    "bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-300 "
+                    "hover:bg-gray-200 dark:hover:bg-neutral-600 "
+                    "px-4 py-2 rounded"
                 ),
             ),
         ),

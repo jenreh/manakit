@@ -5,7 +5,7 @@ import reflex as rx
 from reflex.components.sonner.toast import Toaster
 
 from manakit_commons.database.session import get_asyncdb_session
-from manakit_user.authentication import user_repository
+from manakit_user.authentication.backend import user_repository
 from manakit_user.authentication.states import UserSession
 
 MIN_PASSWORD_LENGTH: Final[int] = 12

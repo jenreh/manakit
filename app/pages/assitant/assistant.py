@@ -8,20 +8,21 @@ from manakit_assistant import ASSISTANT_ROLE
 from manakit_assistant.backend.model_manager import ModelManager
 from manakit_assistant.backend.models import AIModel
 from manakit_assistant.backend.processors.ai_models import (
-    DEFAULT,
     GPT_5,
     GPT_5_MINI,
     O4_MINI,
     GPT_4o,
-)
-from manakit_assistant.backend.processors.knowledgeai_processor import (
-    KnowledgeAIOpenAIProcessor,
 )
 from manakit_assistant.backend.processors.lorem_ipsum_processor import (
     LoremIpsumProcessor,
 )
 from manakit_assistant.backend.processors.openai_responses_processor import (
     OpenAIResponsesProcessor,
+)
+from manakit_assistant.backend.processors.perplexity_processor import (
+    SONAR,
+    SONAR_DEEP_RESEARCH,
+    PerplexityProcessor,
 )
 from manakit_assistant.components import (
     Suggestion,
@@ -35,7 +36,7 @@ from manakit_user.authentication.components.components import (
     default_fallback,
     requires_role,
 )
-from manakit_user.authentication.components.templates import authenticated
+from manakit_user.authentication.templates import authenticated
 
 from app.components.navbar import app_navbar
 
@@ -62,31 +63,14 @@ def initialize_model_manager() -> list[AIModel]:
     model_manager.register_processor("lorem_ipsum", LoremIpsumProcessor())
     config = service_registry().get(AssistantConfig)
 
-    # if config.perplexity_api_key is not None:
-    #     model_manager.register_processor(
-    #         "perplexity",
-    #         PerplexityProcessor(
-    #             api_key=config.perplexity_api_key.get_secret_value(),
-    #             models={SONAR.id: SONAR, SONAR_DEEP_RESEARCH.id: SONAR_DEEP_RESEARCH},
-    #         ),
-    #     )
-
-    model_manager.register_processor(
-        "knowledgeai",
-        KnowledgeAIOpenAIProcessor(
-            server=config.avvia_server,
-            api_key=config.avvia_api_key.get_secret_value(),
-            with_projects=True,
-        ),
-    )
-    model_manager.register_processor(
-        "knowledgeai_openai",
-        KnowledgeAIOpenAIProcessor(
-            server=config.avvia_server,
-            api_key=config.avvia_api_key.get_secret_value(),
-            models={DEFAULT.id: DEFAULT},
-        ),
-    )
+    if config.perplexity_api_key is not None:
+        model_manager.register_processor(
+            "perplexity",
+            PerplexityProcessor(
+                api_key=config.perplexity_api_key.get_secret_value(),
+                models={SONAR.id: SONAR, SONAR_DEEP_RESEARCH.id: SONAR_DEEP_RESEARCH},
+            ),
+        )
 
     models = {
         GPT_5.id: GPT_5,

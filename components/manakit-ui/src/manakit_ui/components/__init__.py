@@ -7,7 +7,6 @@ from manakit_ui.components.editor import (
     EventHandler,
     editor,
 )
-from manakit_ui.components.react_zoom import image_zoom
 
 __all__ = [
     "EditorButtonList",
@@ -15,5 +14,4 @@ __all__ = [
     "EventHandler",
     "collabsible",
     "editor",
-    "image_zoom",
 ]

@@ -19,7 +19,7 @@ from typing import Any
 import reflex as rx
 
 import manakit_mantine as mn
-from manakit_user.authentication.components.templates import navbar_layout
+from manakit_user.authentication.templates import navbar_layout
 
 from app.components.navbar import app_navbar
 
@@ -119,15 +119,15 @@ def basic_input_variants() -> rx.Component:
     return rx.vstack(
         rx.heading("Input Variants", size="4"),
         rx.text("Different visual styles for inputs", size="2", color="gray"),
-        mn.text_input(
+        mn.form.input(
             placeholder="Default variant",
             variant="default",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Filled variant",
             variant="filled",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Unstyled variant",
             variant="unstyled",
         ),
@@ -141,11 +141,11 @@ def input_sizes() -> rx.Component:
     return rx.vstack(
         rx.heading("Input Sizes", size="4"),
         rx.text("From xs to xl", size="2", color="gray"),
-        mn.text_input(placeholder="Extra small (xs)", size="xs"),
-        mn.text_input(placeholder="Small (sm)", size="sm"),
-        mn.text_input(placeholder="Medium (md)", size="md"),
-        mn.text_input(placeholder="Large (lg)", size="lg"),
-        mn.text_input(placeholder="Extra large (xl)", size="xl"),
+        mn.form.input(placeholder="Extra small (xs)", size="xs"),
+        mn.form.input(placeholder="Small (sm)", size="sm"),
+        mn.form.input(placeholder="Medium (md)", size="md"),
+        mn.form.input(placeholder="Large (lg)", size="lg"),
+        mn.form.input(placeholder="Extra large (xl)", size="xl"),
         spacing="3",
         width="100%",
     )
@@ -156,7 +156,7 @@ def input_with_sections() -> rx.Component:
     return rx.vstack(
         rx.heading("Input with Sections", size="4"),
         rx.text("Icons and controls in inputs", size="2", color="gray"),
-        mn.text_input(
+        mn.form.input(
             placeholder="Search...",
             left_section=rx.icon("search"),
             value=MantineInputState.search_query,
@@ -164,7 +164,7 @@ def input_with_sections() -> rx.Component:
             variant="filled",
             radius="xl",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Enter email...",
             left_section=rx.icon("mail"),
             right_section_pointer_events="all",
@@ -173,14 +173,14 @@ def input_with_sections() -> rx.Component:
             ),
             variant="filled",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Clearable input",
             value=MantineInputState.search_query,
             on_change=MantineInputState.set_search_query,
             right_section_pointer_events="all",
             right_section=rx.cond(
                 MantineInputState.search_query,
-                mn.text_input.clear_button(on_click=MantineInputState.clear_search),
+                mn.form.clear_button(on_click=MantineInputState.clear_search),
                 rx.fragment(),
             ),
         ),
@@ -194,8 +194,8 @@ def input_wrapper_example() -> rx.Component:
     return rx.vstack(
         rx.heading("Input.Wrapper", size="4"),
         rx.text("Complete form fields with labels and descriptions", size="2"),
-        mn.text_input.wrapper(
-            mn.text_input(
+        mn.form.wrapper(
+            mn.form.input(
                 placeholder="johndoe",
                 value=MantineInputState.username,
                 on_change=MantineInputState.set_username,
@@ -206,8 +206,8 @@ def input_wrapper_example() -> rx.Component:
             error=MantineInputState.username_error,
             required=True,
         ),
-        mn.text_input.wrapper(
-            mn.text_input(
+        mn.form.wrapper(
+            mn.form.input(
                 placeholder="you@example.com",
                 value=MantineInputState.email,
                 on_change=MantineInputState.set_email,
@@ -234,10 +234,8 @@ def custom_layout_example() -> rx.Component:
             color="gray",
         ),
         rx.vstack(
-            mn.text_input.label("Phone Number", required=True),
-            mn.text_input.description(
-                "Enter your phone number (uses IMask for formatting)"
-            ),
+            mn.form.label("Phone Number", required=True),
+            mn.form.description("Enter your phone number (uses IMask for formatting)"),
             mn.masked_input(
                 mask="+1 (000) 000-0000",  # Fixed prefix +1, then digit placeholders
                 placeholder="+1 (555) 123-4567",
@@ -250,7 +248,7 @@ def custom_layout_example() -> rx.Component:
             ),
             rx.cond(
                 MantineInputState.phone == "",
-                mn.text_input.error("Phone number is required"),
+                mn.form.error("Phone number is required"),
                 rx.fragment(),
             ),
             spacing="2",
@@ -266,17 +264,17 @@ def input_states_example() -> rx.Component:
     return rx.vstack(
         rx.heading("Input States", size="4"),
         rx.text("Disabled, error, and other states", size="2", color="gray"),
-        mn.text_input(
+        mn.form.input(
             placeholder="Disabled input",
             disabled=True,
             value="Cannot edit this",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Input with error",
             error=True,
             value="Invalid value",
         ),
-        mn.text_input(
+        mn.form.input(
             placeholder="Required input",
             required=True,
         ),
@@ -290,11 +288,11 @@ def input_radius_example() -> rx.Component:
     return rx.vstack(
         rx.heading("Border Radius", size="4"),
         rx.text("Different border radius styles", size="2", color="gray"),
-        mn.text_input(placeholder="Extra small radius (xs)", radius="xs"),
-        mn.text_input(placeholder="Small radius (sm)", radius="sm"),
-        mn.text_input(placeholder="Medium radius (md)", radius="md"),
-        mn.text_input(placeholder="Large radius (lg)", radius="lg"),
-        mn.text_input(placeholder="Extra large radius (xl)", radius="xl"),
+        mn.form.input(placeholder="Extra small radius (xs)", radius="xs"),
+        mn.form.input(placeholder="Small radius (sm)", radius="sm"),
+        mn.form.input(placeholder="Medium radius (md)", radius="md"),
+        mn.form.input(placeholder="Large radius (lg)", radius="lg"),
+        mn.form.input(placeholder="Extra large radius (xl)", radius="xl"),
         spacing="3",
         width="100%",
     )

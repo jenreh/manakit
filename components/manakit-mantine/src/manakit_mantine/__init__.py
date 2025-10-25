@@ -6,7 +6,7 @@ from manakit_mantine.base import (
     MantineProvider,
     MemoizedMantineProvider,
 )
-from manakit_mantine.inputs import text_input
+from manakit_mantine.inputs import form
 from manakit_mantine.date import date_input
 from manakit_mantine.number_input import number_input
 from manakit_mantine.masked_input import masked_input
@@ -44,7 +44,7 @@ __all__ = [
     "autocomplete",
     "button",
     "date_input",
-    "input",
+    "form",
     "json_input",
     "masked_input",
     "multi_select",

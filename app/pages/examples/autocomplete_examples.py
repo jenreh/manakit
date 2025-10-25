@@ -3,7 +3,7 @@ import json
 import reflex as rx
 
 import manakit_mantine as mn
-from manakit_user.authentication.components.templates import navbar_layout
+from manakit_user.authentication.templates import navbar_layout
 
 from app.components.navbar import app_navbar
 

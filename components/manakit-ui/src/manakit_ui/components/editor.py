@@ -5,7 +5,7 @@ from __future__ import annotations
 import enum
 from typing import Literal
 
-from reflex.base import Base
+from pydantic import BaseModel
 from reflex.components.component import Component, NoSSRComponent
 from reflex.event import EventHandler, no_args_event_spec, passthrough_event_spec
 from reflex.utils.format import to_camel_case
@@ -46,7 +46,7 @@ class EditorButtonList(list, enum.Enum):
     ]
 
 
-class EditorOptions(Base):
+class EditorOptions(BaseModel):
     """Some of the additional options to configure the Editor.
 
     Complete list of options found here:

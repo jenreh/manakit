@@ -6,11 +6,11 @@ from manakit_ui.components.header import header
 from manakit_user.authentication.components import (
     login_form,
 )
-from manakit_user.authentication.components.templates import (
+from manakit_user.authentication.states import LOGIN_ROUTE, UserSession
+from manakit_user.authentication.templates import (
     authenticated,
     default_layout,
 )
-from manakit_user.authentication.states import LOGIN_ROUTE, UserSession
 from manakit_user.user_management.components.user_profile import profile_roles
 from manakit_user.user_management.states.profile_states import (
     MIN_PASSWORD_LENGTH,
