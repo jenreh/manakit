@@ -75,7 +75,7 @@ class ScrollArea(rx.Component):
     """Delay in ms to hide scrollbars, applicable only when type is hover or scroll."""
 
     # Behavior
-    overscroll_behavior: Var[Literal["contain", "auto", "none"]] = "auto"
+    overscroll_behavior: Var[Literal["contain", "auto", "none"]] = None
     """Controls overscroll-behavior of the viewport (contain, none, auto)."""
 
     # Viewport control
