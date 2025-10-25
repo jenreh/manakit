@@ -100,46 +100,6 @@ def scroll_area_with_controls(
     const wrapper = document.getElementById('@@WRAPPER_ID@@');
     if (!wrapper) return;
 
-    // Inject scoped styles for the floating buttons (light/dark aware)
-    if (!document.getElementById('@@WRAPPER_ID@@-manakit-scroll-styles')) {
-        const style = document.createElement('style');
-        style.id = '@@WRAPPER_ID@@-manakit-scroll-styles';
-        style.innerHTML = `
-            /* Scoped floating button styles */
-            #@@WRAPPER_ID@@ .manakit-scroll-btn {
-                transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-                opacity: 0;
-                visibility: hidden;
-                border-radius: 9999px;
-                padding: 6px;
-                min-width: 40px;
-                height: 40px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-                border: 1px solid rgba(0,0,0,0.08);
-                background: rgba(255,255,255,0.95);
-                color: inherit;
-            }
-            /* Make SVG icons inherit current color so arrows are visible */
-            #@@WRAPPER_ID@@ .manakit-scroll-btn svg,
-            #@@WRAPPER_ID@@ .manakit-scroll-btn svg * {
-                fill: currentColor !important;
-                stroke: currentColor !important;
-            }
-            @media (prefers-color-scheme: dark) {
-                #@@WRAPPER_ID@@ .manakit-scroll-btn {
-                    background: rgba(0,0,0,0.55);
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
-                    border: 1px solid rgba(255,255,255,0.06);
-                    color: inherit;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
     const viewport = wrapper.querySelector(
         '[data-radix-scroll-area-viewport]'
     ) || document.getElementById('@@VIEWPORT_ID@@');
@@ -244,10 +204,14 @@ def scroll_area_with_controls(
         "transition": "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
         "opacity": "0",
         "visibility": "hidden",
-        "background": "#ffffff",
+        "color": rx.color("gray", 9),
+        "background_color": rx.color("gray", 1),
         "borderRadius": "9999px",
-        "boxShadow": "0 2px 8px rgba(0,0,0,0.12)",
-        "border": "1px solid rgba(0,0,0,0.08)",
+        "box_shadow": rx.color_mode_cond(
+            light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
+            dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
+        ),
+        "border": f"1px solid {rx.color('gray', 5)}",
         "padding": "6px",
         "minWidth": "40px",
         "height": "40px",
