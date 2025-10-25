@@ -12,8 +12,8 @@ import enum
 from typing import Final, Literal
 
 import reflex as rx
+from pydantic import BaseModel
 from reflex.assets import asset
-from reflex.base import Base
 from reflex.components.component import NoSSRComponent
 from reflex.event import EventHandler
 from reflex.vars.base import Var
@@ -84,7 +84,7 @@ class ToolbarControlGroup(list, enum.Enum):
     ]
 
 
-class EditorToolbarConfig(Base):
+class EditorToolbarConfig(BaseModel):
     """Configuration for the RichTextEditor toolbar.
 
     Use this to customize which controls appear in the toolbar and how they are grouped.
@@ -187,45 +187,45 @@ class RichTextEditor(NoSSRComponent):
     ]
 
     # Content management
-    content: Var[str] = None
+    content: Var[str | None] = None
     """HTML content for the editor."""
 
     on_update: EventHandler[lambda html: [html]] = None
     """Callback when content changes (receives HTML string)."""
 
     # Editor state
-    editable: Var[bool] = None
+    editable: Var[bool | None] = None
     """Whether the editor is editable. Default: True."""
 
-    placeholder: Var[str] = None
+    placeholder: Var[str | None] = None
     """Placeholder text when editor is empty."""
 
     # Visual props
-    variant: Var[Literal["default", "subtle"]] = None
+    variant: Var[Literal["default", "subtle"] | None] = None
     """Visual style: default (with borders) or subtle (borderless)."""
 
-    with_typography_styles: Var[bool] = None
+    with_typography_styles: Var[bool | None] = None
     """Apply typography styles to content. Default: True."""
 
     # Localization
-    labels: Var[dict] = None
+    labels: Var[dict | None] = None
     """Localization labels for controls."""
 
     # Toolbar configuration - individual props instead of dict
-    control_groups: Var[list] = None
+    control_groups: Var[list | None] = None
     """List of control groups for the toolbar. Each group is a list of control names."""
 
-    show_toolbar: Var[bool] = None
+    show_toolbar: Var[bool | None] = None
     """Whether to show the toolbar. Default: True."""
 
-    sticky: Var[bool] = None
+    sticky: Var[bool | None] = None
     """Whether the toolbar should be sticky. Default: True."""
 
-    sticky_offset: Var[str | int] = None
+    sticky_offset: Var[str | int | None] = None
     """Sticky offset in pixels. Default: '0px'."""
 
     # NEW: Styles API for customizing component appearance
-    styles: Var[dict] = None
+    styles: Var[dict | None] = None
     """CSS styles for sub-components (Mantine Styles API).
 
     Use to customize heights, widths, and other CSS properties of editor parts.
@@ -239,7 +239,7 @@ class RichTextEditor(NoSSRComponent):
     """
 
     # NEW: Class names for styling (Mantine classNames API)
-    class_names: Var[dict] = None
+    class_names: Var[dict | None] = None
     """Class names for sub-components (Mantine classNames API).
 
     Allows you to apply custom CSS classes to editor parts.

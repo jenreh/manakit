@@ -1,6 +1,7 @@
 from enum import StrEnum
 
 import reflex as rx
+from pydantic import BaseModel
 from sqlmodel import Field
 
 from manakit_commons.database.entities import EncryptedString
@@ -54,13 +55,13 @@ class MessageType(StrEnum):
     WARNING = "warning"
 
 
-class Message(rx.Base):
+class Message(BaseModel):
     text: str
     editable: bool = False
     type: MessageType
 
 
-class AIModel(rx.Base):
+class AIModel(BaseModel):
     id: str
     text: str
     icon: str = "codesandbox"
@@ -73,12 +74,12 @@ class AIModel(rx.Base):
     supports_attachments: bool = False
 
 
-class Suggestion(rx.Base):
+class Suggestion(BaseModel):
     prompt: str
     icon: str = ""
 
 
-class ThreadModel(rx.Base):
+class ThreadModel(BaseModel):
     thread_id: str
     title: str = ""
     active: bool = False

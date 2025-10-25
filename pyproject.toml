@@ -1,6 +1,6 @@
 [project]
 name = "manakit"
-version = "0.3.1"
+version = "0.4.0"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -11,9 +11,9 @@ dependencies = [
     "manakit-mantine",
     "manakit-ui",
     "manakit-user",
-    "psycopg>=3.2.10",
-    "psycopg-binary>=3.2.10",
-    "reflex>=0.8.14.post1",
+    "psycopg>=3.2.11",
+    "psycopg-binary>=3.2.11",
+    "reflex>=0.8.16",
 ]
 
 [dependency-groups]
@@ -56,7 +56,7 @@ manakit-ui = { workspace = true }
 manakit-user = { workspace = true }
 
 [tool.bumpversion]
-current_version = "0.3.1"
+current_version = "0.4.0"
 commit = false
 tag = false
 allow-dirty = true

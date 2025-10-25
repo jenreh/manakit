@@ -143,7 +143,9 @@ class RichSelectItem(rx.Component):
     library = f"$/public{_JSX}"
     tag = "RichSelectItem"
 
-    value: Var[str]
+    # value can be None when the source data doesn't provide a value.
+    # Mark as optional to avoid compile-time warnings when None is passed.
+    value: Var[str | None] = None
     option: Var[Any]
     disabled: Var[bool | None] = False
     keywords: Var[list[str] | None]
