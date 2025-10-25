@@ -85,9 +85,6 @@ class NumberInput(MantineInputComponentBase):
     hide_controls: Var[bool] = None
     """Hide increment/decrement buttons."""
 
-    allow_mouse_wheel: Var[bool] = None
-    """Allow mouse wheel to change value."""
-
     start_value: Var[int | float] = None
     """Value when empty input is focused (default: 0)."""
 

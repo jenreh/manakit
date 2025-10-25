@@ -22,10 +22,20 @@ SCROLL_VIEWPORT_ID = "custom-scroll-viewport"
 class ScrollAreaState(rx.State):
     scroll_position: dict = {"x": 0, "y": 0}
     overflow_state: bool = False
+    # track whether viewport is at top / bottom to disable buttons
+    at_top: bool = True
+    at_bottom: bool = False
 
     @rx.event
     def update_scroll_position(self, position: dict) -> None:
+        # position is expected as {'x': number, 'y': number}
         self.scroll_position = position
+        y = position.get("y", 0)
+        # at top when y == 0
+        self.at_top = y == 0
+        # clear at_bottom when user scrolls (onBottomReached will set it)
+        if y != 0:
+            self.at_bottom = False
 
     @rx.event
     def update_overflow(self, overflow: bool) -> None:
@@ -59,6 +69,18 @@ class ScrollAreaState(rx.State):
             """
         )
 
+    @rx.event
+    def set_at_top(self) -> None:
+        """Called when ScrollArea reports top reached."""
+        self.at_top = True
+        self.at_bottom = False
+
+    @rx.event
+    def set_at_bottom(self) -> None:
+        """Called when ScrollArea reports bottom reached."""
+        self.at_bottom = True
+        self.at_top = False
+
 
 @navbar_layout(
     route="/scroll-area",
@@ -84,7 +106,8 @@ def scroll_area_examples() -> rx.Component:
             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem "
             "accusantium ",
             "doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo "
-            "inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+            "inventore veritatis et quasi architecto beatae vitae dicta\
+                sunt explicabo.",
         ),
         rx.text(
             "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit "
@@ -183,10 +206,14 @@ def scroll_area_examples() -> rx.Component:
                         rx.heading("ScrollArea.Autosize", size="4"),
                         mn.scroll_area.autosize(
                             rx.text(
-                                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem "
-                                "accusantium ",
-                                "doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo "
-                                "inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+                                "Sed ut perspiciatis unde omnis iste natus error sit"
+                                " voluptatem accusantium ",
+                                (
+                                    "doloremque laudantium, totam rem aperiam,"
+                                    " eaque ipsa quae ab illo inventore veritatis"
+                                    " et quasi architecto beatae vitae dicta sunt"
+                                    " explicabo."
+                                ),
                             ),
                             max_height="150px",
                             max_width="100%",
@@ -218,11 +245,21 @@ def scroll_area_examples() -> rx.Component:
                             type="always",
                             offset_scrollbars=False,
                             viewport_props={"id": SCROLL_VIEWPORT_ID},
+                            # report scroll position and top/bottom reached events
+                            on_scroll_position_change=ScrollAreaState.update_scroll_position,
+                            on_top_reached=ScrollAreaState.set_at_top,
+                            on_bottom_reached=ScrollAreaState.set_at_bottom,
                         ),
                         rx.hstack(
-                            rx.button("Top", on_click=ScrollAreaState.scroll_to_top),
                             rx.button(
-                                "Bottom", on_click=ScrollAreaState.scroll_to_bottom
+                                "Top",
+                                on_click=ScrollAreaState.scroll_to_top,
+                                disabled=ScrollAreaState.at_top,
+                            ),
+                            rx.button(
+                                "Bottom",
+                                on_click=ScrollAreaState.scroll_to_bottom,
+                                disabled=ScrollAreaState.at_bottom,
                             ),
                         ),
                         rx.text(
