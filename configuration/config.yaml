@@ -7,7 +7,7 @@ reflex:
   workers: 1
 
 app:
-  version: 0.1.0
+  version: 0.5.0
   name: ManaKit App
   logging: logging.prod.yaml
   environment: prod

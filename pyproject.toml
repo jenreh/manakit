@@ -1,6 +1,6 @@
 [project]
 name = "manakit"
-version = "0.4.0"
+version = "0.5.0"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -56,7 +56,7 @@ manakit-ui = { workspace = true }
 manakit-user = { workspace = true }
 
 [tool.bumpversion]
-current_version = "0.4.0"
+current_version = "0.5.0"
 commit = false
 tag = false
 allow-dirty = true
@@ -67,10 +67,39 @@ search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
+filename = "configuration/config.yaml"
+search = 'version: {current_version}'
+replace = 'version: {new_version}'
+
+[[tool.bumpversion.files]]
+filename = "components/manakit-assistant/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/manakit-commons/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/manakit-imagecreator/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
 filename = "components/manakit-mantine/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
+[[tool.bumpversion.files]]
+filename = "components/manakit-ui/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "components/manakit-user/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
 
 [tool.ruff]
 cache-dir = ".cache/ruff"
