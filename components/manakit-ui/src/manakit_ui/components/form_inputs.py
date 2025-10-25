@@ -2,6 +2,7 @@ import logging
 
 import reflex as rx
 
+import manakit_mantine as mn
 import manakit_ui.components as knai
 
 logger = logging.getLogger(__name__)
@@ -109,6 +110,49 @@ def inline_form_field(
         ),
         width="100%",
         class_name="form-group",
+    )
+
+
+def form_field2(
+    icon: str,
+    label: str,
+    hint: str = "",
+    **kwargs,
+) -> rx.Component:
+    if "value" in kwargs:
+        kwargs["default_value"] = None
+    elif "default_value" in kwargs:
+        kwargs["value"] = None
+
+    minlength = kwargs.get("min_length", 0)
+    maxlength = kwargs.get("max_length", 0)
+    pattern = kwargs.get("pattern", "")
+    clear_button = kwargs.get("value") or kwargs.get("default_value")
+
+    return mn.form.wrapper(
+        mn.form.label(
+            label,
+            required=kwargs.get("required", False),
+            margin_top="9px",
+        ),
+        mn.form.description(
+            hint,
+            color="gray",
+            margin_bottom="6px !important",
+        ),
+        mn.form.input(
+            **kwargs,
+            left_section=rx.cond(icon, rx.icon(icon, size=17, stroke_width=1.5), None),
+            right_section=rx.cond(
+                clear_button,
+                mn.form.clear_button(
+                    on_click=rx.call_script(
+                        f"document.querySelector('[name=\"{kwargs.get('name')}\"]').value = ''"
+                    ),
+                ),
+            ),
+        ),
+        width="100%",
     )
 
 

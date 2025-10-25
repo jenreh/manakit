@@ -2,12 +2,17 @@ import reflex as rx
 
 from manakit_ui.components.header import header
 from manakit_user.authentication.components.components import requires_admin
-from manakit_user.authentication.components.templates import authenticated
+from manakit_user.authentication.templates import authenticated
 from manakit_user.user_management.components.user import users_table
+from manakit_user.user_management.states.user_states import UserState
 
 from app.components.navbar import app_navbar
+from app.roles import ALL_ROLES
 
-ROLES = []
+
+def _initialize_roles() -> None:
+    """Initialize roles on first page load."""
+    UserState.roles = ALL_ROLES
 
 
 @authenticated(
@@ -22,9 +27,10 @@ def users_page() -> rx.Component:
     return requires_admin(
         rx.vstack(
             header("Benutzer"),
-            users_table(ROLES, additional_components=additional_components),
+            users_table(additional_components=additional_components),
             width="100%",
             max_width="1200px",
             spacing="6",
+            on_mount=_initialize_roles,
         ),
     )
