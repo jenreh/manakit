@@ -2,7 +2,7 @@ import reflex as rx
 from reflex.components.sonner.toast import Toaster
 
 from manakit_commons.database.session import get_asyncdb_session
-from manakit_user.authentication import user_repository
+from manakit_user.authentication.backend import user_repository
 from manakit_user.authentication.backend.models import Role, User, UserCreate
 
 
@@ -10,14 +10,17 @@ class UserState(rx.State):
     users: list[User] = []
     selected_user: User | None
     is_loading: bool = False
-    roles: list[Role]
+    roles: list[Role] = []  # ✅ Default empty list
+
+    def set_roles(self, roles_list: list[Role]) -> None:
+        """Set the available roles."""
+        self.roles = roles_list
 
     def _get_selected_roles(self, form_data: dict) -> list[str]:
         roles = []
         for key, value in form_data.items():
             if key.startswith("role_") and value == "on":
                 roles.append(key.split("role_")[1])
-
         return roles
 
     async def load_users(self, limit: int = 200, offset: int = 0) -> None:
@@ -70,8 +73,6 @@ class UserState(rx.State):
             form_data["is_verified"] = True
         else:
             form_data["is_verified"] = False
-
-        # Handle roles based on checkbox selections
 
         form_data["roles"] = self._get_selected_roles(form_data)
 
