@@ -171,10 +171,15 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||"
+            "document.getElementById('"
             f"{self.viewport_id}"
             "');"
-            "return vp?vp.scrollTop:0;"
+            "if(!vp)return 0;"
+            "const y=vp.scrollTop;"
+            "const key=w?.dataset?.mnkScrollPersistKey;"
+            "if(key){try{localStorage.setItem(key,String(y));}catch(e){};}"
+            "return y;"
             "})()"
         )
         return rx.call_script(js, callback=self.save_scroll)
@@ -187,10 +192,15 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||"
+            "document.getElementById('"
             f"{self.viewport_id}"
             "');"
-            "return vp?vp.scrollTop:0;"
+            "if(!vp)return 0;"
+            "const y=vp.scrollTop;"
+            "const key=w?.dataset?.mnkScrollPersistKey;"
+            "if(key){try{localStorage.setItem(key,String(y));}catch(e){};}"
+            "return y;"
             "})()"
         )
         return rx.call_script(js, callback=self.save_scroll)
@@ -220,17 +230,30 @@ class ScrollAreaWithState(rx.ComponentState):
 
     @rx.event
     def setup_controls(
-        self, viewport_id: str, wrapper_id: str, top_buf: int, bottom_buf: int
+        self,
+        viewport_id: str,
+        wrapper_id: str,
+        top_buf: int,
+        bottom_buf: int,
+        persist_key: str | None = None,
     ) -> list[EventSpec]:
         """IDs setzen, IO für Buttons aktivieren und anschließend Scroll wiederherstellen."""
         self.viewport_id = viewport_id
         self.wrapper_id = wrapper_id
+
+        # Persist key: if provided, expose it on the wrapper for other handlers
+        persist_assignment = (
+            f"wrapper.dataset.mnkScrollPersistKey='{persist_key}';"
+            if persist_key
+            else ""
+        )
 
         io_js = (
             "(function(){"
             f"const wrapper=document.getElementById('{wrapper_id}');"
             "if(!wrapper||wrapper.dataset.mnkScrollInit==='1')return;"
             "wrapper.dataset.mnkScrollInit='1';"
+            f"{persist_assignment}"
             "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
             f"{viewport_id}"
             "');"
@@ -258,6 +281,13 @@ class ScrollAreaWithState(rx.ComponentState):
             "{ root:vp, rootMargin:'0px 0px -"
             f"{bottom_buf}"
             "px 0px', threshold:0 }).observe(sBot);}"
+            # Attach scroll listener to persist position client-side
+            "(function(){const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return;"
+            "vp.addEventListener('scroll', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"
+            "window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"
+            # Try to restore from localStorage immediately on mount
+            "(function(){ try{ const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return; const v=localStorage.getItem(key); const yy=v?parseInt(v,10):0; if(yy>0){ requestAnimationFrame(()=>requestAnimationFrame(()=>{ vp.scrollTo({ top:yy, behavior:'auto' }); })); } }catch(e){} })();"
+            "})();"
             "})();"
         )
         # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining). :contentReference[oaicite:1]{index=1}
@@ -278,8 +308,9 @@ class ScrollAreaWithState(rx.ComponentState):
         button_props: dict | None = None,
         height: str = "300px",
         viewport_id: str | None = None,
+        persist_key: str | None = None,
         # ScrollArea-Props
-        type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",
+        type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",  # noqa: A002
         scrollbars: Literal[False, "x", "y", "xy"] = "xy",
         offset_scrollbars: bool | Literal["x", "y", "present"] = True,
         overscroll_behavior: Literal["contain", "auto", "none"] | None = None,
@@ -328,10 +359,11 @@ class ScrollAreaWithState(rx.ComponentState):
                 id=wrapper_id,
                 style={"position": "relative", "width": "100%"},
                 on_mount=cls.setup_controls(
-                    viewport_id, wrapper_id, top_buffer, bottom_buffer
+                    viewport_id, wrapper_id, top_buffer, bottom_buffer, persist_key
                 ),
                 on_unmount=cls.capture_scroll_from_dom,
                 data_scroll_y=cls.scroll_y,
+                data_mnk_scroll_persist_key=persist_key,
                 **props,
             )
 
@@ -443,10 +475,11 @@ class ScrollAreaWithState(rx.ComponentState):
             id=wrapper_id,
             style={"position": "relative", "width": "100%"},
             on_mount=cls.setup_controls(
-                viewport_id, wrapper_id, top_buffer, bottom_buffer
+                viewport_id, wrapper_id, top_buffer, bottom_buffer, persist_key
             ),
             on_unmount=cls.capture_scroll_from_dom,
             data_scroll_y=cls.scroll_y,
+            data_mnk_scroll_persist_key=persist_key,
             **props,
         )
 

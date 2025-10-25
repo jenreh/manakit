@@ -288,6 +288,7 @@ def navbar(
                 scrollbars="y",
                 scrollbar_size="6px",
                 show_controls=False,
+                persist_key="navbar_scroll_area",
                 # Allow the scroll area to grow and take available space
                 flex="1",
                 min_height="0",
