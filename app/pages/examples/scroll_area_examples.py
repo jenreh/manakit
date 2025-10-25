@@ -158,22 +158,6 @@ def scroll_area_examples() -> rx.Component:
             ),
             rx.link("← Back to Home", href="/", size="3"),
             rx.grid(
-                # Basic ScrollArea
-                rx.card(
-                    rx.vstack(
-                        rx.heading("Basic ScrollArea", size="4"),
-                        mn.scroll_area(
-                            lorem_content,
-                            height="150px",
-                            type="hover",
-                        ),
-                        rx.text("Hover to see scrollbars", size="2", color="gray"),
-                        spacing="3",
-                        width="100%",
-                    ),
-                    padding="4",
-                    border_radius="md",
-                ),
                 # ScrollArea with position tracking
                 rx.card(
                     rx.vstack(
@@ -257,32 +241,6 @@ def scroll_area_examples() -> rx.Component:
                     padding="4",
                     border_radius="md",
                 ),
-                # ScrollArea with 12px bottom buffer (using new component)
-                rx.card(
-                    rx.vstack(
-                        rx.heading("12px Bottom Buffer", size="4"),
-                        mn.scroll_area_with_controls(
-                            lorem_content,
-                            height="150px",
-                            top_buffer=12,
-                            bottom_buffer=12,
-                            type="always",
-                            offset_scrollbars=False,
-                            controls_position="bottom",
-                            top_button_text="↑ Top",
-                            bottom_button_text="↓ Bottom",
-                        ),
-                        rx.text(
-                            "Buttons automatically hide within 12px of edges",
-                            size="2",
-                            color="gray",
-                        ),
-                        spacing="3",
-                        width="100%",
-                    ),
-                    padding="4",
-                    border_radius="md",
-                ),
                 # ScrollArea with custom scrollbar size
                 rx.card(
                     rx.vstack(
@@ -295,56 +253,6 @@ def scroll_area_examples() -> rx.Component:
                             scrollbar_size=20,
                         ),
                         rx.text("Thicker scrollbars (20px)", size="2", color="gray"),
-                        spacing="3",
-                        width="100%",
-                    ),
-                    padding="4",
-                    border_radius="md",
-                ),
-                # ScrollArea with 24px bottom buffer (using new component)
-                rx.card(
-                    rx.vstack(
-                        rx.heading("24px Bottom Buffer", size="4"),
-                        mn.scroll_area_with_controls(
-                            lorem_content,
-                            height="150px",
-                            top_buffer=0,
-                            bottom_buffer=36,
-                            type="hover",
-                            offset_scrollbars=False,
-                            controls_position="bottom",
-                            top_button_text="↑ Top",
-                            bottom_button_text="↓ Bottom",
-                        ),
-                        rx.text(
-                            "Buttons automatically hide within 24px of edges",
-                            size="2",
-                            color="gray",
-                        ),
-                        spacing="3",
-                        width="100%",
-                    ),
-                    padding="4",
-                    border_radius="md",
-                ),
-                # ScrollArea with top control only
-                rx.card(
-                    rx.vstack(
-                        rx.heading("Top Control Only", size="4"),
-                        mn.scroll_area_with_controls(
-                            lorem_content,
-                            height="150px",
-                            controls="top",
-                            type="always",
-                            offset_scrollbars=False,
-                            controls_position="bottom",
-                            top_button_text="↑ Top",
-                        ),
-                        rx.text(
-                            "Only scroll-to-top button is shown",
-                            size="2",
-                            color="gray",
-                        ),
                         spacing="3",
                         width="100%",
                     ),
@@ -375,7 +283,7 @@ def scroll_area_examples() -> rx.Component:
                     padding="4",
                     border_radius="md",
                 ),
-                # ScrollArea with both controls (default)
+                # ScrollArea with both controls right
                 rx.card(
                     rx.vstack(
                         rx.heading("Both Controls (Default)", size="4"),
@@ -386,8 +294,13 @@ def scroll_area_examples() -> rx.Component:
                             type="always",
                             offset_scrollbars=False,
                             controls_position="bottom",
-                            top_button_text="↑ Top",
-                            bottom_button_text="↓ Bottom",
+                            top_button_text="↑",
+                            bottom_button_text="↓",
+                            bottom_buffer=36,
+                            button_align="right",
+                            button_props={
+                                "style": {"background": "#fff0f0", "minWidth": "42px"}
+                            },
                         ),
                         rx.text(
                             "Both scroll buttons are shown (default behavior)",
