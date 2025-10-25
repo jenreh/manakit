@@ -187,8 +187,8 @@ def scroll_area_examples() -> rx.Component:
                 # ScrollArea with vertical only scrollbars
                 rx.card(
                     rx.vstack(
-                        rx.heading("Vertical Only Scrollbars", size="4"),
-                        mn.scroll_area(
+                        rx.heading("Vertical Only Scrollbars with State", size="4"),
+                        mn.scroll_area.stateful(
                             rx.box(
                                 lorem_content,
                                 width="600px",  # Content wider than container
@@ -197,6 +197,7 @@ def scroll_area_examples() -> rx.Component:
                             width="100%",
                             scrollbars="y",
                             type="always",
+                            show_controls=False,
                         ),
                         rx.text(
                             "Only vertical scrollbar visible", size="2", color="gray"
@@ -263,10 +264,10 @@ def scroll_area_examples() -> rx.Component:
                 rx.card(
                     rx.vstack(
                         rx.heading("Bottom Control Only", size="4"),
-                        mn.scroll_area_with_controls(
+                        mn.scroll_area.stateful(
                             lorem_content,
                             height="150px",
-                            type="always",
+                            type="hover",
                             offset_scrollbars=False,
                             controls="bottom",
                             controls_position="top",
@@ -287,20 +288,17 @@ def scroll_area_examples() -> rx.Component:
                 rx.card(
                     rx.vstack(
                         rx.heading("Both Controls (Default)", size="4"),
-                        mn.scroll_area_with_controls(
+                        mn.scroll_area.stateful(
                             lorem_content,
                             height="150px",
                             controls="top-bottom",
-                            type="always",
+                            type="hover",
                             offset_scrollbars=False,
                             controls_position="bottom",
                             top_button_text="↑",
                             bottom_button_text="↓",
-                            bottom_buffer=36,
                             button_align="right",
-                            button_props={
-                                "style": {"background": "#fff0f0", "minWidth": "42px"}
-                            },
+                            button_props={"style": {"background": "#ff9090"}},
                         ),
                         rx.text(
                             "Both scroll buttons are shown (default behavior)",

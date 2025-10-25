@@ -2,6 +2,7 @@ import logging
 
 import reflex as rx
 
+import manakit_mantine as mn
 from manakit_ui.global_states import LoadingState
 from manakit_user.authentication.components.components import requires_admin
 from manakit_user.authentication.states import LoginState
@@ -277,16 +278,21 @@ def navbar(
                     LoadingState.is_loading, "rainbow-gradient-bar", "default-bar"
                 ),
             ),
-            rx.scroll_area(
+            mn.scroll_area.stateful(
                 navbar_items,
                 requires_admin(
                     navbar_admin_items,
                 ),
                 width="100%",
-                type="auto",
-                scrollbars="vertical",
+                type="hover",
+                scrollbars="y",
+                scrollbar_size="6px",
+                show_controls=False,
+                # Allow the scroll area to grow and take available space
+                flex="1",
+                min_height="0",
+                height="100%",
             ),
-            rx.spacer(),
             navbar_footer,
             justify="end",
             align="end",
