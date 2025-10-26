@@ -58,15 +58,15 @@ class ProfileState(rx.State):
             ]
         )
 
-        if criteria_met == 1:
+        if criteria_met == 1:  # noqa: PLR2004
             self.strength_value = 20
-        elif criteria_met == 2:
+        elif criteria_met == 2:  # noqa: PLR2004
             self.strength_value = 40
-        elif criteria_met == 3:
+        elif criteria_met == 3:  # noqa: PLR2004
             self.strength_value = 60
-        elif criteria_met == 4:
+        elif criteria_met == 4:  # noqa: PLR2004
             self.strength_value = 80
-        elif criteria_met == 5:
+        elif criteria_met == 5:  # noqa: PLR2004
             self.strength_value = 100
         else:
             self.strength_value = 0

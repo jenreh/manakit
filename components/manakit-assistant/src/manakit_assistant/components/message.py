@@ -1,9 +1,11 @@
 import reflex as rx
 
 import manakit_ui.components as knai
-from manakit_assistant.state.thread_state import (
+from manakit_assistant.backend.models import (
     Message,
     MessageType,
+)
+from manakit_assistant.state.thread_state import (
     Thinking,
     ThinkingStatus,
     ThinkingType,

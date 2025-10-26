@@ -300,11 +300,11 @@ class NumberFormState(rx.State):
 
     async def validate_salary(self) -> AsyncGenerator[Any, Any]:
         """Validate salary is within reasonable range."""
-        if self.salary <= 0:
+        if self.salary <= 0:  # noqa: PLR2004
             self.salary_error = "Salary must be greater than 0"
-        elif self.salary < 1000:
+        elif self.salary < 1000:  # noqa: PLR2004
             self.salary_error = "Minimum salary is $1,000"
-        elif self.salary > 1000000:
+        elif self.salary > 1000000:  # noqa: PLR2004
             self.salary_error = "Please enter a realistic salary"
         else:
             self.salary_error = ""

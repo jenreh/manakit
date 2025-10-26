@@ -20,8 +20,10 @@ class TiptapState(rx.State):
     )
 
     # Controlled editor content
-    controlled_content: str = """<h2 style="text-align: center;">Welcome to Mantine Rich Text Editor</h2>
-<p>This editor demonstrates <strong>controlled mode</strong> where content is synced with Reflex state.</p>
+    controlled_content: str = """<h2 style="text-align: center;">Welcome to
+    Mantine Rich Text Editor</h2>
+<p>This editor demonstrates <strong>controlled mode</strong> where content is
+synced with Reflex state.</p>
 <p>You can use:</p>
 <ul>
 <li><strong>Bold</strong>, <em>italic</em>, <u>underline</u> formatting</li>
@@ -31,20 +33,24 @@ class TiptapState(rx.State):
 </ul>"""
 
     # Minimal toolbar content
-    minimal_toolbar_content: str = """<p>This editor has a <strong>minimal toolbar</strong> with only basic formatting controls.</p>"""
+    minimal_toolbar_content: str = """<p>This editor has a <strong>minimal toolbar
+    </strong> with only basic formatting controls.</p>"""
 
     # Custom toolbar content
     custom_toolbar_content: str = """<h2>Custom Toolbar Configuration</h2>
 <p>This editor demonstrates custom toolbar groups!</p>"""
 
     # Color picker example content
-    color_content: str = """<p>Select text and use the color picker to <span style="color: #fa5252">change</span> <span style="color: #228be6">text</span> <span style="color: #40c057">colors</span>!</p>"""
+    color_content: str = """<p>Select text and use the color picker to
+    <span style="color: #fa5252">change</span> <span style="color: #228be6">text</span>
+    <span style="color: #40c057">colors</span>!</p>"""
 
     # Minimal content
     minimal_content: str = ""
 
     # Code example
-    code_content: str = """<p>You can write code inline with <code>backticks</code> or use code blocks:</p>
+    code_content: str = """<p>You can write code inline with <code>backticks</code>
+    or use code blocks:</p>
 <pre><code>def hello_world():
     print("Hello from Mantine RichTextEditor!")</code></pre>"""
 
@@ -100,7 +106,8 @@ def tiptap_page() -> rx.Component:
         rx.vstack(
             rx.heading("Mantine RichTextEditor (Tiptap)", size="9"),
             rx.text(
-                "Comprehensive WYSIWYG editor based on Tiptap with full formatting support.",
+                "Comprehensive WYSIWYG editor based on Tiptap with full "
+                "formatting support.",
                 size="4",
                 color_scheme="gray",
             ),
@@ -112,7 +119,8 @@ def tiptap_page() -> rx.Component:
             # Simple editor with default toolbar
             rx.heading("Rich Text Editor", size="7", mt="6"),
             rx.text(
-                "Full-featured editor with pre-configured toolbar, min/max height, and sticky toolbar.",
+                "Full-featured editor with pre-configured toolbar, min/max "
+                "height, and sticky toolbar.",
                 size="3",
                 color_scheme="gray",
                 mb="3",
@@ -359,7 +367,8 @@ def tiptap_page() -> rx.Component:
                     rx.code("React.createElement"),
                 ),
                 rx.list_item(
-                    "Syncs content bidirectionally between Reflex state and Tiptap editor",
+                    "Syncs content bidirectionally between Reflex state "
+                    "and Tiptap editor",
                 ),
                 rx.list_item(
                     "Based on Tiptap 2.x with Mantine UI components",

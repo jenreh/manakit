@@ -118,6 +118,7 @@ def form_field2(
     icon: str,
     label: str,
     hint: str = "",
+    validation_error: str | None = None,
     **kwargs,
 ) -> rx.Component:
     if "value" in kwargs:
@@ -130,9 +131,6 @@ def form_field2(
         size_map = {"1": "xs", "2": "sm", "3": "md", "4": "lg", "5": "xl"}
         kwargs["size"] = size_map.get(kwargs["size"], "md")
 
-    minlength = kwargs.get("min_length", 0)
-    maxlength = kwargs.get("max_length", 0)
-    pattern = kwargs.get("pattern", "")
     clear_button = kwargs.get("value") or kwargs.get("default_value")
 
     return mn.form.wrapper(
@@ -153,10 +151,14 @@ def form_field2(
                 clear_button,
                 mn.form.clear_button(
                     on_click=rx.call_script(
-                        f"document.querySelector('[name=\"{kwargs.get('name')}\"]').value = ''"
+                        f"document.querySelector('[name=\"{kwargs.get('name')}\"]').value = ''"  # noqa: E501
                     ),
                 ),
             ),
+        ),
+        rx.cond(
+            validation_error,
+            mn.form.error(validation_error, margin_top="3px"),
         ),
         width="100%",
     )

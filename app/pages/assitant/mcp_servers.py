@@ -11,7 +11,7 @@ from app.components.navbar import app_navbar
 
 
 @authenticated(
-    route="/assistant/admin/mcp-servers",
+    route="/admin/mcp-servers",
     title="MCP Server",
     navbar=app_navbar(),
     admin_only=True,

@@ -24,7 +24,7 @@ class SelectState(rx.State):
     def set_object(self, v: str) -> None:
         self.object_value = v
 
-    def set_multi(self, v) -> None:
+    def set_multi(self, v: str | list) -> None:
         if isinstance(v, list):
             self.multi = v
         elif isinstance(v, str):
@@ -154,7 +154,7 @@ def select_examples() -> rx.Component:
                             {"value": "justify", "label": "Justify"},
                         ],
                         render_option=rx.Var(
-                            "( { option, checked } ) => { const icons = { left: '⬅️', center: '↔️', right: '➡️', justify: '↕️' }; return (\n  <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>\n    <span style={{marginRight: 8}}>{icons[option.value]}</span>\n    <span>{option.label}</span>\n    {checked ? <span style={{marginLeft: 'auto'}}>✓</span> : null}\n  </div>\n) }",
+                            "( { option, checked } ) => { const icons = { left: '⬅️', center: '↔️', right: '➡️', justify: '↕️' }; return (\n  <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>\n    <span style={{marginRight: 8}}>{icons[option.value]}</span>\n    <span>{option.label}</span>\n    {checked ? <span style={{marginLeft: 'auto'}}>✓</span> : null}\n  </div>\n) }",  # noqa: E501
                             _var_type=str,
                         ),
                     ),

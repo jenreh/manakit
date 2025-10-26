@@ -44,9 +44,9 @@ def delete_dialog(
                     rx.button(
                         "Abbrechen",
                         class_name=(
-                            "bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-300 "
-                            "hover:bg-gray-200 dark:hover:bg-neutral-600 "
-                            "px-4 py-2 rounded"
+                            "bg-gray-100 dark:bg-neutral-700 text-gray-700 "
+                            "dark:text-neutral-300 hover:bg-gray-200 "
+                            "dark:hover:bg-neutral-600 px-4 py-2 rounded"
                         ),
                     ),
                 ),
@@ -101,9 +101,9 @@ def dialog_buttons(submit_text: str, spacing: str = "3") -> rx.Component:
             rx.button(
                 "Abbrechen",
                 class_name=(
-                    "bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-300 "
-                    "hover:bg-gray-200 dark:hover:bg-neutral-600 "
-                    "px-4 py-2 rounded"
+                    "bg-gray-100 dark:bg-neutral-700 text-gray-700 "
+                    "dark:text-neutral-300 hover:bg-gray-200 "
+                    "dark:hover:bg-neutral-600 px-4 py-2 rounded"
                 ),
             ),
         ),

@@ -4,7 +4,6 @@ import logging
 
 import reflex as rx
 
-from manakit_assistant import ASSISTANT_ROLE
 from manakit_assistant.backend.model_manager import ModelManager
 from manakit_assistant.backend.models import AIModel
 from manakit_assistant.backend.processors.ai_models import (
@@ -39,6 +38,7 @@ from manakit_user.authentication.components.components import (
 from manakit_user.authentication.templates import authenticated
 
 from app.components.navbar import app_navbar
+from app.roles import ASSISTANT_ROLE
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

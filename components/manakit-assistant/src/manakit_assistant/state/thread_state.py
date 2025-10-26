@@ -16,6 +16,7 @@ from manakit_assistant.backend.models import (
     MCPServer,
     Message,
     MessageType,
+    Suggestion,
     ThreadModel,
     ThreadStatus,
 )
@@ -53,6 +54,7 @@ class ThreadState(rx.State):
     processing: bool = False
     messages: list[Message] = []
     prompt: str = ""
+    suggestions: list[Suggestion] | None = None
 
     # Chunk processing state
     current_chunks: list[Chunk] = []
@@ -101,6 +103,11 @@ class ThreadState(rx.State):
     def has_ai_models(self) -> bool:
         """Check if there are any chat models."""
         return len(self.ai_models) > 0
+
+    @rx.var
+    def has_suggestions(self) -> bool:
+        """Check if there are any suggestions."""
+        return self.suggestions is not None and len(self.suggestions) > 0
 
     @rx.var
     def get_ai_model(self) -> str | None:

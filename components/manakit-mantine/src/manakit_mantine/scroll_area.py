@@ -139,7 +139,8 @@ class ScrollAreaAutosize(ScrollArea):
 
 
 class ScrollAreaWithState(rx.ComponentState):
-    """ScrollArea + Controls mit State-basiertem Scroll-Resume und IO-basierten Buttons."""
+    """ScrollArea + Controls mit State-basiertem Scroll-Resume
+    und IO-basierten Buttons."""
 
     # letzter bekannter Scroll-Y (px)
     scroll_y: int = 0
@@ -214,7 +215,7 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{self.viewport_id}"
             "');"
             "if(!vp)return;"
@@ -237,7 +238,8 @@ class ScrollAreaWithState(rx.ComponentState):
         bottom_buf: int,
         persist_key: str | None = None,
     ) -> list[EventSpec]:
-        """IDs setzen, IO für Buttons aktivieren und anschließend Scroll wiederherstellen."""
+        """IDs setzen, IO für Buttons aktivieren und anschließend
+        Scroll wiederherstellen."""
         self.viewport_id = viewport_id
         self.wrapper_id = wrapper_id
 
@@ -254,7 +256,7 @@ class ScrollAreaWithState(rx.ComponentState):
             "if(!wrapper||wrapper.dataset.mnkScrollInit==='1')return;"
             "wrapper.dataset.mnkScrollInit='1';"
             f"{persist_assignment}"
-            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{viewport_id}"
             "');"
             "if(!vp)return;"
@@ -270,7 +272,7 @@ class ScrollAreaWithState(rx.ComponentState):
             "}"
             f"const sTop=sentinel('{viewport_id}-sentinel-top','top');"
             f"const sBot=sentinel('{viewport_id}-sentinel-bottom','bottom');"
-            "function setVis(el,show){if(!el)return;el.style.opacity=show?'1':'0';el.style.visibility=show?'visible':'hidden';}"
+            "function setVis(el,show){if(!el)return;el.style.opacity=show?'1':'0';el.style.visibility=show?'visible':'hidden';}"  # noqa: E501
             "if(btnTop){"
             "new IntersectionObserver(([e])=>setVis(btnTop,!e.isIntersecting),"
             "{ root:vp, rootMargin:'-"
@@ -282,15 +284,16 @@ class ScrollAreaWithState(rx.ComponentState):
             f"{bottom_buf}"
             "px 0px', threshold:0 }).observe(sBot);}"
             # Attach scroll listener to persist position client-side
-            "(function(){const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return;"
-            "vp.addEventListener('scroll', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"
-            "window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"
+            "(function(){const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return;"  # noqa: E501
+            "vp.addEventListener('scroll', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
+            "window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
             # Try to restore from localStorage immediately on mount
-            "(function(){ try{ const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return; const v=localStorage.getItem(key); const yy=v?parseInt(v,10):0; if(yy>0){ requestAnimationFrame(()=>requestAnimationFrame(()=>{ vp.scrollTo({ top:yy, behavior:'auto' }); })); } }catch(e){} })();"
+            "(function(){ try{ const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return; const v=localStorage.getItem(key); const yy=v?parseInt(v,10):0; if(yy>0){ requestAnimationFrame(()=>requestAnimationFrame(()=>{ vp.scrollTo({ top:yy, behavior:'auto' }); })); } }catch(e){} })();"  # noqa: E501
             "})();"
             "})();"
         )
-        # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining). :contentReference[oaicite:1]{index=1}
+        # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining).
+        # :contentReference[oaicite:1]{index=1}
         return [rx.call_script(io_js), self.restore_scroll()]
 
     # ---------- Factory: UI ----------
@@ -410,7 +413,7 @@ class ScrollAreaWithState(rx.ComponentState):
             js = (
                 "(function(){"
                 f"const w=document.getElementById('{wrapper_id}');"
-                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
                 f"{viewport_id}"
                 "');"
                 "if(!vp)return;"

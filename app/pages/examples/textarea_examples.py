@@ -58,7 +58,7 @@ class TextareaState(rx.State):
     @rx.event
     async def validate_feedback(self) -> AsyncGenerator[Any, Any]:
         """Validate feedback on blur."""
-        if len(self.feedback) < 10:
+        if len(self.feedback) < 10:  # noqa: PLR2004
             self.feedback_error = "Feedback must be at least 10 characters"
         else:
             self.feedback_error = ""
@@ -66,7 +66,7 @@ class TextareaState(rx.State):
     @rx.event
     async def validate_bio(self) -> AsyncGenerator[Any, Any]:
         """Validate bio on blur."""
-        if len(self.bio) > 500:
+        if len(self.bio) > 500:  # noqa: PLR2004
             self.bio_error = "Bio must not exceed 500 characters"
         else:
             self.bio_error = ""
@@ -306,7 +306,10 @@ def complete_form_example() -> rx.Component:
             ),
             mn.textarea(
                 label="Bio",
-                description=f"{TextareaState.char_count}/500 characters, {TextareaState.word_count} words",
+                description=(
+                    f"{TextareaState.char_count}/500 characters, "
+                    f"{TextareaState.word_count} words"
+                ),
                 placeholder="Tell us about yourself...",
                 value=TextareaState.bio,
                 error=TextareaState.bio_error,

@@ -10,7 +10,8 @@ from manakit_mantine.scroll_area import scroll_area
 
 
 class ScrollAreaWithControlsState(rx.ComponentState):
-    """ScrollArea + Controls mit State-basiertem Scroll-Resume und IO-basierten Buttons."""
+    """ScrollArea + Controls mit State-basiertem Scroll-Resume und
+    IO-basierten Buttons."""
 
     # letzter bekannter Scroll-Y (px)
     scroll_y: int = 0
@@ -22,7 +23,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
     # ---------- Events (müssen öffentlich sein!) ----------
 
     @rx.event
-    def on_position(self, position: dict):
+    def on_position(self, position: dict) -> None:
         """Mantine onScrollPositionChange -> {x, y}"""
         try:
             self.scroll_y = int(position.get("y", 0))
@@ -30,19 +31,19 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             self.scroll_y = 0
 
     @rx.event
-    def save_scroll(self, y: int):
+    def save_scroll(self, y: int) -> None:
         """Scrollwert aus dem Browser übernehmen."""
         self.scroll_y = int(y)
 
     @rx.event
-    def capture_scroll_from_dom(self):
+    def capture_scroll_from_dom(self) -> rx.Action | None:
         """ScrollTop einmalig aus dem DOM lesen (z. B. vor Unmount)."""
         if not self.viewport_id:
             return None
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{self.viewport_id}"
             "');"
             "return vp?vp.scrollTop:0;"
@@ -51,14 +52,14 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         return rx.call_script(js, callback=self.save_scroll)
 
     @rx.event
-    def track_scroll(self):
+    def track_scroll(self) -> rx.Action | None:
         """Bei Scroll-Ereignissen den aktuellen ScrollTop speichern."""
         if not self.viewport_id:
             return None
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{self.viewport_id}"
             "');"
             "return vp?vp.scrollTop:0;"
@@ -67,7 +68,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         return rx.call_script(js, callback=self.save_scroll)
 
     @rx.event
-    def restore_scroll(self):
+    def restore_scroll(self) -> rx.Action | None:
         """ScrollTop nach Mount/Theme-Wechsel wiederherstellen."""
         if not self.viewport_id:
             return None
@@ -75,7 +76,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{self.viewport_id}"
             "');"
             "if(!vp)return;"
@@ -92,8 +93,9 @@ class ScrollAreaWithControlsState(rx.ComponentState):
     @rx.event
     def setup_controls(
         self, viewport_id: str, wrapper_id: str, top_buf: int, bottom_buf: int
-    ):
-        """IDs setzen, IO für Buttons aktivieren und anschließend Scroll wiederherstellen."""
+    ) -> list[rx.Action]:
+        """IDs setzen, IO für Buttons aktivieren und anschließend
+        Scroll wiederherstellen."""
         self.viewport_id = viewport_id
         self.wrapper_id = wrapper_id
 
@@ -102,7 +104,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             f"const wrapper=document.getElementById('{wrapper_id}');"
             "if(!wrapper||wrapper.dataset.mnkScrollInit==='1')return;"
             "wrapper.dataset.mnkScrollInit='1';"
-            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
             f"{viewport_id}"
             "');"
             "if(!vp)return;"
@@ -118,7 +120,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             "}"
             f"const sTop=sentinel('{viewport_id}-sentinel-top','top');"
             f"const sBot=sentinel('{viewport_id}-sentinel-bottom','bottom');"
-            "function setVis(el,show){if(!el)return;el.style.opacity=show?'1':'0';el.style.visibility=show?'visible':'hidden';}"
+            "function setVis(el,show){if(!el)return;el.style.opacity=show?'1':'0';el.style.visibility=show?'visible':'hidden';}"  # noqa: E501
             "if(btnTop){"
             "new IntersectionObserver(([e])=>setVis(btnTop,!e.isIntersecting),"
             "{ root:vp, rootMargin:'-"
@@ -131,7 +133,8 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             "px 0px', threshold:0 }).observe(sBot);}"
             "})();"
         )
-        # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining). :contentReference[oaicite:1]{index=1}
+        # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining).
+        # :contentReference[oaicite:1]{index=1}
         return [rx.call_script(io_js), self.restore_scroll()]
 
     # ---------- Factory: UI ----------
@@ -235,7 +238,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             js = (
                 "(function(){"
                 f"const w=document.getElementById('{wrapper_id}');"
-                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"
+                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
                 f"{viewport_id}"
                 "');"
                 "if(!vp)return;"

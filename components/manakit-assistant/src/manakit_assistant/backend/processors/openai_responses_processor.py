@@ -315,7 +315,7 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
 
         return None
 
-    def _handle_content_events(self, event_type: str, event: Any) -> Chunk | None:
+    def _handle_content_events(self, event_type: str, event: Any) -> Chunk | None:  # noqa: ARG002
         """Handle content-related events."""
         if event_type == "response.content_part.added":
             # Content part added - this typically starts text streaming
