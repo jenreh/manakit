@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Callable
 
 import reflex as rx
@@ -5,6 +6,7 @@ import reflex as rx
 from manakit_user.authentication.states import LoginState, UserSession
 from manakit_user.configuration import OAuthProvider
 
+logger = logging.getLogger(__name__)
 ComponentCallable = Callable[[], rx.Component]
 
 ### components ###

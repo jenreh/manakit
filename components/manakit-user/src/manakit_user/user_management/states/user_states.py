@@ -10,11 +10,11 @@ class UserState(rx.State):
     users: list[User] = []
     selected_user: User | None
     is_loading: bool = False
-    roles: list[Role] = []  # ✅ Default empty list
+    available_roles: list[dict[str, str]] = []
 
-    def set_roles(self, roles_list: list[Role]) -> None:
+    def set_available_roles(self, roles_list: list[Role]) -> None:
         """Set the available roles."""
-        self.roles = roles_list
+        self.available_roles = roles_list
 
     def _get_selected_roles(self, form_data: dict) -> list[str]:
         roles = []

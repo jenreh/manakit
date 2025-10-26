@@ -117,24 +117,34 @@ class GeneratorState(rx.State):
 
         try:
             if image_url.startswith("http"):
-                response = httpx.get(image_url)
-                response.raise_for_status()
-                image_data = response.content
-                return rx.download(data=image_data, filename=filename)
+                if "/_upload/" in image_url:
+                    file_name = image_url.split("/_upload/")[-1]
+                    upload_dir = rx.get_upload_dir()
+                    file_path = upload_dir / file_name
+                    if file_path.exists():
+                        with file_path.open("rb") as f:
+                            image_data = f.read()
+                        yield rx.download(data=image_data, filename=filename)
+                    else:
+                        yield rx.toast.error("Datei nicht gefunden", close_button=True)
+                else:
+                    response = httpx.get(image_url, timeout=30.0)
+                    response.raise_for_status()
+                    image_data = response.content
+                    yield rx.download(data=image_data, filename=filename)
             else:
-                return rx.download(url=image_url, filename=filename)
+                yield rx.download(url=image_url, filename=filename)
         except Exception as e:
             yield rx.toast.error(f"Fehler beim Download: {e}", close_button=True)
-        finally:
-            self.is_downloading = False
+
+        self.is_downloading = False
+        yield
 
     async def copy_image(self) -> any:
         try:
             image_url = self.output_image
             if image_url == DEFAULT_IMAGE:
-                image_url = (
-                    self.router.page.full_raw_path + DEFAULT_IMAGE[1:]
-                )  # Remove the /
+                image_url = f"{self.router.page.host}{DEFAULT_IMAGE}"
             yield rx.set_clipboard(image_url)
         except Exception as e:
             yield rx.toast.error(f"Fehler beim kopieren: {e}", close_button=True)

@@ -5,7 +5,7 @@ from manakit_user.authentication.components.components import requires_role
 from manakit_user.authentication.templates import authenticated
 
 from app.components.navbar import app_navbar
-from app.roles import IMAGE_CREATOR_ROLE
+from app.roles import IMAGE_GENERATOR_ROLE
 
 
 @authenticated(
@@ -18,9 +18,15 @@ from app.roles import IMAGE_CREATOR_ROLE
 def image_creator_page() -> rx.Component:
     return requires_role(
         image_generator_page(),
-        role=IMAGE_CREATOR_ROLE,
+        role=IMAGE_GENERATOR_ROLE.name,
         fallback=rx.text(
-            "Zugriff verweigert. Sie haben keine Berechtigung, um Bilder zu generieren.",
+            "Zugriff verweigert. Sie haben keine Berechtigung, um Bilder zu generieren. ",
+            rx.link(
+                "Anmelden",
+                href="/login",
+                text_decoration="underline",
+            ),
+            ".",
             padding="64px",
             justify_content="center",
             width="100%",

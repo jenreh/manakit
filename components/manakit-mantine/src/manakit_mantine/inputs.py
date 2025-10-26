@@ -6,7 +6,17 @@ import reflex as rx
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
+from manakit_mantine import multi_select, textarea
+from manakit_mantine.autocomplete import Autocomplete
 from manakit_mantine.base import MantineInputComponentBase
+from manakit_mantine.date import DateInput
+from manakit_mantine.json_input import JsonInput
+from manakit_mantine.masked_input import MaskedInput
+from manakit_mantine.number_input import NumberInput
+from manakit_mantine.password_input import PasswordInput
+from manakit_mantine.rich_select import RichSelect
+from manakit_mantine.select import Select
+from manakit_mantine.tags_input import TagsInput
 
 
 class Input(MantineInputComponentBase):
@@ -192,6 +202,19 @@ class InputNamespace(rx.ComponentNamespace):
     """Namespace for Combobox components."""
 
     input = staticmethod(Input.create)
+    password = staticmethod(PasswordInput.create)
+    number = staticmethod(NumberInput.create)
+    masked = staticmethod(MaskedInput.create)
+    textarea = staticmethod(textarea.Textarea.create)
+    json = staticmethod(JsonInput.create)
+    date = staticmethod(DateInput.create)
+    select = staticmethod(Select.create)
+    rich_select = staticmethod(RichSelect.create)
+    multi_select = staticmethod(multi_select.MultiSelect.create)
+    autocomplete = staticmethod(Autocomplete.create)
+    tags = staticmethod(TagsInput.create)
+
+    # Sub-components
     wrapper = staticmethod(InputWrapper.create)
     label = staticmethod(InputLabel.create)
     description = staticmethod(InputDescription.create)

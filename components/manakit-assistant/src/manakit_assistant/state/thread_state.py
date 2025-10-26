@@ -6,6 +6,7 @@ from enum import StrEnum
 from typing import Any
 
 import reflex as rx
+from pydantic import BaseModel
 
 from manakit_assistant.backend.model_manager import ModelManager
 from manakit_assistant.backend.models import (
@@ -34,7 +35,7 @@ class ThinkingStatus(StrEnum):
     ERROR = "error"
 
 
-class Thinking(rx.Model, table=False):
+class Thinking(BaseModel):
     type: ThinkingType
     id: str  # reasoning_session_id or tool_id
     text: str

@@ -9,7 +9,7 @@ def page(provider: OAuthProvider) -> rx.Component:
     return rx.theme(
         rx.center(
             oauth_login_splash(provider),
-            class_name="splash_container",
+            class_name="splash-container",
         ),
         has_background=True,
     )

@@ -1,8 +1,7 @@
 from enum import StrEnum
 
-import reflex as rx
 from pydantic import BaseModel
-from sqlmodel import Field
+from sqlmodel import Field, SQLModel
 
 from manakit_commons.database.entities import EncryptedString
 
@@ -24,7 +23,7 @@ class ChunkType(StrEnum):
     LIFECYCLE = "lifecycle"
 
 
-class Chunk(rx.Model, table=False):
+class Chunk(BaseModel):
     """Model for text chunks."""
 
     type: ChunkType
@@ -89,7 +88,7 @@ class ThreadModel(BaseModel):
     ai_model: str = ""
 
 
-class MCPServer(rx.Model, table=True):
+class MCPServer(SQLModel, table=True):
     """Model for MCP (Model Context Protocol) server configuration."""
 
     __tablename__ = "mcp_server"

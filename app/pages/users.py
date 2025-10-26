@@ -10,16 +10,12 @@ from app.components.navbar import app_navbar
 from app.roles import ALL_ROLES
 
 
-def _initialize_roles() -> None:
-    """Initialize roles on first page load."""
-    UserState.roles = ALL_ROLES
-
-
 @authenticated(
     route="/admin/users",
     title="Users",
     navbar=app_navbar(),
     admin_only=True,
+    on_load=UserState.set_available_roles(ALL_ROLES),
 )
 def users_page() -> rx.Component:
     additional_components = []
@@ -31,6 +27,5 @@ def users_page() -> rx.Component:
             width="100%",
             max_width="1200px",
             spacing="6",
-            on_mount=_initialize_roles,
         ),
     )

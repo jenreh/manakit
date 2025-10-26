@@ -6,18 +6,37 @@ from manakit_ui.components.dialogs import (
     dialog_buttons,
     dialog_header,
 )
-from manakit_ui.components.form_inputs import form_field, hidden_field
+from manakit_ui.components.form_inputs import form_field2, hidden_field
 from manakit_user.authentication.backend.models import User
-from manakit_user.user_management.states.user_states import Role, UserState
+from manakit_user.user_management.states.user_states import UserState
 
 
-def user_form_fields(
-    user: User | None = None,
-    roles: list[Role] | None = None,
+def role_checkbox(
+    user: User, role: dict[str, str], is_edit_mode: bool = False
 ) -> rx.Component:
+    """Checkbox for a role in the user form."""
+    name = role.get("name")
+
+    return rx.cond(
+        name,
+        rx.box(
+            rx.checkbox(
+                role.get("label"),
+                name=f"role_{name}",
+                default_checked=(
+                    user.roles.contains(name)
+                    if is_edit_mode and user.roles is not None
+                    else False
+                ),
+            ),
+            class_name="w-[30%] max-w-[30%] flex-grow",
+        ),
+        rx.fragment(),
+    )
+
+
+def user_form_fields(user: User | None = None) -> rx.Component:
     """Reusable form fields for user add/update dialogs."""
-    if roles is None:
-        roles = []
     is_edit_mode = user is not None
 
     # Basic user fields
@@ -26,30 +45,31 @@ def user_form_fields(
             name="user_id",
             default_value=user.user_id.to_string() if is_edit_mode else "",
         ),
-        form_field(
+        form_field2(
             name="name",
             icon="user",
             label="Name",
             type="text",
-            default_value=user.name if is_edit_mode else None,
+            default_value=user.name if is_edit_mode else "",
             required=True,
         ),
-        form_field(
+        form_field2(
             name="email",
             icon="mail",
             label="Email",
             hint="Die E-Mail-Adresse des Benutzers, wird für die Anmeldung verwendet.",
             type="email",
-            default_value=user.email if is_edit_mode else None,
+            default_value=user.email if is_edit_mode else "",
             required=True,
             pattern=r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$",
         ),
-        form_field(
+        form_field2(
             name="password",
             icon="lock",
             label="Initiales Passwort" if not is_edit_mode else "Passwort",
             type="password",
             hint="Leer lassen, um das aktuelle Passwort beizubehalten",
+            default_value="",
             required=False,
         ),
     ]
@@ -66,6 +86,7 @@ def user_form_fields(
                     ),
                 ),
                 rx.text("Aktiv", size="2"),
+                margin_top="1em",
             ),
             rx.hstack(
                 rx.switch(
@@ -88,35 +109,31 @@ def user_form_fields(
         ]
 
     # Role fields (available for both add and edit modes)
-    if roles:
-        role_fields = [
+    role_fields = [
+        rx.vstack(
             rx.text("Berechtigungen", size="3", weight="bold"),
             rx.flex(
                 rx.foreach(
-                    roles,
-                    lambda role: rx.box(
-                        rx.checkbox(
-                            role.label,
-                            name=f"role_{role.name.lower()}",
-                            default_checked=(
-                                user.roles.contains(role.name)
-                                if is_edit_mode and user.roles is not None
-                                else False
-                            ),
-                        ),
-                        class_name="w-[30%] max-w-[30%] flex-grow",
+                    UserState.available_roles,
+                    lambda role: role_checkbox(
+                        user=user, role=role, is_edit_mode=is_edit_mode
                     ),
                 ),
-                class_name="w-full flex-wrap gap-3",
+                class_name="w-full flex-wrap gap-3 mt-4",
             ),
-        ]
+            rx.text(
+                "Keine Rollen definiert. Bitte legen Sie zuerst Rollen an.",
+            ),
+        ),
+    ]
 
     # Combine all fields
     all_fields = basic_fields + status_fields + role_fields
 
     return rx.flex(
         *all_fields,
-        class_name=rx.cond(is_edit_mode, "flex-col gap-0", "flex-col gap-3"),
+        # class_name=rx.cond(is_edit_mode, "flex-col gap-3", "flex-col gap-0"),
+        class_name="flex-col gap-3" if is_edit_mode else "flex-col gap-0",
     )
 
 
@@ -124,12 +141,8 @@ def add_user_button(
     label: str = "Benutzer hinzufügen",
     icon: str = "plus",
     icon_size: int = 19,
-    roles: list[Role] | None = None,
     **kwargs,
 ) -> rx.Component:
-    if roles is None:
-        roles = []
-
     return rx.dialog.root(
         rx.dialog.trigger(
             rx.button(
@@ -146,7 +159,7 @@ def add_user_button(
             ),
             rx.flex(
                 rx.form.root(
-                    user_form_fields(roles=roles),
+                    user_form_fields(),
                     dialog_buttons(
                         submit_text="Benutzer speichern",
                     ),
@@ -162,7 +175,6 @@ def add_user_button(
 
 def update_user_button(
     user: User,
-    roles: list[Role],
     icon: str = "square-pen",
     icon_size: int = 19,
     **kwargs,
@@ -183,14 +195,15 @@ def update_user_button(
             ),
             rx.flex(
                 rx.form.root(
-                    user_form_fields(user=user, roles=roles),
+                    user_form_fields(user=user),
                     dialog_buttons(
                         submit_text="Benutzer aktualisieren",
                     ),
                     on_submit=UserState.update_user,
                     reset_on_submit=False,
                 ),
-                class_name="w-full flex-col gap-4",
+                direction="column",
+                spacing="4",
             ),
             class_name="dialog",
         ),
@@ -209,7 +222,7 @@ def delete_user_button(user: User, **kwargs) -> rx.Component:
 
 
 def users_table_row(
-    user: User, roles: list[Role], additional_components: list | None = None
+    user: User, additional_components: list | None = None
 ) -> rx.Component:
     """Show a customer in a table row.
 
@@ -225,8 +238,7 @@ def users_table_row(
 
     # Generate additional components with the same parameters as edit/delete buttons
     rendered_additional_components = [
-        component_func(user=user, roles=roles)
-        for component_func in additional_components
+        component_func(user=user) for component_func in additional_components
     ]
 
     return mn.table.tr(
@@ -265,7 +277,7 @@ def users_table_row(
         mn.table.td(
             rx.hstack(
                 *rendered_additional_components,
-                update_user_button(user=user, roles=roles, variant="surface"),
+                update_user_button(user=user, variant="surface"),
                 delete_user_button(
                     user=user, variant="surface", color_scheme="crimson"
                 ),
@@ -279,7 +291,7 @@ def users_table_row(
 
 def loading() -> rx.Component:
     """Loading indicator for the users table."""
-    return mn.table.row(
+    return mn.table.tr(
         mn.table.td(
             rx.hstack(
                 rx.spinner(size="3"),
@@ -291,9 +303,7 @@ def loading() -> rx.Component:
     )
 
 
-def users_table(
-    roles: list[Role], additional_components: list | None = None
-) -> rx.Component:
+def users_table(additional_components: list | None = None) -> rx.Component:
     """Create a users table with optional additional components.
 
     Args:
@@ -302,9 +312,20 @@ def users_table(
                               rendered to the left of the edit button for each user.
                               Each function will be called with (user=user, roles=roles)
     """
+    if additional_components is None:
+        additional_components = []
+
+    # Solution 1: Store in component props instead of capturing
+    def render_user_row(user: User) -> rx.Component:
+        """Render a single user row - avoids capturing in lambda."""
+        return users_table_row(
+            user=user,
+            additional_components=additional_components,
+        )
+
     return rx.fragment(
         rx.flex(
-            add_user_button(roles=roles),
+            add_user_button(),
             rx.spacer(),
         ),
         mn.table(
@@ -324,11 +345,7 @@ def users_table(
                 mn.table.tbody(
                     rx.foreach(
                         UserState.users,
-                        lambda user: users_table_row(
-                            user=user,
-                            roles=roles,
-                            additional_components=additional_components,
-                        ),
+                        render_user_row,
                     )
                 ),
             ),

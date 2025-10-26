@@ -4,6 +4,7 @@ import reflex as rx
 
 from manakit_commons.registry import service_registry
 from manakit_user.authentication.backend.models import Role
+from manakit_user.authentication.components.components import requires_role
 
 from app.components.navbar_component import (
     admin_sidebar_item,
@@ -64,11 +65,14 @@ def navbar_admin_items() -> rx.Component:
             icon="users",
             url="/admin/users",
         ),
-        admin_sidebar_item(
-            label="MCP Server",
-            icon="plug",
-            svg="/icons/mcp.svg",
-            url="/admin/mcp-servers",
+        requires_role(
+            admin_sidebar_item(
+                label="MCP Server",
+                icon="plug",
+                svg="/icons/mcp.svg",
+                url="/admin/mcp-servers",
+            ),
+            role=ASSISTANT_ROLE.name,
         ),
         width="95%",
         spacing="1",
@@ -78,15 +82,21 @@ def navbar_admin_items() -> rx.Component:
 def navbar_items() -> rx.Component:
     return rx.vstack(
         rx.text("Demos", size="2", weight="bold", style=sub_heading_styles),
-        sidebar_item(
-            label="Assistent",
-            icon="bot-message-square",
-            url="/assistant",
+        requires_role(
+            sidebar_item(
+                label="Assistent",
+                icon="bot-message-square",
+                url="/assistant",
+            ),
+            role=ASSISTANT_ROLE.name,
         ),
-        sidebar_item(
-            label="Bildgenerator",
-            icon="image",
-            url="/image-generator",
+        requires_role(
+            sidebar_item(
+                label="Bildgenerator",
+                icon="image",
+                url="/image-generator",
+            ),
+            role=IMAGE_GENERATOR_ROLE.name,
         ),
         rx.text("Inputs", size="2", weight="bold", style=sub_heading_styles),
         rx.list.unordered(

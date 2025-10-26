@@ -16,6 +16,23 @@
         width: 100%;
     }
 
+    .logo {
+        position: fixed;
+        top: 40px;
+        left: 0px;
+        height: 87px;
+        width: 230px;
+        background-color: white;
+        box-shadow: 0.1em 0.1em 1em rgba(20, 20, 20, 0.3);
+    }
+
+    .logo img {
+        height: 87px;
+        width: 230px;
+        margin-bottom: -5px;
+        border-style: none;
+    }
+
     /* Dialog styles */
     .dialog {
         max-width: 540px;

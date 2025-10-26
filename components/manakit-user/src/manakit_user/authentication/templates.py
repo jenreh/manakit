@@ -87,7 +87,7 @@ def require_login(page: rx.app.ComponentCallable) -> rx.app.ComponentCallable:
                     ),
                     width="100%",
                     height="100vh",
-                    class_name="splash_container",
+                    class_name="splash-container",
                 ),
             ),
         )
@@ -138,7 +138,7 @@ def default_layout(
                 page_content(),
                 width="100%",
                 height="100vh",
-                class_name="splash_container",
+                class_name="splash-container",
             )
 
         @rx.page(

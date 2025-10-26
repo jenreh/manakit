@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 import reflex as rx
 
+import manakit_mantine as mn
 from manakit_ui.components.header import header
 from manakit_user.authentication.components import (
     login_form,
@@ -18,6 +19,18 @@ from manakit_user.user_management.states.profile_states import (
 )
 
 ROLES = []
+
+
+def _password_rule(check: bool, message: str) -> rx.Component:
+    return rx.hstack(
+        rx.cond(
+            check,
+            rx.icon("circle-check", size=19, color="green", margin_top="2px"),
+            rx.icon("circle-x", size=19, color="red", margin_top="2px"),
+        ),
+        rx.text(message),
+        padding_left="18px",
+    )
 
 
 @default_layout(route=LOGIN_ROUTE, title="Login")
@@ -77,7 +90,7 @@ def create_profile_page(
                                 rx.text("Name"),
                                 class_name="w-full items-center gap-2",
                             ),
-                            rx.input(
+                            mn.form.input(
                                 placeholder="dein Name",
                                 type="text",
                                 class_name="w-full",
@@ -85,7 +98,8 @@ def create_profile_page(
                                 default_value=rx.cond(
                                     UserSession.user.name, UserSession.user.name, ""
                                 ),
-                                disabled=True,
+                                read_only=True,
+                                pointer=True,
                             ),
                             class_name="flex-col gap-1 w-full",
                         ),
@@ -97,13 +111,14 @@ def create_profile_page(
                                 rx.text("E-Mail / Benutzername"),
                                 class_name="w-full items-center gap-2",
                             ),
-                            rx.input(
+                            mn.form.input(
                                 placeholder="deine E-Mail-Adresse",
                                 type="email",
                                 default_value=UserSession.user.email,
                                 class_name="w-full",
                                 name="mail",
-                                disabled=True,
+                                read_only=True,
+                                pointer=True,
                             ),
                             class_name="flex-col gap-1 w-full",
                         ),
@@ -139,13 +154,19 @@ def create_profile_page(
                         "Passwort-Richtlinie entsprechen:",
                         size="3",
                     ),
-                    rx.list.unordered(
-                        rx.list.item(f"Mindestens {MIN_PASSWORD_LENGTH} Zeichen"),
-                        rx.list.item("Mindestens ein Großbuchstabe"),
-                        rx.list.item("Mindestens ein Kleinbuchstabe"),
-                        rx.list.item("Mindestens eine Zahl"),
-                        rx.list.item("Mindestens ein Sonderzeichen"),
-                        size="2",
+                    _password_rule(
+                        ProfileState.has_length,
+                        f"Mindestens {MIN_PASSWORD_LENGTH} Zeichen",
+                    ),
+                    _password_rule(
+                        ProfileState.has_upper, "Mindestens ein Großbuchstabe"
+                    ),
+                    _password_rule(
+                        ProfileState.has_lower, "Mindestens ein Kleinbuchstabe"
+                    ),
+                    _password_rule(ProfileState.has_digit, "Mindestens eine Zahl"),
+                    _password_rule(
+                        ProfileState.has_special, "Mindestens ein Sonderzeichen"
                     ),
                     class_name="w-full",
                 ),
@@ -157,7 +178,7 @@ def create_profile_page(
                                 rx.text("Aktuelles Passwort"),
                                 class_name="w-full items-center gap-2",
                             ),
-                            rx.input(
+                            mn.form.input(
                                 placeholder="dein aktuelles Passwort",
                                 type="password",
                                 default_value="",
@@ -178,17 +199,15 @@ def create_profile_page(
                                 rx.text("Neues Passwort"),
                                 class_name="w-full items-center gap-2",
                             ),
-                            rx.hstack(
-                                rx.input(
-                                    placeholder="dein neues Passwort",
-                                    type="password",
-                                    default_value="",
-                                    class_name="w-full",
-                                    name="new_password",
-                                    value=ProfileState.new_password,
-                                    on_change=ProfileState.set_new_password,
-                                ),
-                                class_name="gap-2 w-full",
+                            mn.password_input(
+                                placeholder="Dein neues Passwort...",
+                                class_name="w-full",
+                                value=ProfileState.new_password,
+                                on_change=ProfileState.set_new_password,
+                            ),
+                            rx.progress(
+                                value=ProfileState.strength_value,
+                                width="100%",
                             ),
                             class_name="flex-col gap-1 w-full",
                         ),
@@ -202,10 +221,11 @@ def create_profile_page(
                                 rx.text("Passwort bestätigen"),
                                 class_name="w-full items-center gap-2",
                             ),
-                            rx.input(
+                            mn.password_input(
                                 placeholder="bestätige dein neues Passwort",
                                 type="password",
                                 default_value="",
+                                error=ProfileState.password_error,
                                 class_name="w-full",
                                 name="confirm_password",
                                 value=ProfileState.confirm_password,

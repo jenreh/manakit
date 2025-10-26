@@ -152,7 +152,7 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         # ScrollArea-Props
         scroll_type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",
         scrollbars: Literal[False, "x", "y", "xy"] = "xy",
-        scrollbar_size: str | int = "0.75rem",
+        scrollbar_size: str | int = "9px",
         offset_scrollbars: bool | Literal["x", "y", "present"] = True,
         button_align: Literal["center", "left", "right"] = "center",
         **props,

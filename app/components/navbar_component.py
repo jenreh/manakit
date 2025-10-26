@@ -9,7 +9,7 @@ from manakit_user.authentication.states import LoginState
 
 logger = logging.getLogger(__name__)
 
-accent_bg_color = rx.color("accent", 2)
+accent_bg_color = rx.color("accent", 3)
 gray_bg_color = rx.color("gray", 3)
 
 accent_color = rx.color("accent", 3)

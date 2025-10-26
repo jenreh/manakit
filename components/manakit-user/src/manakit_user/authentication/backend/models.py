@@ -1,13 +1,13 @@
-import reflex as rx
+from pydantic import BaseModel
 
 
-class Role(rx.Model, table=False):
+class Role(BaseModel):
     name: str
     label: str
     description: str | None = ""
 
 
-class User(rx.Model, table=False):
+class User(BaseModel):
     """User model for managing user data and relationships."""
 
     user_id: int = 0

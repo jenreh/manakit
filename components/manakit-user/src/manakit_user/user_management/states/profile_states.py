@@ -27,7 +27,62 @@ class ProfileState(rx.State):
     new_password: str = ""
     confirm_password: str = ""
     current_password: str = ""
+    password_error: str = ""
     name: str = ""
+
+    # Strength meter example
+    strength_value: int = 0
+    has_length: bool = False
+    has_upper: bool = False
+    has_lower: bool = False
+    has_digit: bool = False
+    has_special: bool = False
+
+    @rx.event
+    def set_new_password(self, value: str) -> None:
+        """Set password and calculate strength."""
+        self.new_password = value
+        self.has_length = len(value) >= MIN_PASSWORD_LENGTH
+        self.has_upper = any(c.isupper() for c in value)
+        self.has_lower = any(c.islower() for c in value)
+        self.has_digit = any(c.isdigit() for c in value)
+        self.has_special = any(not c.isalnum() for c in value)
+
+        criteria_met = sum(
+            [
+                self.has_upper,
+                self.has_lower,
+                self.has_digit,
+                self.has_special,
+                self.has_length,
+            ]
+        )
+
+        if criteria_met == 1:
+            self.strength_value = 20
+        elif criteria_met == 2:
+            self.strength_value = 40
+        elif criteria_met == 3:
+            self.strength_value = 60
+        elif criteria_met == 4:
+            self.strength_value = 80
+        elif criteria_met == 5:
+            self.strength_value = 100
+        else:
+            self.strength_value = 0
+
+    def set_name(self, name: str) -> None:
+        self.name = name
+
+    def set_confirm_password(self, password: str) -> None:
+        self.confirm_password = password
+        if self.new_password != password:
+            self.password_error = "Passwörter stimmen nicht überein."  # noqa: S105 # pragma: allowlist secret
+        else:
+            self.password_error = ""
+
+    def set_current_password(self, password: str) -> None:
+        self.current_password = password
 
     async def handle_password_update(self) -> Toaster:
         if not PASSWORD_REGEX.match(self.new_password):
@@ -49,7 +104,7 @@ class ProfileState(rx.State):
 
         try:
             async with get_asyncdb_session() as session:
-                user_repository.update_password(
+                await user_repository.update_password(
                     session,
                     user_id=user_id,
                     old_password=self.current_password,
@@ -61,16 +116,11 @@ class ProfileState(rx.State):
         self.current_password = ""
         self.new_password = ""
         self.confirm_password = ""
+        self.has_digit = False
+        self.has_length = False
+        self.has_lower = False
+        self.has_special = False
+        self.has_upper = False
+        self.strength_value = 0
+
         return rx.toast.info("Password updated successfully", position="top-right")
-
-    def set_name(self, name: str) -> None:
-        self.name = name
-
-    def set_new_password(self, password: str) -> None:
-        self.new_password = password
-
-    def set_confirm_password(self, password: str) -> None:
-        self.confirm_password = password
-
-    def set_current_password(self, password: str) -> None:
-        self.current_password = password

@@ -1,6 +1,7 @@
 import logging
 
 import reflex as rx
+from pydantic import BaseModel
 
 import manakit_mantine as mn
 import manakit_ui.components as knai
@@ -8,7 +9,7 @@ import manakit_ui.components as knai
 logger = logging.getLogger(__name__)
 
 
-class SelectItem(rx.Model):
+class SelectItem(BaseModel):
     label: str
     value: str
 
@@ -123,6 +124,11 @@ def form_field2(
         kwargs["default_value"] = None
     elif "default_value" in kwargs:
         kwargs["value"] = None
+
+    if "size" in kwargs:
+        # convert to mantine size "xs", "sm", "md", "lg", "xl"
+        size_map = {"1": "xs", "2": "sm", "3": "md", "4": "lg", "5": "xl"}
+        kwargs["size"] = size_map.get(kwargs["size"], "md")
 
     minlength = kwargs.get("min_length", 0)
     maxlength = kwargs.get("max_length", 0)

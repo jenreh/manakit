@@ -68,7 +68,7 @@ class ScrollArea(rx.Component):
     xy (both), false (none)."""
 
     # Styling and sizing
-    scrollbar_size: Var[str | int] = "0.75rem"
+    scrollbar_size: Var[str | int] = "9px"
     """Scrollbar size, any valid CSS value for width/height, numbers converted
     to rem."""
 
