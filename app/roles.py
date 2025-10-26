@@ -3,14 +3,18 @@ from manakit_user.authentication.backend.models import Role
 ASSISTANT_ROLE = Role(
     id=1,
     name="assistant",
-    label="Assistant",
-    description="Access to the assistant features.",
+    label="Assistent",
+    description="Berechtigung für den Chat-Assistenten",
 )
 IMAGE_GENERATOR_ROLE = Role(
     id=2,
     name="image_generator",
-    label="Image Generator",
-    description="Access to the image creation features.",
+    label="Bildgenerator",
+    description="Berechtigung für die Bildgenerierung",
 )
 
-ALL_ROLES: list[Role] = [ASSISTANT_ROLE, IMAGE_GENERATOR_ROLE]
+
+ALL_ROLES: list[Role] = [
+    ASSISTANT_ROLE,
+    IMAGE_GENERATOR_ROLE,
+]

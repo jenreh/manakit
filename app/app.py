@@ -48,8 +48,7 @@ from app.pages.examples.table_examples import table_examples  # noqa: F401
 from app.pages.examples.tags_input_examples import tags_input_examples  # noqa: F401
 from app.pages.examples.textarea_examples import textarea_examples_page  # noqa: F401
 from app.pages.examples.tiptap_examples import tiptap_page  # noqa: F401
-
-# from app.pages.image_creator import image_creator_page  # noqa: F401
+from app.pages.image_creator import image_creator_page  # noqa: F401
 from app.pages.users import users_page  # noqa: F401
 
 logging.basicConfig(level=logging.DEBUG)

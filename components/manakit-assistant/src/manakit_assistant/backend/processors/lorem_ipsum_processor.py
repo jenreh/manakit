@@ -92,8 +92,8 @@ class LoremIpsumProcessor(Processor):
                     text=content,
                     chunk_metadata={
                         "source": "lorem_ipsum",
-                        "paragraph": i + 1,
-                        "total_paragraphs": num_paragraphs,
+                        "paragraph": str(i + 1),
+                        "total_paragraphs": str(num_paragraphs),
                     },
                 )
 

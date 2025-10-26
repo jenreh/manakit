@@ -114,7 +114,7 @@ def inline_form_field(
     )
 
 
-def form_field2(
+def form_field(
     icon: str,
     label: str,
     hint: str = "",
@@ -131,124 +131,16 @@ def form_field2(
         size_map = {"1": "xs", "2": "sm", "3": "md", "4": "lg", "5": "xl"}
         kwargs["size"] = size_map.get(kwargs["size"], "md")
 
-    clear_button = kwargs.get("value") or kwargs.get("default_value")
-
     return mn.form.wrapper(
-        mn.form.label(
-            label,
-            required=kwargs.get("required", False),
-            margin_top="9px",
-        ),
-        mn.form.description(
-            hint,
-            color="gray",
-            margin_bottom="6px !important",
-        ),
         mn.form.input(
             **kwargs,
             left_section=rx.cond(icon, rx.icon(icon, size=17, stroke_width=1.5), None),
-            right_section=rx.cond(
-                clear_button,
-                mn.form.clear_button(
-                    on_click=rx.call_script(
-                        f"document.querySelector('[name=\"{kwargs.get('name')}\"]').value = ''"  # noqa: E501
-                    ),
-                ),
-            ),
         ),
-        rx.cond(
-            validation_error,
-            mn.form.error(validation_error, margin_top="3px"),
-        ),
+        label=label,
+        description=hint,
+        error=validation_error,
+        required=True,
         width="100%",
-    )
-
-
-def form_field(
-    icon: str,
-    label: str,
-    hint: str = "",
-    **kwargs,
-) -> rx.Component:
-    if "value" in kwargs:
-        kwargs["default_value"] = None
-    elif "default_value" in kwargs:
-        kwargs["value"] = None
-
-    minlength = kwargs.get("min_length", 0)
-    maxlength = kwargs.get("max_length", 0)
-    pattern = kwargs.get("pattern", "")
-
-    logger.debug(
-        "Creating form field: %s, minlength=%s, maxlength=%s, pattern=%s",
-        label,
-        minlength,
-        maxlength,
-        pattern,
-    )
-
-    return rx.form.field(
-        rx.flex(
-            rx.hstack(
-                rx.icon(icon, size=17, stroke_width=1.5),
-                rx.form.label(label),
-                class_name="label",
-            ),
-            rx.cond(
-                hint,
-                rx.form.message(
-                    hint,
-                    color="gray",
-                    class_name="hint",
-                ),
-            ),
-            rx.form.control(
-                rx.input(
-                    **kwargs,
-                ),
-                as_child=True,
-            ),
-            rx.cond(
-                kwargs.get("required", False),
-                rx.form.message(
-                    f"{label} ist ein Pflichtfeld.",
-                    name=kwargs.get("name", ""),
-                    color="red",
-                    class_name="error required",
-                ),
-            ),
-            rx.cond(
-                minlength > 0,
-                rx.form.message(
-                    f"{label} muss mindestens {minlength} Zeichen enthalten.",
-                    name=kwargs.get("name", ""),
-                    color="red",
-                    class_name="error minlength",
-                ),
-            ),
-            rx.cond(
-                maxlength > 0,
-                rx.form.message(
-                    f"{label} darf maximal {maxlength} Zeichen enthalten.",
-                    name=kwargs.get("name", ""),
-                    color="red",
-                    class_name="error maxlength",
-                ),
-            ),
-            rx.cond(
-                pattern,
-                rx.form.message(
-                    f"{label} entspricht nicht dem geforderten Format: {pattern}",
-                    name=kwargs.get("name", ""),
-                    color="red",
-                    class_name="error pattern",
-                ),
-            ),
-            direction="column",
-            spacing="0",
-        ),
-        width="100%",
-        class_name="form-group",
     )
 
 

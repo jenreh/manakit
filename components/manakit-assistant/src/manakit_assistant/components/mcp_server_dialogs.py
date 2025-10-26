@@ -1,19 +1,105 @@
 """Dialog components for MCP server management."""
 
+import logging
 from typing import Any
 
 import reflex as rx
 from reflex.vars import var_operation, var_operation_return
 from reflex.vars.base import RETURN, CustomVarOperationReturn
 
+import manakit_mantine as mn
 from manakit_assistant.backend.models import MCPServer
-from manakit_assistant.state.mcp_server_state import MCPServersState
+from manakit_assistant.state.mcp_server_state import MCPServerState
 from manakit_ui.components.dialogs import (
     delete_dialog,
     dialog_buttons,
     dialog_header,
 )
-from manakit_ui.components.form_inputs import form_field, form_textarea
+from manakit_ui.components.form_inputs import form_field
+
+logger = logging.getLogger(__name__)
+
+
+class ValidationState(rx.State):
+    url: str = ""
+    name: str = ""
+    desciption: str = ""
+
+    url_error: str = ""
+    name_error: str = ""
+    description_error: str = ""
+
+    @rx.event
+    def initialize(self, server: MCPServer | None = None) -> None:
+        """Reset validation state."""
+        logger.debug("Initializing ValidationState")
+        if server is None:
+            self.url = ""
+            self.name = ""
+            self.desciption = ""
+        else:
+            self.url = server.url
+            self.name = server.name
+            self.desciption = server.description
+
+        self.url_error = ""
+        self.name_error = ""
+        self.description_error = ""
+
+    @rx.event
+    def validate_url(self) -> None:
+        """Validate the URL field."""
+        if not self.url or self.url.strip() == "":
+            self.url_error = "Die URL darf nicht leer sein."
+        elif not self.url.startswith("http://") and not self.url.startswith("https://"):
+            self.url_error = "Die URL muss mit http:// oder https:// beginnen."
+        else:
+            self.url_error = ""
+
+    @rx.event
+    def validate_name(self) -> None:
+        """Validate the name field."""
+        if not self.name or self.name.strip() == "":
+            self.name_error = "Der Name darf nicht leer sein."
+        elif len(self.name) < 3:  # noqa: PLR2004
+            self.name_error = "Der Name muss mindestens 3 Zeichen lang sein."
+        else:
+            self.name_error = ""
+
+    @rx.event
+    def validate_description(self) -> None:
+        """Validate the description field."""
+        if self.desciption and len(self.desciption) > 200:  # noqa: PLR2004
+            self.description_error = (
+                "Die Beschreibung darf maximal 200 Zeichen lang sein."
+            )
+        elif not self.desciption or self.desciption.strip() == "":
+            self.description_error = "Die Beschreibung darf nicht leer sein."
+        else:
+            self.description_error = ""
+
+    @rx.var
+    def has_errors(self) -> bool:
+        """Check if the form can be submitted."""
+        errors = bool(self.url_error or self.name_error or self.description_error)
+
+        logger.debug("Has validation errors: %s", errors)
+        return errors
+
+    def set_url(self, url: str) -> None:
+        """Set the URL and validate it."""
+        self.url = url
+        self.validate_url()
+
+    def set_name(self, name: str) -> None:
+        """Set the name and validate it."""
+        self.name = name
+        self.validate_name()
+
+    def set_description(self, description: str) -> None:
+        """Set the description and validate it."""
+        self.desciption = description
+        self.validate_description()
 
 
 @var_operation
@@ -38,6 +124,10 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
             placeholder="MCP-Server Name",
             default_value=server.name if is_edit_mode else "",
             required=True,
+            max_length=64,
+            on_change=ValidationState.set_name,
+            on_blur=ValidationState.validate_name,
+            validation_error=ValidationState.name_error,
         ),
         form_field(
             name="description",
@@ -48,9 +138,13 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
                 "durch das Modell"
             ),
             type="text",
-            placeholder="Kurzbeschreibung (optional)",
+            placeholder="Anweisung an das Modell",
+            max_length=200,
             default_value=server.description if is_edit_mode else "",
-            required=False,
+            required=True,
+            on_change=ValidationState.set_description,
+            on_blur=ValidationState.validate_description,
+            validation_error=ValidationState.description_error,
         ),
         form_field(
             name="url",
@@ -61,19 +155,25 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
             placeholder="https://example.com/mcp/v1/sse",
             default_value=server.url if is_edit_mode else "",
             required=True,
+            on_change=ValidationState.set_url,
+            on_blur=ValidationState.validate_url,
+            validation_error=ValidationState.url_error,
         ),
-        form_textarea(
+        mn.form.json(
             name="headers_json",
-            icon="code",
             label="HTTP Headers",
-            hint=(
+            description=(
                 "Geben Sie die HTTP-Header im JSON-Format ein. "
                 'Beispiel: {"Content-Type": "application/json", '
                 '"Authorization": "Bearer token"}'
             ),
-            monospace=False,
+            placeholder="{}",
+            validation_error="Ungültiges JSON",
             default_value=json(server.headers) if is_edit_mode else "{}",
-            height="120px",
+            format_on_blur=True,
+            autosize=True,
+            min_rows=4,
+            max_rows=6,
             width="100%",
         ),
     ]
@@ -87,6 +187,7 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
 
 def add_mcp_server_button() -> rx.Component:
     """Button and dialog for adding a new MCP server."""
+    ValidationState.initialize()
     return rx.dialog.root(
         rx.dialog.trigger(
             rx.button(
@@ -94,6 +195,7 @@ def add_mcp_server_button() -> rx.Component:
                 rx.text("Neuen MCP Server anlegen", display=["none", "none", "block"]),
                 size="3",
                 variant="solid",
+                on_click=[ValidationState.initialize(server=None)],
             ),
         ),
         rx.dialog.content(
@@ -105,8 +207,11 @@ def add_mcp_server_button() -> rx.Component:
             rx.flex(
                 rx.form.root(
                     mcp_server_form_fields(),
-                    dialog_buttons("MCP Server anlegen"),
-                    on_submit=MCPServersState.add_server,
+                    dialog_buttons(
+                        "MCP Server anlegen",
+                        has_errors=ValidationState.has_errors,
+                    ),
+                    on_submit=MCPServerState.add_server,
                     reset_on_submit=False,
                 ),
                 width="100%",
@@ -123,7 +228,7 @@ def delete_mcp_server_dialog(server: MCPServer) -> rx.Component:
     return delete_dialog(
         title="MCP Server löschen",
         content=server.name,
-        on_click=lambda: MCPServersState.delete_server(server.id),
+        on_click=lambda: MCPServerState.delete_server(server.id),
         icon_button=True,
         size="2",
         variant="ghost",
@@ -139,20 +244,26 @@ def update_mcp_server_dialog(server: MCPServer) -> rx.Component:
                 rx.icon("square-pen", size=20),
                 size="2",
                 variant="ghost",
-                on_click=lambda: MCPServersState.get_server(server.id),
+                on_click=[
+                    lambda: MCPServerState.get_server(server.id),
+                    ValidationState.initialize(server),
+                ],
             ),
         ),
         rx.dialog.content(
             dialog_header(
-                icon="square-pen",
+                icon="server",
                 title="MCP Server aktualisieren",
                 description="Aktualisieren Sie die Details des MCP Servers",
             ),
             rx.flex(
                 rx.form.root(
                     mcp_server_form_fields(server),
-                    dialog_buttons("MCP Server aktualisieren"),
-                    on_submit=MCPServersState.modify_server,
+                    dialog_buttons(
+                        "MCP Server aktualisieren",
+                        has_errors=ValidationState.has_errors,
+                    ),
+                    on_submit=MCPServerState.modify_server,
                     reset_on_submit=False,
                 ),
                 width="100%",

@@ -15,7 +15,7 @@ from app.roles import ALL_ROLES
     title="Users",
     navbar=app_navbar(),
     admin_only=True,
-    on_load=UserState.set_available_roles(ALL_ROLES),
+    on_load=[UserState.set_available_roles(ALL_ROLES)],
 )
 def users_page() -> rx.Component:
     additional_components = []

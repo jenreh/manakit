@@ -1,7 +1,8 @@
 from enum import StrEnum
 
+import reflex as rx
 from pydantic import BaseModel
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field
 
 from manakit_commons.database.entities import EncryptedString
 
@@ -88,7 +89,7 @@ class ThreadModel(BaseModel):
     ai_model: str = ""
 
 
-class MCPServer(SQLModel, table=True):
+class MCPServer(rx.Model, table=True):
     """Model for MCP (Model Context Protocol) server configuration."""
 
     __tablename__ = "mcp_server"

@@ -15,7 +15,7 @@ from manakit_assistant.backend.repositories import (
 logger = logging.getLogger(__name__)
 
 
-class MCPServersState(rx.State):
+class MCPServerState(rx.State):
     """State class for managing MCP servers."""
 
     servers: list[MCPServer] = []
@@ -23,30 +23,29 @@ class MCPServersState(rx.State):
     loading: bool = False
 
     async def load_servers(self) -> None:
-        """Load all MCP servers from the database."""
+        """Load all MCP servers from the database.
+
+        Raises exceptions to let callers decide how to handle errors.
+        """
         self.loading = True
         try:
             self.servers = await MCPServerRepository.get_all()
             logger.debug("Loaded %d MCP servers", len(self.servers))
         except Exception as e:
             logger.error("Failed to load MCP servers: %s", e)
+            raise
         finally:
             self.loading = False
 
     async def load_servers_with_toast(self) -> AsyncGenerator[Any, Any]:
-        """Load all MCP servers from the database with error toast."""
-        self.loading = True
+        """Load servers and show an error toast on failure."""
         try:
-            self.servers = await MCPServerRepository.get_all()
-            logger.debug("Loaded %d MCP servers", len(self.servers))
-        except Exception as e:
-            logger.error("Failed to load MCP servers: %s", e)
+            await self.load_servers()
+        except Exception:
             yield rx.toast.error(
                 "Fehler beim Laden der MCP Server.",
                 position="top-right",
             )
-        finally:
-            self.loading = False
 
     async def get_server(self, server_id: int) -> None:
         """Get a specific MCP server by ID."""

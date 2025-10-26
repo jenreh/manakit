@@ -80,7 +80,7 @@ class OpenAIChatCompletionsProcessor(BaseOpenAIProcessor):
             text=content,
             chunk_metadata={
                 "source": "chat_completions",
-                "streaming": stream,
+                "streaming": str(stream),
                 "model": model,
             },
         )
@@ -88,14 +88,30 @@ class OpenAIChatCompletionsProcessor(BaseOpenAIProcessor):
     def _convert_messages_to_openai_format(
         self, messages: list[Message]
     ) -> list[ChatCompletionMessageParam]:
-        """Convert internal messages to OpenAI chat completion format."""
-        return [
-            {"role": "user", "content": msg.text}
-            if msg.type == MessageType.HUMAN
-            else {"role": "developer", "content": msg.text}
-            if msg.type == MessageType.SYSTEM
-            else {"role": "assistant", "content": msg.text}
-            for msg in (messages or [])
-            if msg.type
-            in (MessageType.HUMAN, MessageType.ASSISTANT, MessageType.SYSTEM)
-        ]
+        """Convert internal messages to OpenAI chat completion format.
+
+        Notes:
+        - OpenAI Chat Completions requires that after any system messages,
+          user/tool messages must alternate with assistant messages. To
+          ensure this, merge consecutive user (human) or assistant messages
+          into a single message by concatenating their text with a blank
+          line separator.
+        """
+        formatted: list[ChatCompletionMessageParam] = []
+        role_map = {
+            MessageType.HUMAN: "user",
+            MessageType.SYSTEM: "system",
+            MessageType.ASSISTANT: "assistant",
+        }
+
+        for msg in messages or []:
+            if msg.type not in role_map:
+                continue
+            role = role_map[msg.type]
+            if formatted and role != "system" and formatted[-1]["role"] == role:
+                # Merge consecutive user/assistant messages
+                formatted[-1]["content"] = formatted[-1]["content"] + "\n\n" + msg.text
+            else:
+                formatted.append({"role": role, "content": msg.text})
+
+        return formatted

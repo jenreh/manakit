@@ -94,7 +94,9 @@ def dialog_header(icon: str, title: str, description: str) -> rx.Component:
     )
 
 
-def dialog_buttons(submit_text: str, spacing: str = "3") -> rx.Component:
+def dialog_buttons(
+    submit_text: str, spacing: str = "3", has_errors: bool = False
+) -> rx.Component:
     """Reusable dialog action buttons."""
     return rx.flex(
         rx.dialog.close(
@@ -109,7 +111,11 @@ def dialog_buttons(submit_text: str, spacing: str = "3") -> rx.Component:
         ),
         rx.form.submit(
             rx.dialog.close(
-                rx.button(submit_text, class_name="px-4 py-2 rounded"),
+                rx.button(
+                    submit_text,
+                    class_name="px-4 py-2 rounded",
+                    disabled=has_errors,
+                ),
             ),
             as_child=True,
         ),

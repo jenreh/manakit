@@ -111,7 +111,7 @@ class KnowledgeAIProcessor(Processor):
                     chunk_metadata={
                         "source": "knowledgeai",
                         "project_id": model_id,
-                        "streaming": False,
+                        "streaming": str(False),
                     },
                 )
         except Exception as e:
@@ -229,7 +229,7 @@ class KnowledgeAIOpenAIProcessor(Processor):
                                 text=content,
                                 chunk_metadata={
                                     "source": "knowledgeai_openai",
-                                    "streaming": True,
+                                    "streaming": str(True),
                                     "model_id": model_id,
                                 },
                             )
@@ -242,7 +242,7 @@ class KnowledgeAIOpenAIProcessor(Processor):
                         text=content,
                         chunk_metadata={
                             "source": "knowledgeai_openai",
-                            "streaming": False,
+                            "streaming": str(False),
                             "model_id": model_id,
                         },
                     )
@@ -256,13 +256,20 @@ class KnowledgeAIOpenAIProcessor(Processor):
     def _convert_messages_to_openai_format(
         self, messages: list[Message]
     ) -> list[ChatCompletionMessageParam]:
-        return [
-            {"role": "user", "content": msg.text}
-            if msg.type == MessageType.HUMAN
-            else {"role": "developer", "content": msg.text}
-            if msg.type == MessageType.SYSTEM
-            else {"role": "assistant", "content": msg.text}
-            for msg in (messages or [])
-            if msg.type
-            in (MessageType.HUMAN, MessageType.ASSISTANT, MessageType.SYSTEM)
-        ]
+        formatted: list[ChatCompletionMessageParam] = []
+        role_map = {
+            MessageType.HUMAN: "user",
+            MessageType.SYSTEM: "system",
+            MessageType.ASSISTANT: "assistant",
+        }
+
+        for msg in messages or []:
+            if msg.type not in role_map:
+                continue
+            role = role_map[msg.type]
+            if formatted and role != "system" and formatted[-1]["role"] == role:
+                formatted[-1]["content"] = formatted[-1]["content"] + "\n\n" + msg.text
+            else:
+                formatted.append({"role": role, "content": msg.text})
+
+        return formatted

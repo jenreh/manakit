@@ -6,7 +6,7 @@ from manakit_ui.components.dialogs import (
     dialog_buttons,
     dialog_header,
 )
-from manakit_ui.components.form_inputs import form_field2, hidden_field
+from manakit_ui.components.form_inputs import form_field, hidden_field
 from manakit_user.authentication.backend.models import User
 from manakit_user.user_management.states.user_states import UserState
 
@@ -20,14 +20,17 @@ def role_checkbox(
     return rx.cond(
         name,
         rx.box(
-            rx.checkbox(
-                role.get("label"),
-                name=f"role_{name}",
-                default_checked=(
-                    user.roles.contains(name)
-                    if is_edit_mode and user.roles is not None
-                    else False
+            rx.tooltip(
+                rx.checkbox(
+                    role.get("label"),
+                    name=f"role_{name}",
+                    default_checked=(
+                        user.roles.contains(name)
+                        if is_edit_mode and user.roles is not None
+                        else False
+                    ),
                 ),
+                content=role.get("description", ""),
             ),
             class_name="w-[30%] max-w-[30%] flex-grow",
         ),
@@ -45,7 +48,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
             name="user_id",
             default_value=user.user_id.to_string() if is_edit_mode else "",
         ),
-        form_field2(
+        form_field(
             name="name",
             icon="user",
             label="Name",
@@ -53,7 +56,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
             default_value=user.name if is_edit_mode else "",
             required=True,
         ),
-        form_field2(
+        form_field(
             name="email",
             icon="mail",
             label="Email",
@@ -63,7 +66,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
             required=True,
             pattern=r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$",
         ),
-        form_field2(
+        form_field(
             name="password",
             icon="lock",
             label="Initiales Passwort" if not is_edit_mode else "Passwort",
@@ -86,7 +89,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
                     ),
                 ),
                 rx.text("Aktiv", size="2"),
-                margin_top="1em",
+                margin_top="9px",
             ),
             rx.hstack(
                 rx.switch(
@@ -111,7 +114,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
     # Role fields (available for both add and edit modes)
     role_fields = [
         rx.vstack(
-            rx.text("Berechtigungen", size="3", weight="bold"),
+            rx.text("Berechtigungen", size="2", weight="bold"),
             rx.flex(
                 rx.foreach(
                     UserState.available_roles,
@@ -119,11 +122,11 @@ def user_form_fields(user: User | None = None) -> rx.Component:
                         user=user, role=role, is_edit_mode=is_edit_mode
                     ),
                 ),
-                class_name="w-full flex-wrap gap-3 mt-4",
+                class_name="w-full flex-wrap gap-2 mt-2",
             ),
-            rx.text(
-                "Keine Rollen definiert. Bitte legen Sie zuerst Rollen an.",
-            ),
+            spacing="0",
+            margin="6px 0",
+            width="100%",
         ),
     ]
 
@@ -133,7 +136,7 @@ def user_form_fields(user: User | None = None) -> rx.Component:
     return rx.flex(
         *all_fields,
         # class_name=rx.cond(is_edit_mode, "flex-col gap-3", "flex-col gap-0"),
-        class_name="flex-col gap-3" if is_edit_mode else "flex-col gap-0",
+        class_name="flex-col gap-3" if is_edit_mode else "flex-col gap-2",
     )
 
 
