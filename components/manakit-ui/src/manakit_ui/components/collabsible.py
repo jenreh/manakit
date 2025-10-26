@@ -79,6 +79,6 @@ def collabsible(
         margin_top=rx.cond(show_condition, "16px", "-16px"),
         overflow="hidden",
         pointer_events=rx.cond(show_condition, "auto", "none"),
-        transition="all 1s ease-out",
+        # transition="all 1s ease-out",
         **props,
     )

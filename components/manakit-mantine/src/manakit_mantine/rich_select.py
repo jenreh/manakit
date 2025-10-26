@@ -170,13 +170,8 @@ class RichSelectNamespace(rx.ComponentNamespace):
         payload: Callable[[Any], dict[str, Any] | None] | None = None,
         **kwargs,
     ) -> rx.Component:
-        """
-        Zucker: Daten -> <rich_select.item .../> via rx.foreach.
-        **NEU:** Vergibt einen stabilen React-Key pro Item (rs-<index>), um
-        Kollisionen von Default-Keys (z.B. 'row_rx_state_') zu vermeiden.
-        """
-        if renderer is None and "rendere" in kwargs:
-            renderer = kwargs.pop("rendere")
+        if renderer is None and "renderer" in kwargs:
+            renderer = kwargs.pop("renderer")
         if renderer is None:
             raise ValueError("rich_select.map(...): 'renderer' ist erforderlich.")
 
@@ -226,5 +221,4 @@ class RichSelectNamespace(rx.ComponentNamespace):
         return rx.foreach(data, _mapper)
 
 
-# Öffentliche API im Reflex-Stil
 rich_select = RichSelectNamespace()

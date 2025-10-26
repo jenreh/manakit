@@ -201,7 +201,7 @@ class RichTextEditor(NoSSRComponent):
     """Placeholder text when editor is empty."""
 
     # Visual props
-    variant: Var[Literal["default", "subtle"] | None] = None
+    variant: Var[Literal["default", "subtle"]] = None
     """Visual style: default (with borders) or subtle (borderless)."""
 
     with_typography_styles: Var[bool | None] = None

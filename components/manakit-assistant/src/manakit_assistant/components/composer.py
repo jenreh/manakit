@@ -1,10 +1,12 @@
 import reflex as rx
 
+import manakit_mantine as mn
+from manakit_assistant.components.composer_key_handler import keyboard_shortcuts
 from manakit_assistant.components.tools_modal import tools_popover
-from manakit_assistant.state.thread_state import AIModel, ThreadState
+from manakit_assistant.state.thread_state import ThreadState
 
 
-def render_model_option(model: AIModel) -> rx.Component:
+def render_model_option(model: dict) -> rx.Component:
     return rx.select.item(
         rx.hstack(
             rx.cond(
@@ -30,26 +32,21 @@ class ComposerComponent:
 
     @staticmethod
     def input(placeholder: str = "Frage etwas...") -> rx.Component:
-        return rx.text_area(
+        return mn.textarea(
             id="composer-area",
             name="composer_prompt",
             placeholder=placeholder,
             value=ThreadState.prompt,
-            # Stil
-            border="0",
-            outline="none",
-            variant="soft",
-            background_color=rx.color("white", 1, alpha=False),
-            padding="9px 3px",
-            autocorrect="on",
-            size="3",
-            # Layout
+            autosize=True,
+            variant="unstyled",
+            min_rows=1,
+            max_rows=8,
+            custom_attrs={
+                "style": {
+                    "padding": "6px 12px",
+                }
+            },
             width="100%",
-            min_height="24px",
-            max_height="244px",
-            resize="none",
-            rows="1",
-            # Ereignisse
             on_change=ThreadState.update_prompt,
         )
 
@@ -63,7 +60,7 @@ class ComposerComponent:
                 on_click=ThreadState.submit_message,
                 loading=ThreadState.processing,
             ),
-            rx.script(src="/js/shortcuts.js"),
+            keyboard_shortcuts(),
         )
 
     @staticmethod

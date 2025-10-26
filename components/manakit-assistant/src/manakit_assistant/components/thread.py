@@ -1,7 +1,9 @@
+import logging
 from collections.abc import Callable
 
 import reflex as rx
 
+import manakit_mantine as mn
 from manakit_assistant.backend.models import Suggestion
 from manakit_assistant.components.composer import ComposerComponent
 from manakit_assistant.components.message import MessageComponent
@@ -12,6 +14,8 @@ from manakit_assistant.state.thread_state import (
     ThreadListState,
     ThreadState,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class Assistant:
@@ -45,16 +49,18 @@ class Assistant:
         return rx.vstack(
             rx.text(welcome_message, size="8", margin_bottom="0.5em"),
             rx.cond(
-                ThreadState.suggestions,
+                ThreadState.has_suggestions,
                 rx.flex(
-                    rx.foreach(
-                        ThreadState.suggestions,
-                        lambda suggestion: Assistant.suggestion(
-                            prompt=suggestion.prompt,
-                            icon=suggestion.icon,
-                            update_prompt=ThreadState.update_prompt,
-                        ),
-                    ),
+                    # rx.foreach(
+                    # ThreadState.suggestions,
+                    # lambda x: rx.text("Suggestion Component"),
+                    # Assistant.suggestion,
+                    # lambda suggestion: Assistant.suggestion(
+                    #     prompt=suggestion.prompt,
+                    #     icon=suggestion.icon,
+                    #     update_prompt=ThreadState.update_prompt,
+                    # ),
+                    # ),
                     spacing="4",
                     width="100%",
                     direction="row",
@@ -67,7 +73,6 @@ class Assistant:
 
     @staticmethod
     def messages(
-        with_scroll_to_bottom: bool = True,
         **props,
     ) -> rx.Component:
         """Component to display messages in the thread."""
@@ -78,7 +83,7 @@ class Assistant:
             messages = ThreadState.messages
 
         return rx.fragment(
-            rx.auto_scroll(
+            mn.scroll_area.stateful(
                 rx.foreach(
                     messages,
                     lambda message: MessageComponent.render_message(message),
@@ -89,14 +94,35 @@ class Assistant:
                     min_height="44px",
                     wrap="nowrap",
                 ),
-                id="messages-scroll-area",
+                type="hover",
+                scrollbar_size="6px",
+                offset_scrollbars=False,
+                controls="bottom",
+                controls_position="bottom",
+                bottom_button_text="↓",
+                height="100%",
+                min_height="0",
                 **props,
             ),
-            rx.cond(
-                with_scroll_to_bottom,
-                MessageComponent.scroll_to_bottom(),
-                None,
-            ),
+            # rx.auto_scroll(
+            #     rx.foreach(
+            #         messages,
+            #         lambda message: MessageComponent.render_message(message),
+            #     ),
+            #     rx.spacer(
+            #         id="scroll-anchor",
+            #         display="hidden",
+            #         min_height="44px",
+            #         wrap="nowrap",
+            #     ),
+            #     id="messages-scroll-area",
+            #     **props,
+            # ),
+            # rx.cond(
+            #     with_scroll_to_bottom,
+            #     MessageComponent.scroll_to_bottom(),
+            #     None,
+            # ),
         )
 
     @staticmethod

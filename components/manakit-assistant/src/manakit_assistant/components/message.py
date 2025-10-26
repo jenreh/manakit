@@ -1,6 +1,5 @@
 import reflex as rx
 
-import manakit_ui.components as knai
 from manakit_assistant.backend.models import (
     Message,
     MessageType,
@@ -11,6 +10,7 @@ from manakit_assistant.state.thread_state import (
     ThinkingType,
     ThreadState,
 )
+from manakit_ui.components.collabsible import collabsible
 
 message_styles = {
     "spacing": "4",
@@ -35,11 +35,11 @@ class MessageComponent:
                     white_space="pre-line",
                 ),
                 padding="4px",
-                max_width="60%",
+                max_width="80%",
                 margin_top="24px",
                 # margin_right="14px",
                 background_color=rx.color_mode_cond(
-                    light=rx.color("accent", 2),
+                    light=rx.color("accent", 3),
                     dark=rx.color("accent", 3),
                 ),
                 border_radius="9px",
@@ -59,7 +59,7 @@ class MessageComponent:
         # Main content area with all components
         content_area = rx.vstack(
             # Always rendered with conditional styling for smooth animations
-            knai.collabsible(
+            collabsible(
                 rx.scroll_area(
                     rx.foreach(
                         ThreadState.thinking_items,
@@ -179,23 +179,23 @@ class MessageComponent:
     @staticmethod
     def scroll_to_bottom() -> rx.Component | None:
         return rx.center(
-            rx.button(
-                rx.icon("arrow-down", size=18),
-                id="btn-to-bottom",
-                margin_top="-66px",
-                justify_content="center",
-                radius="full",
-                padding="10px",
-                size="3",
-                border=f"1px solid {rx.color('gray', 5)}",
-                color=rx.color("gray", 9),
-                background_color=rx.color("gray", 1),
-                box_shadow=rx.color_mode_cond(
-                    light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
-                    dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
-                ),
-            ),
-            rx.script(src="/js/bottom_scroll.js"),
+            # rx.button(
+            #     rx.icon("arrow-down", size=18),
+            #     id="btn-to-bottom",
+            #     margin_top="-66px",
+            #     justify_content="center",
+            #     radius="full",
+            #     padding="10px",
+            #     size="3",
+            #     border=f"1px solid {rx.color('gray', 5)}",
+            #     color=rx.color("gray", 9),
+            #     background_color=rx.color("gray", 1),
+            #     box_shadow=rx.color_mode_cond(
+            #         light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
+            #         dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
+            #     ),
+            # ),
+            # rx.script(src="/js/bottom_scroll.js"),
             width="100%",
         )
 

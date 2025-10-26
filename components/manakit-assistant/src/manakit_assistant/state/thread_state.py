@@ -54,14 +54,14 @@ class ThreadState(rx.State):
     processing: bool = False
     messages: list[Message] = []
     prompt: str = ""
-    suggestions: list[Suggestion] | None = None
+    suggestions: list[Suggestion] = []
 
     # Chunk processing state
     current_chunks: list[Chunk] = []
     thinking_items: list[Thinking] = []  # Consolidated reasoning and tool calls
     image_chunks: list[Chunk] = []
     show_thinking: bool = False
-    thinking_expanded: bool = True
+    thinking_expanded: bool = False
     current_activity: str = ""
     current_reasoning_session: str = ""  # Track current reasoning session
 
@@ -245,17 +245,7 @@ class ThreadState(rx.State):
     @rx.event
     async def submit_message(self) -> AsyncGenerator[Any, Any]:
         """Submit a message and reset the textarea."""
-        # Start the background task
         yield ThreadState.process_message
-        # Reset the textarea
-        yield rx.call_script("""
-            const textarea = document.getElementById('composer-area');
-            if (textarea) {
-                textarea.value = '';
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-            }
-        """)
 
     def _clear_chunks(self) -> None:
         """Clear all chunk categorization lists except thinking_items for display."""
