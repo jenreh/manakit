@@ -141,7 +141,11 @@
         margin-right: auto;
         margin-top: 24px;
         margin-bottom: 24px;
+        /* For horizontal scrolling on small screens */
+        display: block;
+        overflow-x: scroll;
     }
+
 
     .markdown th,
     .markdown td {
