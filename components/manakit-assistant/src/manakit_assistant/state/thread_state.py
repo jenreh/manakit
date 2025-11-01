@@ -48,13 +48,13 @@ class Thinking(BaseModel):
 
 
 class ThreadState(rx.State):
-    _thread: ThreadModel = ThreadModel(thread_id=str(uuid.uuid4()))
+    _thread: ThreadModel = ThreadModel(thread_id=str(uuid.uuid4()), prompt="")
     ai_models: list[AIModel] = []
     selected_model: str = ""
     processing: bool = False
     messages: list[Message] = []
     prompt: str = ""
-    suggestions: list[Suggestion] = []
+    suggestions: list[Suggestion] = [Suggestion(prompt="Wie kann ich dir helfen?")]
 
     # Chunk processing state
     current_chunks: list[Chunk] = []
@@ -84,6 +84,7 @@ class ThreadState(rx.State):
         self._thread = ThreadModel(
             thread_id=str(uuid.uuid4()),
             title="Neuer Chat",
+            prompt="",
             messages=[],
             state=ThreadStatus.NEW,
             ai_model=self.selected_model,
@@ -156,6 +157,34 @@ class ThreadState(rx.State):
     @rx.event
     def update_prompt(self, value: str) -> None:
         self.prompt = value
+
+    @rx.event
+    def set_suggestions(self, suggestions: list[Suggestion]) -> None:
+        """Set custom suggestions for the thread."""
+        self.suggestions = suggestions
+
+    @rx.event
+    def set_initial_suggestions(self, suggestions: list[dict | Suggestion]) -> None:
+        """Set initial suggestions during page load.
+
+        Can be called via on_load callback to initialize suggestions
+        from the assistant page or other sources.
+
+        Args:
+            suggestions: List of suggestions (dict or Suggestion objects) to display.
+        """
+        # Convert dicts to Suggestion objects
+        # (Reflex serializes Pydantic models to dicts during event invocation)
+        converted = []
+        for item in suggestions:
+            if isinstance(item, dict):
+                converted.append(Suggestion(**item))
+            elif isinstance(item, Suggestion):
+                converted.append(item)
+            else:
+                log = logging.getLogger(__name__)
+                log.warning("Unknown suggestion type: %s", type(item))
+        self.suggestions = converted
 
     @rx.event
     def clear(self) -> None:
@@ -243,8 +272,51 @@ class ThreadState(rx.State):
                 self.processing = False
 
     @rx.event
+    async def persist_current_thread(self, prompt: str = "") -> None:
+        """Persist the current temporary thread to the thread list.
+
+        Converts the temporary ThreadState._thread to a persistent entry in
+        ThreadListState so it appears in the thread list. This is called
+        when the user first submits a message.
+
+        Args:
+            prompt: The user's message prompt (used for thread title).
+
+        Idempotent: calling multiple times won't create duplicates if the
+        thread is already in the list.
+        """
+        # Get ThreadListState to add the thread
+        threadlist_state: ThreadListState = await self.get_state(ThreadListState)
+
+        # Check if thread already exists in list (idempotency check)
+        existing_thread = await threadlist_state.get_thread(self._thread.thread_id)
+        if existing_thread:
+            logger.debug("Thread already persisted: %s", self._thread.thread_id)
+            return
+
+        # Update thread title based on first message if title is still default
+        if self._thread.title in {"", "Neuer Chat"}:
+            self._thread.title = prompt.strip() if prompt.strip() else "Neuer Chat"
+
+        # Add current thread to thread list
+        self._thread.active = True
+        threadlist_state.threads.insert(0, self._thread)
+
+        # Set as active thread in list
+        threadlist_state.active_thread_id = self._thread.thread_id
+
+        # Save to local storage if autosave is enabled
+        if threadlist_state.autosave:
+            await threadlist_state.save_threads()
+
+        logger.debug("Persisted thread: %s", self._thread.thread_id)
+
+    @rx.event
     async def submit_message(self) -> AsyncGenerator[Any, Any]:
         """Submit a message and reset the textarea."""
+        # Persist the current thread before processing the message
+        # Pass the prompt so we can use it as the thread title
+        await self.persist_current_thread(prompt=self.prompt)
         yield ThreadState.process_message
 
     def _clear_chunks(self) -> None:
@@ -539,10 +611,23 @@ class ThreadListState(rx.State):
         """Check if there are any threads."""
         return len(self.threads) > 0
 
-    async def initialize(self, autosave: bool = False) -> None:
-        """Initialize the thread list state."""
+    async def initialize(
+        self, autosave: bool = False, auto_create_default: bool = False
+    ) -> None:
+        """Initialize the thread list state.
+
+        Args:
+            autosave: Enable auto-saving threads to local storage.
+            auto_create_default: If True, create and select a default thread
+                when no threads exist (e.g., on first load or after clearing).
+        """
         self.autosave = autosave
         await self.load_threads()
+
+        # Auto-create default thread if enabled and no threads exist
+        if auto_create_default and not self.has_threads:
+            await self.create_thread()
+
         logger.debug("Initialized thread list state")
 
     async def load_threads(self) -> None:
@@ -595,6 +680,7 @@ class ThreadListState(rx.State):
         new_thread = ThreadModel(
             thread_id=str(uuid.uuid4()),
             title="Neuer Chat",
+            prompt="",
             messages=[],
             state=ThreadStatus.NEW,
             ai_model=ModelManager().get_default_model(),
@@ -644,7 +730,14 @@ class ThreadListState(rx.State):
             position="top-right",
             close_button=True,
         )
-        await self.select_thread(self.active_thread_id)
+
+        # If no threads left, clear ThreadState to show empty view
+        if not self.has_threads:
+            thread_state: ThreadState = await self.get_state(ThreadState)
+            thread_state.initialize()
+            self.active_thread_id = ""
+        else:
+            await self.select_thread(self.active_thread_id)
 
     async def select_thread(self, thread_id: str) -> None:
         """Select a thread."""

@@ -13,7 +13,7 @@ dependencies = [
     "manakit-user",
     "psycopg>=3.2.12",
     "psycopg-binary>=3.2.12",
-    "reflex>=0.8.16",
+    "reflex>=0.8.17",
 ]
 
 [dependency-groups]

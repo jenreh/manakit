@@ -82,21 +82,15 @@ def navbar_admin_items() -> rx.Component:
 def navbar_items() -> rx.Component:
     return rx.vstack(
         rx.text("Demos", size="2", weight="bold", style=sub_heading_styles),
-        requires_role(
-            sidebar_item(
-                label="Assistent",
-                icon="bot-message-square",
-                url="/assistant",
-            ),
-            role=ASSISTANT_ROLE.name,
+        sidebar_item(
+            label="Assistent",
+            icon="bot-message-square",
+            url="/assistant",
         ),
-        requires_role(
-            sidebar_item(
-                label="Bildgenerator",
-                icon="image",
-                url="/image-generator",
-            ),
-            role=IMAGE_GENERATOR_ROLE.name,
+        sidebar_item(
+            label="Bildgenerator",
+            icon="image",
+            url="/image-generator",
         ),
         rx.text("Inputs", size="2", weight="bold", style=sub_heading_styles),
         rx.list.unordered(

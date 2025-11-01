@@ -4,7 +4,6 @@ from collections.abc import Callable
 import reflex as rx
 
 import manakit_mantine as mn
-from manakit_assistant.backend.models import Suggestion
 from manakit_assistant.components.composer import ComposerComponent
 from manakit_assistant.components.message import MessageComponent
 from manakit_assistant.components.threadlist import ThreadList
@@ -51,16 +50,14 @@ class Assistant:
             rx.cond(
                 ThreadState.has_suggestions,
                 rx.flex(
-                    # rx.foreach(
-                    # ThreadState.suggestions,
-                    # lambda x: rx.text("Suggestion Component"),
-                    # Assistant.suggestion,
-                    # lambda suggestion: Assistant.suggestion(
-                    #     prompt=suggestion.prompt,
-                    #     icon=suggestion.icon,
-                    #     update_prompt=ThreadState.update_prompt,
-                    # ),
-                    # ),
+                    rx.foreach(
+                        ThreadState.suggestions,
+                        lambda suggestion: Assistant.suggestion(
+                            prompt=suggestion.prompt,
+                            icon=suggestion.icon,
+                            update_prompt=ThreadState.update_prompt,
+                        ),
+                    ),
                     spacing="4",
                     width="100%",
                     direction="row",
@@ -118,11 +115,6 @@ class Assistant:
             #     id="messages-scroll-area",
             #     **props,
             # ),
-            # rx.cond(
-            #     with_scroll_to_bottom,
-            #     MessageComponent.scroll_to_bottom(),
-            #     None,
-            # ),
         )
 
     @staticmethod
@@ -161,7 +153,6 @@ class Assistant:
     @staticmethod
     def thread(
         welcome_message: str = "",
-        suggestions: list[Suggestion] | None = None,
         with_attachments: bool = False,
         with_clear: bool = True,
         with_model_chooser: bool = True,
@@ -170,8 +161,10 @@ class Assistant:
         with_tools: bool = False,
         **props,
     ) -> rx.Component:
-        if suggestions is not None:
-            ThreadState.suggestions = suggestions
+        # Note: avoid mutating state during component tree building
+        # Use ThreadState.set_suggestions() event handler to update suggestions
+        # if suggestions is not None:
+        #     ThreadState.set_suggestions(suggestions)
 
         if with_thread_list:
             ThreadState.with_thread_list = with_thread_list
@@ -188,7 +181,6 @@ class Assistant:
                 ),
                 Assistant.empty(
                     welcome_message=welcome_message,
-                    suggestions=suggestions,
                     width="100%",
                     max_width="880px",
                     margin_left="auto",

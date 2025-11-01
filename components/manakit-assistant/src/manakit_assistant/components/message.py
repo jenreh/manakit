@@ -176,29 +176,6 @@ class MessageComponent:
             )
         )
 
-    @staticmethod
-    def scroll_to_bottom() -> rx.Component | None:
-        return rx.center(
-            # rx.button(
-            #     rx.icon("arrow-down", size=18),
-            #     id="btn-to-bottom",
-            #     margin_top="-66px",
-            #     justify_content="center",
-            #     radius="full",
-            #     padding="10px",
-            #     size="3",
-            #     border=f"1px solid {rx.color('gray', 5)}",
-            #     color=rx.color("gray", 9),
-            #     background_color=rx.color("gray", 1),
-            #     box_shadow=rx.color_mode_cond(
-            #         light="0 1px 10px -0.5px rgba(0, 0, 0, 0.1)",
-            #         dark="0 1px 10px -0.5px rgba(0.8, 0.8, 0.8, 0.1)",
-            #     ),
-            # ),
-            # rx.script(src="/js/bottom_scroll.js"),
-            width="100%",
-        )
-
 
 class ToolCallComponent:
     """Component for displaying individual tool calls with green styling."""

@@ -103,7 +103,11 @@ default_model = ModelManager().get_default_model()
     description="A demo page for the Assistant UI.",
     navbar=app_navbar(),
     with_header=True,
-    on_load=[ThreadState.initialize(), ThreadListState.initialize(autosave=True)],
+    on_load=[
+        ThreadState.initialize(),
+        ThreadState.set_initial_suggestions(suggestions),
+        ThreadListState.initialize(autosave=True, auto_create_default=True),
+    ],
 )
 def assistant_page() -> rx.Component:
     assistant_styles = {
@@ -132,7 +136,6 @@ def assistant_page() -> rx.Component:
                     rx.center(
                         Assistant.thread(
                             welcome_message="👋 Hallo, wie kann ich Dir heute helfen?",
-                            suggestions=suggestions,
                             with_attachments=False,
                             with_scroll_to_bottom=False,
                             with_thread_list=True,
