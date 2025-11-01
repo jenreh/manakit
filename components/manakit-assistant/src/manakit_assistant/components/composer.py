@@ -7,23 +7,22 @@ from manakit_assistant.state.thread_state import ThreadState
 
 
 def render_model_option(model: dict) -> rx.Component:
-    return rx.select.item(
-        rx.hstack(
-            rx.cond(
-                model.icon,
-                rx.image(
-                    src=rx.color_mode_cond(
-                        light=f"/icons/{model.icon}.svg",
-                        dark=f"/icons/{model.icon}_dark.svg",
-                    ),
-                    width="13px",
+    return rx.hstack(
+        rx.cond(
+            model.icon,
+            rx.image(
+                src=rx.color_mode_cond(
+                    light=f"/icons/{model.icon}.svg",
+                    dark=f"/icons/{model.icon}_dark.svg",
                 ),
-                None,
+                width="13px",
+                margin_right="8px",
             ),
-            rx.text(model.text),
-            align="center",
+            None,
         ),
-        value=model.id,
+        rx.text(model.text),
+        align="center",
+        spacing="0",
     )
 
 
@@ -47,7 +46,7 @@ class ComposerComponent:
                 }
             },
             width="100%",
-            on_change=ThreadState.update_prompt,
+            on_change=ThreadState.set_prompt_direct,
         )
 
     @staticmethod
@@ -87,26 +86,18 @@ class ComposerComponent:
 
         return rx.cond(
             ThreadState.ai_models,
-            rx.select.root(
-                rx.select.trigger(
-                    placeholder="Wähle ein Modell",
-                    radius="large",
-                    width="210px",
-                    margin_top="-3px",
+            mn.rich_select(
+                mn.rich_select.map(
+                    ThreadState.ai_models,
+                    renderer=render_model_option,
+                    value=lambda model: model.id,
                 ),
-                rx.select.content(
-                    rx.foreach(
-                        ThreadState.ai_models,
-                        render_model_option,
-                    ),
-                    position="popper",
-                    side="top",
-                ),
-                name="model-select",
+                placeholder="Wähle ein Modell",
                 value=ThreadState.selected_model,
-                radius="large",
-                size="2",
                 on_change=ThreadState.set_selected_model,
+                name="model-select",
+                width="252px",
+                position="top",
             ),
             None,
         )

@@ -175,36 +175,46 @@ class RichSelectNamespace(rx.ComponentNamespace):
         if renderer is None:
             raise ValueError("rich_select.map(...): 'renderer' ist erforderlich.")
 
+        def _safe_get(obj: Any, key: str, default: Any) -> Any:
+            """Safely get attribute/key from object with fallbacks.
+
+            Tries dict access, then attribute access, finally returns default.
+            """
+            # Try dict-like access
+            try:
+                return obj[key]
+            except (KeyError, TypeError, Exception):
+                pass
+
+            # Try attribute access
+            try:
+                return getattr(obj, key, default)
+            except Exception:
+                return default
+
         def _mapper(row: Any, index: int) -> rx.Component:
-            if value is not None:
-                value_var = value(row)
-            elif isinstance(row, dict) or (hasattr(row, "__getitem__")):
-                value_var = row[value_key]
-            else:
-                value_var = row
+            # Extract value with safe fallbacks
+            value_var = (
+                value(row) if value is not None else _safe_get(row, value_key, row)
+            )
 
-            if disabled is not None:
-                disabled_var = disabled(row)
-            elif isinstance(row, dict) or (
-                hasattr(row, "__getitem__") and hasattr(row, "get")
-            ):
-                disabled_var = row.get("disabled", False)
-            else:
-                disabled_var = False
+            # Extract disabled state with safe fallbacks
+            disabled_var = (
+                disabled(row)
+                if disabled is not None
+                else _safe_get(row, "disabled", False)
+            )
 
-            if keywords is not None:
-                keywords_var = keywords(row)
-            elif isinstance(row, dict) or (
-                hasattr(row, "__getitem__") and hasattr(row, "get")
-            ):
-                keywords_var = row.get("keywords")
-            else:
-                keywords_var = None
+            # Extract keywords with safe fallbacks
+            keywords_var = (
+                keywords(row)
+                if keywords is not None
+                else _safe_get(row, "keywords", None)
+            )
 
-            if payload is not None:  # noqa: SIM108
-                payload_var = payload(row)
-            else:
-                payload_var = row
+            # Extract payload with safe fallbacks
+            # Payload must be dict[str, Any] | None, not arbitrary objects
+            payload_var = payload(row) if payload is not None else None
 
             # Create unique key using index
             key_str = f"rs-{index}"
