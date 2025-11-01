@@ -706,15 +706,7 @@ class ThreadListState(rx.State):
         logger.debug("Updated thread: %s", thread.thread_id)
 
     async def delete_thread(self, thread_id: str) -> AsyncGenerator[Any, Any]:
-        """Delete a thread if not active."""
-        if thread_id == self.active_thread_id:
-            yield rx.toast.error(
-                "Aktiver Chat kann nicht gelöscht werden.",
-                position="top-right",
-                close_button=True,
-            )
-            return
-
+        """Delete a thread."""
         thread = await self.get_thread(thread_id)
         if not thread:
             yield rx.toast.error(
@@ -723,6 +715,7 @@ class ThreadListState(rx.State):
             logger.warning("Thread with ID %s not found.", thread_id)
             return
 
+        was_active = thread_id == self.active_thread_id
         self.threads.remove(thread)
         await self.save_threads()
         yield rx.toast.info(
@@ -731,13 +724,14 @@ class ThreadListState(rx.State):
             close_button=True,
         )
 
-        # If no threads left, clear ThreadState to show empty view
-        if not self.has_threads:
+        # If the deleted thread was active, clear ThreadState and show empty view
+        if was_active:
             thread_state: ThreadState = await self.get_state(ThreadState)
             thread_state.initialize()
             self.active_thread_id = ""
-        else:
-            await self.select_thread(self.active_thread_id)
+        # If other threads remain but we deleted the active one,
+        # the empty state is now displayed
+        # User can select from existing threads or create new one
 
     async def select_thread(self, thread_id: str) -> None:
         """Select a thread."""
