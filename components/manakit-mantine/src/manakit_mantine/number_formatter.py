@@ -19,9 +19,6 @@ class NumberFormatter(MantineInputComponentBase):
     tag = "NumberFormatter"
     alias = "MantineNumberFormatter"
 
-    # Value props (string controlled/uncontrolled semantics)
-    value: Var[str | float] = None
-
     # Formatting/parser behavior
     allow_negative: Var[bool] = True
     decimal_scale: Var[int] = None

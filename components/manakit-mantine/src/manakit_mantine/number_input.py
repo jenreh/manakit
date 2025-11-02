@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from typing import Literal
 
-from reflex.event import EventHandler
 from reflex.vars.base import Var
 
 from manakit_mantine.base import (
@@ -29,13 +28,6 @@ class NumberInput(MantineInputComponentBase):
 
     tag = "NumberInput"
     alias = "MantineNumberInput"
-
-    # Override value type to support numbers
-    value: Var[int | float | str | None] = None
-    """Controlled value (can be number or string)."""
-
-    default_value: Var[int | float | str | None] = None
-    """Uncontrolled default value."""
 
     # Numeric constraints
     min: Var[int | float] = None
@@ -87,11 +79,6 @@ class NumberInput(MantineInputComponentBase):
 
     start_value: Var[int | float] = None
     """Value when empty input is focused (default: 0)."""
-
-    # Override on_change to handle NumberInput's direct value (not event.target.value)
-    on_change: EventHandler[lambda value: [value]] = None
-    """Called when value changes (receives number or empty string directly,
-    not an event object)."""
 
 
 number_input = NumberInput.create

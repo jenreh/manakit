@@ -3,8 +3,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-import reflex as rx
-from reflex.event import EventHandler
 from reflex.vars.base import Var
 
 from manakit_mantine.base import MantineInputComponentBase
@@ -41,9 +39,6 @@ class JsonInput(MantineInputComponentBase):
     autosize: Var[bool] = None
     min_rows: Var[int] = None
     max_rows: Var[int] = None
-
-    # Events - JsonInput exposes on_change similar to other inputs
-    on_change: EventHandler[rx.event.input_event] = None
 
 
 json_input = JsonInput.create

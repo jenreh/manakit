@@ -87,13 +87,23 @@ class TextareaState(rx.State):
 
 
 def basic_textarea_example() -> rx.Component:
-    """Basic textarea example."""
+    """Basic textarea example using uncontrolled pattern.
+
+    Uses default_value + on_blur to avoid cursor jumping to end while typing.
+    This is the recommended pattern when you don't need real-time state updates.
+    """
     return rx.card(
         rx.heading("Basic Textarea", size="4"),
+        rx.text(
+            "Uses on_blur for updates (no cursor jump)",
+            size="2",
+            color="gray",
+            style={"font-style": "italic"},
+        ),
         mn.textarea(
             placeholder="Enter your comment...",
-            value=TextareaState.basic_value,
-            on_change=TextareaState.set_basic_value,
+            default_value=TextareaState.basic_value,
+            on_blur=TextareaState.set_basic_value,
         ),
         rx.text(
             f"Characters: {TextareaState.basic_value.length()}",
@@ -163,16 +173,16 @@ def autosize_textarea_example() -> rx.Component:
         rx.vstack(
             mn.textarea(
                 placeholder="Autosize with no limit...",
-                label="No Row Limit",
-                description="This textarea will grow indefinitely",
+                label="No Row Limit (Uncontrolled)",
+                description="This textarea will grow indefinitely (uses on_blur)",
                 autosize=True,
                 min_rows=2,
-                value=TextareaState.comment,
-                on_change=TextareaState.set_comment,
+                default_value=TextareaState.comment,
+                on_blur=TextareaState.set_comment,
             ),
             mn.textarea(
                 placeholder="Autosize with max 4 rows...",
-                label="Max 4 Rows",
+                label="Max 4 Rows (No State)",
                 description="This textarea will grow up to 4 rows then scroll",
                 autosize=True,
                 min_rows=2,
@@ -220,22 +230,33 @@ def resize_textarea_example() -> rx.Component:
 
 
 def textarea_with_validation_example() -> rx.Component:
-    """Demonstrate validation."""
+    """Demonstrate validation with character counter.
+
+    Note: These examples use controlled inputs (value + on_change) to show
+    real-time character counting. This may cause cursor to jump to end while
+    typing. For production, consider using a debounced textarea or default_value
+    + on_blur if real-time updates aren't needed.
+    """
     return rx.card(
         rx.heading("Validation", size="4"),
+        rx.text(
+            "⚠️ Uses controlled inputs - cursor may jump (see bio example)",
+            size="1",
+            color="orange",
+            style={"font-style": "italic"},
+        ),
         rx.vstack(
             mn.textarea(
                 label="Feedback",
                 description="Minimum 10 characters required",
                 placeholder="Tell us what you think...",
-                value=TextareaState.feedback,
+                default_value=TextareaState.feedback,
                 error=TextareaState.feedback_error,
                 required=True,
-                on_change=TextareaState.set_feedback,
-                on_blur=TextareaState.validate_feedback,
+                on_blur=[TextareaState.set_feedback, TextareaState.validate_feedback],
             ),
             mn.textarea(
-                label="Bio",
+                label="Bio (Real-time Character Counter)",
                 description=f"Characters: {TextareaState.char_count}/500",
                 placeholder="Tell us about yourself...",
                 value=TextareaState.bio,

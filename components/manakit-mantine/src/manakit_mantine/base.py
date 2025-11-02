@@ -216,14 +216,17 @@ class MantineInputComponentBase(MantineComponentBase):
     radius: Var[Literal["xs", "sm", "md", "lg", "xl"]] = None
     """Border radius size."""
 
+    pointer: Var[bool]
+    """Changes cursor to pointer"""
+
     # ========================================================================
     # State Props - Value, placeholder, disabled state
     # ========================================================================
 
-    value: Var[str] = None
+    value: Var[str | int | float | list | None] = None
     """Current input value (controlled component)."""
 
-    default_value: Var[str] = None
+    default_value: Var[str | float | int | list | None] = None
     """Default input value (uncontrolled component)."""
 
     placeholder: Var[str] = None
@@ -329,10 +332,10 @@ class MantineInputComponentBase(MantineComponentBase):
     on_change: EventHandler[rx.event.input_event] = None
     """Called when input value changes (receives event with event.target.value)."""
 
-    on_focus: EventHandler[rx.event.no_args_event_spec] = None
+    on_focus: EventHandler[rx.event.input_event] = None
     """Called when input receives focus."""
 
-    on_blur: EventHandler[rx.event.no_args_event_spec] = None
+    on_blur: EventHandler[rx.event.input_event] = None
     """Called when input loses focus."""
 
     on_key_down: EventHandler[rx.event.key_event] = None

@@ -100,6 +100,10 @@ class ThreadState(rx.State):
         self.selected_model = thread.ai_model
         logger.debug("Set current thread: %s", thread.thread_id)
 
+    def set_prompt(self, prompt: str) -> None:
+        """Set the current prompt."""
+        self.prompt = prompt
+
     @rx.var
     def has_ai_models(self) -> bool:
         """Check if there are any chat models."""

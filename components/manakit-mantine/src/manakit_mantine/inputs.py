@@ -36,51 +36,6 @@ class Input(MantineInputComponentBase):
     # Polymorphic component prop - can change the underlying element
     component: Var[str]
 
-    # Visual variants
-    variant: Var[Literal["default", "filled", "unstyled"]]
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
-    radius: Var[Literal["xs", "sm", "md", "lg", "xl"]]
-
-    # State props
-    disabled: Var[bool]
-    error: Var[bool]
-    required: Var[bool]
-
-    # Input value and placeholder
-    value: Var[str]
-    default_value: Var[str]
-    placeholder: Var[str]
-
-    # HTML input attributes
-    type: Var[str]  # Input type (text, email, tel, url, password, etc.)
-    pattern: Var[str]  # HTML5 pattern validation
-    input_mode: Var[str]  # inputMode for mobile keyboards
-    auto_complete: Var[str]  # Autocomplete attribute
-    max_length: Var[int]  # Maximum length
-    min_length: Var[int]  # Minimum length
-    name: Var[str]  # Input name attribute
-    id: Var[str]  # Input id attribute
-    aria_label: Var[str]  # Accessibility label
-
-    # Left and right sections
-    left_section: Var[Any]  # Accepts any React component
-    right_section: Var[Any]  # Accepts any React component
-    left_section_width: Var[int | str]
-    right_section_width: Var[int | str]
-    left_section_pointer_events: Var[str]  # CSS pointer-events: none, auto, all, etc.
-    right_section_pointer_events: Var[str]  # CSS pointer-events: none, auto, all, etc.
-
-    # Pointer props
-    pointer: Var[bool]  # Changes cursor to pointer
-
-    # Event handlers
-    # on_change uses input_event to get value from event.target.value
-    on_change: EventHandler[rx.event.input_event]
-    on_focus: EventHandler[rx.event.no_args_event_spec]
-    on_blur: EventHandler[rx.event.no_args_event_spec]
-    on_key_down: EventHandler[rx.event.key_event]
-    on_key_up: EventHandler[rx.event.key_event]
-
 
 # ============================================================================
 # Input.Wrapper Component
@@ -102,20 +57,8 @@ class InputWrapper(MantineInputComponentBase):
 
     tag = "Input.Wrapper"
 
-    # Content
-    label: Var[str]
-    description: Var[str]
-    error: Var[str]
-
     # Props
-    required: Var[bool]
     with_asterisk: Var[bool]  # Shows asterisk without required attribute
-
-    # Size and appearance
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
-
-    # ID for accessibility
-    id: Var[str]
 
     # Layout control - order of elements in wrapper
     input_wrapper_order: Var[list[Literal["label", "input", "description", "error"]]]
@@ -138,8 +81,6 @@ class InputLabel(MantineInputComponentBase):
     tag = "Input.Label"
 
     # Props
-    required: Var[bool]
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
     html_for: Var[str]  # ID of associated input
 
 
@@ -151,9 +92,6 @@ class InputDescription(MantineInputComponentBase):
 
     tag = "Input.Description"
 
-    # Props
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
-
 
 class InputError(MantineInputComponentBase):
     """Mantine Input.Error component - error message for inputs.
@@ -162,9 +100,6 @@ class InputError(MantineInputComponentBase):
     """
 
     tag = "Input.Error"
-
-    # Props
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
 
 
 class InputPlaceholder(MantineInputComponentBase):
@@ -185,9 +120,6 @@ class InputClearButton(MantineInputComponentBase):
     """
 
     tag = "Input.ClearButton"
-
-    # Props
-    size: Var[Literal["xs", "sm", "md", "lg", "xl"]]
 
     # Event handlers
     on_click: EventHandler[rx.event.no_args_event_spec]

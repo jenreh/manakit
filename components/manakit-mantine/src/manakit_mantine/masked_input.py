@@ -6,7 +6,7 @@ import reflex as rx
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
-from .base import MantineInputComponentBase
+from manakit_mantine.base import MantineInputComponentBase
 
 IMASK_VERSION: str = "7.6.1"
 
@@ -152,11 +152,11 @@ import { IMaskInput } from 'react-imask';"""
     # IMask-Specific Event Handlers
     # ========================================================================
 
-    on_accept: EventHandler[lambda value: [value]] = None
+    on_accept: EventHandler[rx.event.input_event]
     """Called when mask accepts input (receives value directly, not event).
     Use this instead of on_change for masked inputs."""
 
-    on_complete: EventHandler[lambda value: [value]] = None
+    on_complete: EventHandler[rx.event.input_event]
     """Called when mask is completely filled (receives value directly)."""
 
     # Note: on_change, on_focus, on_blur, etc. inherited from base class

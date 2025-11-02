@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from typing import Any, Literal
 
@@ -12,6 +13,8 @@ from reflex.vars.base import Var
 # Lokales Asset (kein npm "rich_select" mehr!)
 _JSX = rx.asset("rich_select.jsx", shared=True)
 
+
+logger = logging.getLogger(__name__)
 
 """Mantine Combobox (RichSelect) wrapper for Reflex.
 
@@ -184,7 +187,7 @@ class RichSelectNamespace(rx.ComponentNamespace):
             try:
                 return obj[key]
             except (KeyError, TypeError, Exception):
-                pass
+                logger.exception("Error accessing key %s on object %r", key, obj)
 
             # Try attribute access
             try:

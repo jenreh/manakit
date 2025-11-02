@@ -45,12 +45,6 @@ class TagsInput(MantineInputComponentBase):
     data: Var[list[Any]] = None
     """Data used to generate options. Values must be unique."""
 
-    value: Var[list[str]] = None
-    """Controlled component value - array of tag values."""
-
-    default_value: Var[list[str]] = None
-    """Uncontrolled component default value."""
-
     # Tag creation behavior
     # Defaults match Mantine TagsInput (see mantine source)
     accept_value_on_blur: Var[bool] = True
@@ -104,9 +98,6 @@ class TagsInput(MantineInputComponentBase):
     """Props passed down to the underlying Combobox component."""
 
     # Event handlers
-    on_change: EventHandler[lambda value: [value]] = None
-    """Called when value changes (receives array of tag values)."""
-
     on_search_change: EventHandler[lambda value: [value]] = None
     """Called when search value changes."""
 

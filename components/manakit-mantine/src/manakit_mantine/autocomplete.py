@@ -5,7 +5,7 @@ Docs: https://mantine.dev/core/autocomplete/
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any
 
 import reflex as rx
 
@@ -23,11 +23,6 @@ class Autocomplete(MantineInputComponentBase):
 
     # Autocomplete-specific props
     data: rx.Var[list[str] | list[dict[str, Any]]]
-    value: rx.Var[str]
-    default_value: rx.Var[str]
-    placeholder: rx.Var[str]
-    disabled: rx.Var[bool]
-    size: rx.Var[Literal["xs", "sm", "md", "lg", "xl"]]
     limit: rx.Var[int]
     max_dropdown_height: rx.Var[int | str]
     dropdown_opened: rx.Var[bool]
@@ -38,7 +33,6 @@ class Autocomplete(MantineInputComponentBase):
     auto_select_on_blur: rx.Var[bool]
 
     # Event handlers
-    on_change: rx.EventHandler[lambda value: [value]]
     on_dropdown_close: rx.EventHandler[rx.event.no_args_event_spec]
     on_dropdown_open: rx.EventHandler[rx.event.no_args_event_spec]
     on_option_submit: rx.EventHandler[lambda value, option: [value, option]]

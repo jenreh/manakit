@@ -1,7 +1,6 @@
 import reflex as rx
 
 import manakit_mantine as mn
-from manakit_assistant.components.composer_key_handler import keyboard_shortcuts
 from manakit_assistant.components.tools_modal import tools_popover
 from manakit_assistant.state.thread_state import ThreadState
 
@@ -46,7 +45,7 @@ class ComposerComponent:
                 }
             },
             width="100%",
-            on_change=ThreadState.set_prompt_direct,
+            on_change=ThreadState.set_prompt,
         )
 
     @staticmethod
@@ -59,7 +58,7 @@ class ComposerComponent:
                 on_click=ThreadState.submit_message,
                 loading=ThreadState.processing,
             ),
-            keyboard_shortcuts(),
+            # keyboard_shortcuts(),
         )
 
     @staticmethod

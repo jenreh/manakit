@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from reflex.event import EventHandler
+from reflex.event import EventHandler, input_event
 from reflex.vars.base import Var
 
 from manakit_mantine.base import MantineInputComponentBase
@@ -43,12 +43,6 @@ class MultiSelect(MantineInputComponentBase):
     # Core data and value props
     data: Var[list[Any]] = None
     """Data used to generate options. Values must be unique."""
-
-    value: Var[list[str]] = None
-    """Controlled component value - array of selected string values."""
-
-    default_value: Var[list[str]] = None
-    """Uncontrolled component default value."""
 
     # Search and filtering
     searchable: Var[bool] = False
@@ -103,10 +97,7 @@ class MultiSelect(MantineInputComponentBase):
     """Props passed down to the underlying Combobox component."""
 
     # Event handlers
-    on_change: EventHandler[lambda value: [value]] = None
-    """Called when value changes (receives array of selected values)."""
-
-    on_search_change: EventHandler[lambda value: [value]] = None
+    on_search_change: EventHandler[input_event] = None
     """Called when search value changes."""
 
     on_clear: EventHandler[list] = None
@@ -118,7 +109,7 @@ class MultiSelect(MantineInputComponentBase):
     on_dropdown_open: EventHandler[list] = None
     """Called when dropdown opens."""
 
-    on_option_submit: EventHandler[lambda value: [value]] = None
+    on_option_submit: EventHandler[input_event] = None
     """Called when option is submitted from dropdown."""
 
     def get_event_triggers(self) -> dict[str, Any]:

@@ -10,7 +10,7 @@ from typing import Any, Literal
 from reflex.event import EventHandler
 from reflex.vars.base import Var
 
-from .base import MantineInputComponentBase
+from manakit_mantine.base import MantineInputComponentBase
 
 
 class Select(MantineInputComponentBase):
@@ -43,7 +43,6 @@ class Select(MantineInputComponentBase):
 
     # Event handlers
     # on_change receives value from Mantine; we forward it
-    on_change: EventHandler[lambda value: [value]] = None
     on_clear: EventHandler[lambda item: [item]] = None
     on_dropdown_close: EventHandler[lambda item: [item]] = None
     on_dropdown_open: EventHandler[lambda item: [item]] = None
