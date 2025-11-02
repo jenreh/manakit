@@ -22,6 +22,7 @@ from app.pages.assitant.mcp_servers import mcp_servers_page  # noqa: F401
 
 # from app.pages.assitant.assistant import assistant_page  # noqa: F401
 from app.pages.examples.action_icon_examples import action_icon_examples  # noqa: F401
+from app.pages.examples.auto_scroll_examples import auto_scroll_examples  # noqa: F401
 from app.pages.examples.autocomplete_examples import autocomplete_examples  # noqa: F401
 from app.pages.examples.button_examples import button_examples  # noqa: F401
 from app.pages.examples.date_input_examples import (

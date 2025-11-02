@@ -4,7 +4,7 @@ from collections.abc import Callable
 import reflex as rx
 
 import manakit_mantine as mn
-from manakit_assistant.components.composer import ComposerComponent
+from manakit_assistant.components import composer
 from manakit_assistant.components.message import MessageComponent
 from manakit_assistant.components.threadlist import ThreadList
 from manakit_assistant.state.thread_state import (
@@ -125,19 +125,19 @@ class Assistant:
         with_clear: bool = True,
         **props,
     ) -> rx.Component:
-        return rx.vstack(
-            ComposerComponent.input(),
+        return composer(
+            composer.input(),
             rx.hstack(
                 rx.hstack(
-                    ComposerComponent.choose_model(show=with_model_chooser),
+                    composer.choose_model(show=with_model_chooser),
                 ),
                 rx.hstack(
-                    ComposerComponent.tools(
+                    composer.tools(
                         show=with_tools and ThreadState.current_model_supports_tools
                     ),
-                    ComposerComponent.add_attachment(show=with_attachments),
-                    ComposerComponent.clear(show=with_clear),
-                    ComposerComponent.submit(),
+                    composer.add_attachment(show=with_attachments),
+                    composer.clear(show=with_clear),
+                    composer.submit(),
                     width="100%",
                     justify="end",
                     align="center",
@@ -147,6 +147,7 @@ class Assistant:
                 width="100%",
                 align="center",
             ),
+            on_submit=ThreadState.submit_message,
             **props,
         )
 

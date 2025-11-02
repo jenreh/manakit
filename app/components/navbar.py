@@ -118,6 +118,7 @@ def navbar_items() -> rx.Component:
             rx.list.item(rx.link("Nav Link", href="/nav-link")),
             rx.list.item(rx.link("Number Formatter", href="/number-formatter")),
             rx.list.item(rx.link("ScrollArea", href="/scroll-area")),
+            rx.list.item(rx.link("Auto Scroll", href="/auto-scroll")),
             rx.list.item(rx.link("Table", href="/table")),
         ),
         rx.spacer(min_height="1em"),

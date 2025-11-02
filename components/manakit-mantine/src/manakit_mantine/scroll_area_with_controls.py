@@ -41,13 +41,8 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         if not self.viewport_id:
             return None
         js = (
-            "(function(){"
-            f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{self.viewport_id}"
-            "');"
-            "return vp?vp.scrollTop:0;"
-            "})()"
+            f"window.mnkScrollArea.getScrollTop('{self.viewport_id}', "
+            f"'{self.wrapper_id}')"
         )
         return rx.call_script(js, callback=self.save_scroll)
 
@@ -57,13 +52,8 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         if not self.viewport_id:
             return None
         js = (
-            "(function(){"
-            f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{self.viewport_id}"
-            "');"
-            "return vp?vp.scrollTop:0;"
-            "})()"
+            f"window.mnkScrollArea.getScrollTop('{self.viewport_id}', "
+            f"'{self.wrapper_id}')"
         )
         return rx.call_script(js, callback=self.save_scroll)
 
@@ -74,19 +64,8 @@ class ScrollAreaWithControlsState(rx.ComponentState):
             return None
         y = int(self.scroll_y)
         js = (
-            "(function(){"
-            f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{self.viewport_id}"
-            "');"
-            "if(!vp)return;"
-            f"const y={y};"
-            "if(y>0){"
-            "requestAnimationFrame(()=>requestAnimationFrame(()=>{"
-            "vp.scrollTo({ top:y, behavior:'auto' });"
-            "}));"
-            "}"
-            "})();"
+            f"window.mnkScrollArea.restoreScroll('{self.viewport_id}', "
+            f"'{self.wrapper_id}', {y})"
         )
         return rx.call_script(js)
 
@@ -99,43 +78,16 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         self.viewport_id = viewport_id
         self.wrapper_id = wrapper_id
 
-        io_js = (
-            "(function(){"
-            f"const wrapper=document.getElementById('{wrapper_id}');"
-            "if(!wrapper||wrapper.dataset.mnkScrollInit==='1')return;"
-            "wrapper.dataset.mnkScrollInit='1';"
-            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{viewport_id}"
-            "');"
-            "if(!vp)return;"
-            f"const btnTop=document.getElementById('{viewport_id}-btn-top');"
-            f"const btnBottom=document.getElementById('{viewport_id}-btn-bottom');"
-            "const content=vp.firstElementChild||vp;"
-            "function sentinel(id,pos){"
-            "let s=content.querySelector('#'+id);"
-            "if(!s){s=document.createElement('div');s.id=id;"
-            "s.style.cssText='width:1px;height:1px;pointer-events:none;';"
-            "(pos==='top')?content.prepend(s):content.append(s);}"
-            "return s;"
-            "}"
-            f"const sTop=sentinel('{viewport_id}-sentinel-top','top');"
-            f"const sBot=sentinel('{viewport_id}-sentinel-bottom','bottom');"
-            "function setVis(el,show){if(!el)return;el.style.opacity=show?'1':'0';el.style.visibility=show?'visible':'hidden';}"  # noqa: E501
-            "if(btnTop){"
-            "new IntersectionObserver(([e])=>setVis(btnTop,!e.isIntersecting),"
-            "{ root:vp, rootMargin:'-"
-            f"{top_buf}"
-            "px 0px 0px 0px', threshold:0 }).observe(sTop);}"
-            "if(btnBottom){"
-            "new IntersectionObserver(([e])=>setVis(btnBottom,!e.isIntersecting),"
-            "{ root:vp, rootMargin:'0px 0px -"
-            f"{bottom_buf}"
-            "px 0px', threshold:0 }).observe(sBot);}"
-            "})();"
+        js = (
+            f"window.mnkScrollArea.setupControls('{viewport_id}', "
+            f"'{wrapper_id}', {top_buf}, {bottom_buf})"
         )
         # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining).
-        # :contentReference[oaicite:1]{index=1}
-        return [rx.call_script(io_js), self.restore_scroll()]
+        return [rx.call_script(js), self.restore_scroll()]
+
+    def _get_custom_code(self) -> str:
+        """Load external scroll area utilities JavaScript."""
+        return """import '/assets/external/manakit_mantine/scroll_area_utils.js';"""
 
     # ---------- Factory: UI ----------
 
@@ -143,21 +95,21 @@ class ScrollAreaWithControlsState(rx.ComponentState):
     def get_component(
         cls,
         *children,
-        top_buffer: int = 0,
-        bottom_buffer: int = 0,
-        show_controls: bool = True,
-        controls: Literal["top", "bottom", "top-bottom", "both"] = "top-bottom",
-        top_button_text: str = "↑ Top",
-        bottom_button_text: str = "↓ Bottom",
-        button_props: dict | None = None,
-        height: str = "300px",
-        viewport_id: str | None = None,
         # ScrollArea-Props
-        scroll_type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",
-        scrollbars: Literal[False, "x", "y", "xy"] = "xy",
-        scrollbar_size: str | int = "9px",
-        offset_scrollbars: bool | Literal["x", "y", "present"] = True,
+        bottom_buffer: int = 32,
+        bottom_button_text: str = "↓ Bottom",
         button_align: Literal["center", "left", "right"] = "center",
+        button_props: dict | None = None,
+        controls: Literal["top", "bottom", "top-bottom", "both"] = "top-bottom",
+        height: str = "300px",
+        offset_scrollbars: bool | Literal["x", "y", "present"] = True,
+        scroll_type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",
+        scrollbar_size: str | int = "9px",
+        scrollbars: Literal[False, "x", "y", "xy"] = "xy",
+        show_controls: bool = True,
+        top_buffer: int = 32,
+        top_button_text: str = "↑ Top",
+        viewport_id: str | None = None,
         **props,
     ) -> rx.Component:
         if viewport_id is None:
@@ -235,17 +187,10 @@ class ScrollAreaWithControlsState(rx.ComponentState):
         def make_btn(label: str, elem_id: str, to_top: bool) -> rx.Component:
             style = {**base_style, **user_style}
             cls_name = (user_class + " manakit-scroll-btn").strip()
+            scroll_target = 0 if to_top else 1  # 0 for top, 1 for bottom
             js = (
-                "(function(){"
-                f"const w=document.getElementById('{wrapper_id}');"
-                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-                f"{viewport_id}"
-                "');"
-                "if(!vp)return;"
-                "vp.scrollTo({ top:"
-                f"{0 if to_top else 'vp.scrollHeight'}"
-                ", behavior:'smooth' });"
-                "})();"
+                f"window.mnkScrollArea.scrollToPosition('{viewport_id}', "
+                f"'{wrapper_id}', {scroll_target})"
             )
             return rx.button(
                 label,
