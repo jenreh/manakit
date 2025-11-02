@@ -577,11 +577,13 @@ useEffect(() => {{
             '[data-radix-scroll-area-viewport]'
         );
 
-        // Fallback: find first scrollable child
+        // Fallback: find first child div with overflow styling
         if (!viewport) {{
             const children = container.querySelectorAll('div');
             for (let child of children) {{
-                if (child.scrollHeight > child.clientHeight) {{
+                const overflow = window.getComputedStyle(child).overflow;
+                if (overflow === 'auto' || overflow === 'scroll' ||
+                    overflow === 'hidden') {{
                     viewport = child;
                     break;
                 }}
@@ -630,7 +632,7 @@ useEffect(() => {{
 
         observer.observe(content, {{
             childList: true,
-            subtree: false
+            subtree: true
         }});
 
         // Return cleanup function
