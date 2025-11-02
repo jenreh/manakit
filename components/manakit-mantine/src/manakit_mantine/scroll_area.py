@@ -140,6 +140,181 @@ class ScrollAreaAutosize(ScrollArea):
     on_overflow_change: EventHandler[lambda overflow: [overflow]] = None
 
 
+class ScrollAreaAutoscroll(ScrollArea):
+    """Mantine ScrollArea with automatic scroll-to-bottom on content changes.
+
+    Implements the pattern where the viewport automatically scrolls to the bottom
+    when new content is added, similar to a streaming chat interface.
+
+    Uses a useEffect hook to detect content changes and smooth-scroll to the bottom,
+    following the pattern:
+    - Watch for content changes (children mutation)
+    - Auto-scroll with smooth behavior when new content arrives
+
+    Example:
+        ```python
+        import reflex as rx
+        import manakit_mantine as mn
+
+
+        class ChatState(rx.State):
+            messages: list[str] = []
+
+            def add_message(self, msg: str) -> None:
+                self.messages.append(msg)
+
+
+        def chat_component():
+            return mn.scroll_area.auto_scroll(
+                rx.foreach(
+                    ChatState.messages,
+                    lambda msg: rx.text(msg),
+                ),
+                height="400px",
+            )
+        ```
+    """
+
+    _memoization_mode = MemoizationMode(
+        disposition=MemoizationDisposition.ALWAYS, recursive=False
+    )
+
+    @classmethod
+    def create(cls, *children, **props):
+        """Create an AutoScroll component.
+
+        Args:
+            *children: The children of the component.
+            **props: The props of the component.
+
+        Returns:
+            An AutoScroll component.
+        """
+        # props.setdefault("overflow", "auto")
+        props.setdefault("id", get_unique_variable_name())
+        component = super().create(*children, **props)
+        if "key" in props:
+            component._memoization_mode = dataclasses.replace(  # noqa: SLF001
+                component._memoization_mode,  # noqa: SLF001
+                recursive=True,
+            )
+        return component
+
+    def add_imports(self) -> rx.ImportDict | list[rx.ImportDict]:
+        """Add imports required for the component.
+
+        Returns:
+            The imports required for the component.
+        """
+        return {"react": ["useEffect", "useRef"]}
+
+    def add_hooks(self) -> list[str | Var]:
+        """Add hooks required for the component.
+
+        Returns:
+            The hooks required for the component.
+        """
+        ref_name = self.get_ref()
+        return [
+            f"""
+useEffect(() => {{
+    const container = {ref_name}?.current;
+    if (!container) return;
+
+    // Function to setup the auto-scroll behavior
+    const setupAutoScroll = () => {{
+        // Get the actual scrollable viewport element
+        let viewport = container.querySelector(
+            '[data-radix-scroll-area-viewport]'
+        );
+
+        // Fallback: find first child div with overflow styling
+        if (!viewport) {{
+            const children = container.querySelectorAll('div');
+            for (let child of children) {{
+                const overflow = window.getComputedStyle(child).overflow;
+                if (overflow === 'auto' || overflow === 'scroll' ||
+                    overflow === 'hidden') {{
+                    viewport = child;
+                    break;
+                }}
+            }}
+        }}
+
+        if (!viewport) return null;
+
+        // Get the content element (first child of viewport)
+        const content = viewport.firstElementChild;
+        if (!content) return null;
+
+        // Track if user is near bottom
+        let isNearBottom = true;
+        const threshold = 50; // pixels from bottom
+
+        const checkIfNearBottom = () => {{
+            if (!viewport) return;
+            const distanceFromBottom = viewport.scrollHeight -
+                viewport.scrollTop - viewport.clientHeight;
+            isNearBottom = distanceFromBottom <= threshold;
+        }};
+
+        const scrollToBottom = () => {{
+            if (viewport && isNearBottom) {{
+                viewport.scrollTop = viewport.scrollHeight;
+            }}
+        }};
+
+        // Track scroll position - debounce to avoid excessive checking
+        let scrollTimeout;
+        const handleScroll = () => {{
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(checkIfNearBottom, 50);
+        }};
+
+        viewport.addEventListener('scroll', handleScroll);
+
+        // Initial scroll
+        scrollToBottom();
+
+        // Watch for content changes
+        const observer = new MutationObserver(() => {{
+            setTimeout(scrollToBottom, 0);
+        }});
+
+        observer.observe(content, {{
+            childList: true,
+            subtree: true
+        }});
+
+        // Return cleanup function
+        return () => {{
+            clearTimeout(scrollTimeout);
+            viewport?.removeEventListener('scroll', handleScroll);
+            observer.disconnect();
+        }};
+    }};
+
+    // Try to setup immediately
+    let cleanup = setupAutoScroll();
+
+    // If viewport not ready, retry after a short delay
+    if (!cleanup) {{
+        const retryTimer = setTimeout(() => {{
+            cleanup = setupAutoScroll();
+        }}, 100);
+
+        return () => {{
+            clearTimeout(retryTimer);
+            cleanup?.();
+        }};
+    }}
+
+    return cleanup;
+}}, []); // Empty dependency array - run only on mount
+"""
+        ]
+
+
 class ScrollAreaWithState(rx.ComponentState):
     """ScrollArea + Controls mit State-basiertem Scroll-Resume
     und IO-basierten Buttons."""
@@ -489,181 +664,6 @@ class ScrollAreaWithState(rx.ComponentState):
         )
 
 
-class ScrollAreaAutoscroll(ScrollArea):
-    """Mantine ScrollArea with automatic scroll-to-bottom on content changes.
-
-    Implements the pattern where the viewport automatically scrolls to the bottom
-    when new content is added, similar to a streaming chat interface.
-
-    Uses a useEffect hook to detect content changes and smooth-scroll to the bottom,
-    following the pattern:
-    - Watch for content changes (children mutation)
-    - Auto-scroll with smooth behavior when new content arrives
-
-    Example:
-        ```python
-        import reflex as rx
-        import manakit_mantine as mn
-
-
-        class ChatState(rx.State):
-            messages: list[str] = []
-
-            def add_message(self, msg: str) -> None:
-                self.messages.append(msg)
-
-
-        def chat_component():
-            return mn.scroll_area.auto_scroll(
-                rx.foreach(
-                    ChatState.messages,
-                    lambda msg: rx.text(msg),
-                ),
-                height="400px",
-            )
-        ```
-    """
-
-    _memoization_mode = MemoizationMode(
-        disposition=MemoizationDisposition.ALWAYS, recursive=False
-    )
-
-    @classmethod
-    def create(cls, *children, **props):
-        """Create an AutoScroll component.
-
-        Args:
-            *children: The children of the component.
-            **props: The props of the component.
-
-        Returns:
-            An AutoScroll component.
-        """
-        # props.setdefault("overflow", "auto")
-        props.setdefault("id", get_unique_variable_name())
-        component = super().create(*children, **props)
-        if "key" in props:
-            component._memoization_mode = dataclasses.replace(  # noqa: SLF001
-                component._memoization_mode,  # noqa: SLF001
-                recursive=True,
-            )
-        return component
-
-    def add_imports(self) -> rx.ImportDict | list[rx.ImportDict]:
-        """Add imports required for the component.
-
-        Returns:
-            The imports required for the component.
-        """
-        return {"react": ["useEffect", "useRef"]}
-
-    def add_hooks(self) -> list[str | Var]:
-        """Add hooks required for the component.
-
-        Returns:
-            The hooks required for the component.
-        """
-        ref_name = self.get_ref()
-        return [
-            f"""
-useEffect(() => {{
-    const container = {ref_name}?.current;
-    if (!container) return;
-
-    // Function to setup the auto-scroll behavior
-    const setupAutoScroll = () => {{
-        // Get the actual scrollable viewport element
-        let viewport = container.querySelector(
-            '[data-radix-scroll-area-viewport]'
-        );
-
-        // Fallback: find first child div with overflow styling
-        if (!viewport) {{
-            const children = container.querySelectorAll('div');
-            for (let child of children) {{
-                const overflow = window.getComputedStyle(child).overflow;
-                if (overflow === 'auto' || overflow === 'scroll' ||
-                    overflow === 'hidden') {{
-                    viewport = child;
-                    break;
-                }}
-            }}
-        }}
-
-        if (!viewport) return null;
-
-        // Get the content element (first child of viewport)
-        const content = viewport.firstElementChild;
-        if (!content) return null;
-
-        // Track if user is near bottom
-        let isNearBottom = true;
-        const threshold = 50; // pixels from bottom
-
-        const checkIfNearBottom = () => {{
-            if (!viewport) return;
-            const distanceFromBottom = viewport.scrollHeight -
-                viewport.scrollTop - viewport.clientHeight;
-            isNearBottom = distanceFromBottom <= threshold;
-        }};
-
-        const scrollToBottom = () => {{
-            if (viewport && isNearBottom) {{
-                viewport.scrollTop = viewport.scrollHeight;
-            }}
-        }};
-
-        // Track scroll position - debounce to avoid excessive checking
-        let scrollTimeout;
-        const handleScroll = () => {{
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(checkIfNearBottom, 50);
-        }};
-
-        viewport.addEventListener('scroll', handleScroll);
-
-        // Initial scroll
-        scrollToBottom();
-
-        // Watch for content changes
-        const observer = new MutationObserver(() => {{
-            setTimeout(scrollToBottom, 0);
-        }});
-
-        observer.observe(content, {{
-            childList: true,
-            subtree: true
-        }});
-
-        // Return cleanup function
-        return () => {{
-            clearTimeout(scrollTimeout);
-            viewport?.removeEventListener('scroll', handleScroll);
-            observer.disconnect();
-        }};
-    }};
-
-    // Try to setup immediately
-    let cleanup = setupAutoScroll();
-
-    // If viewport not ready, retry after a short delay
-    if (!cleanup) {{
-        const retryTimer = setTimeout(() => {{
-            cleanup = setupAutoScroll();
-        }}, 100);
-
-        return () => {{
-            clearTimeout(retryTimer);
-            cleanup?.();
-        }};
-    }}
-
-    return cleanup;
-}}, []); // Empty dependency array - run only on mount
-"""
-        ]
-
-
 # ============================================================================
 # Convenience Functions
 # ============================================================================
@@ -674,7 +674,7 @@ class ScrollAreaNamespace(rx.ComponentNamespace):
 
     __call__ = staticmethod(ScrollArea.create)
     autosize = staticmethod(ScrollAreaAutosize.create)
-    auto_scroll = staticmethod(ScrollAreaAutoscroll.create)
+    autoscroll = staticmethod(ScrollAreaAutoscroll.create)
     stateful = staticmethod(ScrollAreaWithState.create)
 
 

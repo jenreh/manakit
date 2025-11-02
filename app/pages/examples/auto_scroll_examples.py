@@ -108,7 +108,7 @@ def auto_scroll_example() -> rx.Component:
                 color="gray",
             ),
             rx.divider(),
-            mn.scroll_area.auto_scroll(
+            mn.scroll_area.autoscroll(
                 rx.foreach(
                     ChatStreamState.messages,
                     lambda msg: rx.box(
@@ -165,7 +165,7 @@ def auto_scroll_with_controls_example() -> rx.Component:
                 size="2",
             ),
             rx.divider(),
-            mn.scroll_area.auto_scroll(
+            mn.scroll_area.autoscroll(
                 rx.foreach(
                     DataStreamState.log_lines,
                     lambda line: rx.box(

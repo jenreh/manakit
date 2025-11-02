@@ -99,6 +99,7 @@ class Assistant:
                 bottom_button_text="↓",
                 height="100%",
                 min_height="0",
+                auto_scroll=True,
                 **props,
             ),
             # rx.auto_scroll(
