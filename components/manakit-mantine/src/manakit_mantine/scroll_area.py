@@ -316,8 +316,51 @@ useEffect(() => {{
 
 
 class ScrollAreaWithState(rx.ComponentState):
-    """ScrollArea + Controls mit State-basiertem Scroll-Resume
-    und IO-basierten Buttons."""
+    """ScrollArea + Controls with state-based scroll position tracking.
+
+    Provides a ScrollArea with:
+    - Scroll position persistence via localStorage (with persist_key)
+    - Top/bottom navigation buttons using IntersectionObserver
+    - Scroll event tracking and state management
+    - Optional autoscroll to bottom on content changes
+
+    Args:
+        autoscroll: If True, automatically scrolls to bottom when content changes
+                   (similar to streaming chat interfaces). Maintains state tracking
+                   and button controls. Default: False.
+        persist_key: Optional key for localStorage persistence of scroll position.
+                    When provided, scroll position survives page reloads.
+        show_controls: Whether to display top/bottom navigation buttons.
+        controls: Which buttons to show ("top", "bottom", "top-bottom", "both").
+        top_buffer: Pixels from top before top button appears.
+        bottom_buffer: Pixels from bottom before bottom button appears.
+        height: ScrollArea height (CSS value).
+        viewport_id: Custom DOM ID for the viewport element.
+
+    Example:
+        ```python
+        import reflex as rx
+        import manakit_mantine as mn
+
+
+        class ChatState(rx.State):
+            messages: list[str] = []
+
+            def add_message(self, msg: str) -> None:
+                self.messages.append(msg)
+
+
+        def chat_with_controls():
+            return mn.scroll_area.stateful(
+                rx.foreach(ChatState.messages, lambda msg: rx.text(msg)),
+                autoscroll=True,  # Auto-scroll to bottom on new messages
+                persist_key="chat-scroll",  # Persist scroll position
+                height="400px",
+                show_controls=True,
+                controls="both",
+            )
+        ```
+    """
 
     # letzter bekannter Scroll-Y (px)
     scroll_y: int = 0
@@ -349,10 +392,16 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||"
-            "document.getElementById('"
-            f"{self.viewport_id}"
-            "');"
+            "if(!w)return 0;"
+            "let vp=w.querySelector('[data-radix-scroll-area-viewport]')||"
+            "w.querySelector('.mantine-ScrollArea-viewport');"
+            "if(!vp){"
+            f"const sa=document.getElementById('{self.viewport_id}');"
+            "if(sa){"
+            "vp=sa.querySelector('[data-radix-scroll-area-viewport]')||"
+            "sa.querySelector('.mantine-ScrollArea-viewport')||sa;"
+            "}"
+            "}"
             "if(!vp)return 0;"
             "const y=vp.scrollTop;"
             "const key=w?.dataset?.mnkScrollPersistKey;"
@@ -370,10 +419,16 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||"
-            "document.getElementById('"
-            f"{self.viewport_id}"
-            "');"
+            "if(!w)return 0;"
+            "let vp=w.querySelector('[data-radix-scroll-area-viewport]')||"
+            "w.querySelector('.mantine-ScrollArea-viewport');"
+            "if(!vp){"
+            f"const sa=document.getElementById('{self.viewport_id}');"
+            "if(sa){"
+            "vp=sa.querySelector('[data-radix-scroll-area-viewport]')||"
+            "sa.querySelector('.mantine-ScrollArea-viewport')||sa;"
+            "}"
+            "}"
             "if(!vp)return 0;"
             "const y=vp.scrollTop;"
             "const key=w?.dataset?.mnkScrollPersistKey;"
@@ -392,9 +447,17 @@ class ScrollAreaWithState(rx.ComponentState):
         js = (
             "(function(){"
             f"const w=document.getElementById('{self.wrapper_id}');"
-            "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{self.viewport_id}"
-            "');"
+            "if(!w)return;"
+            # Find viewport with Mantine or Radix selector
+            "let vp=w.querySelector('[data-radix-scroll-area-viewport]')||"
+            "w.querySelector('.mantine-ScrollArea-viewport');"
+            "if(!vp){"
+            f"const sa=document.getElementById('{self.viewport_id}');"
+            "if(sa){"
+            "vp=sa.querySelector('[data-radix-scroll-area-viewport]')||"
+            "sa.querySelector('.mantine-ScrollArea-viewport')||sa;"
+            "}"
+            "}"
             "if(!vp)return;"
             f"const y={y};"
             "if(y>0){"
@@ -414,6 +477,7 @@ class ScrollAreaWithState(rx.ComponentState):
         top_buf: int,
         bottom_buf: int,
         persist_key: str | None = None,
+        autoscroll: bool = False,
     ) -> list[EventSpec]:
         """IDs setzen, IO für Buttons aktivieren und anschließend
         Scroll wiederherstellen."""
@@ -433,9 +497,16 @@ class ScrollAreaWithState(rx.ComponentState):
             "if(!wrapper||wrapper.dataset.mnkScrollInit==='1')return;"
             "wrapper.dataset.mnkScrollInit='1';"
             f"{persist_assignment}"
-            "const vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-            f"{viewport_id}"
-            "');"
+            # Find viewport with Mantine or Radix selector
+            "let vp=wrapper.querySelector('[data-radix-scroll-area-viewport]')||"
+            "wrapper.querySelector('.mantine-ScrollArea-viewport');"
+            "if(!vp){"
+            f"const sa=document.getElementById('{viewport_id}');"
+            "if(sa){"
+            "vp=sa.querySelector('[data-radix-scroll-area-viewport]')||"
+            "sa.querySelector('.mantine-ScrollArea-viewport');"
+            "}"
+            "}"
             "if(!vp)return;"
             f"const btnTop=document.getElementById('{viewport_id}-btn-top');"
             f"const btnBottom=document.getElementById('{viewport_id}-btn-bottom');"
@@ -460,17 +531,26 @@ class ScrollAreaWithState(rx.ComponentState):
             "{ root:vp, rootMargin:'0px 0px -"
             f"{bottom_buf}"
             "px 0px', threshold:0 }).observe(sBot);}"
-            # Attach scroll listener to persist position client-side
-            "(function(){const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return;"  # noqa: E501
-            "vp.addEventListener('scroll', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
-            "window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
-            # Try to restore from localStorage immediately on mount
-            "(function(){ try{ const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return; const v=localStorage.getItem(key); const yy=v?parseInt(v,10):0; if(yy>0){ requestAnimationFrame(()=>requestAnimationFrame(()=>{ vp.scrollTo({ top:yy, behavior:'auto' }); })); } }catch(e){} })();"  # noqa: E501
-            "})();"
-            "})();"
         )
-        # Mehrere Aktionen aus einem Handler zurückgeben (Event-Chaining).
-        # :contentReference[oaicite:1]{index=1}
+
+        # Only add localStorage persistence if NOT autoscroll
+        if not autoscroll and persist_key:
+            io_js += (
+                # Attach scroll listener to persist position client-side
+                "(function(){const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return;"  # noqa: E501
+                "vp.addEventListener('scroll', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
+                "window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(key, String(vp.scrollTop)); }catch(e){} });"  # noqa: E501
+                # Try to restore from localStorage immediately on mount
+                "(function(){ try{ const key=wrapper?.dataset?.mnkScrollPersistKey; if(!key) return; const v=localStorage.getItem(key); const yy=v?parseInt(v,10):0; if(yy>0){ requestAnimationFrame(()=>requestAnimationFrame(()=>{ vp.scrollTo({ top:yy, behavior:'auto' }); })); } }catch(e){} })();"  # noqa: E501
+                "})();"
+            )
+
+        io_js += "})();"
+
+        # Skip restore_scroll when autoscroll is enabled
+        if autoscroll:
+            return [rx.call_script(io_js)]
+
         return [rx.call_script(io_js), self.restore_scroll()]
 
     # ---------- Factory: UI ----------
@@ -480,6 +560,7 @@ class ScrollAreaWithState(rx.ComponentState):
         cls,
         *children,
         # ScrollArea-Props
+        autoscroll: bool = False,
         bottom_buffer: int = 0,
         bottom_button_text: str = "↓ Bottom",
         button_align: Literal["center", "left", "right"] = "center",
@@ -508,28 +589,51 @@ class ScrollAreaWithState(rx.ComponentState):
         btn_top_id = f"{viewport_id}-btn-top"
         btn_bottom_id = f"{viewport_id}-btn-bottom"
 
-        vp_props = {
-            "id": viewport_id,
-            "style": {"overscrollBehavior": "auto"},  # CSS-Property
-        }
+        # Choose base component based on autoscroll setting
+        base_component_class = ScrollAreaAutoscroll if autoscroll else ScrollArea
+
+        # Prepare viewport props - autoscroll uses id directly, not in viewport_props
+        if autoscroll:
+            vp_props = {
+                "style": {"overscrollBehavior": "auto"},
+            }
+        else:
+            vp_props = {
+                "id": viewport_id,
+                "style": {"overscrollBehavior": "auto"},
+            }
 
         if viewport_props is not None:
             vp_props.update(viewport_props)
 
+        # Build component props
+        sa_props = {
+            "height": height,
+            "type": type,
+            "scrollbars": scrollbars,
+            "scrollbar_size": scrollbar_size,
+            "offset_scrollbars": offset_scrollbars,
+            "overscroll_behavior": overscroll_behavior,
+            "scroll_hide_delay": scroll_hide_delay,
+            "viewport_props": vp_props,
+            "on_top_reached": on_top_reached,
+            "on_bottom_reached": on_bottom_reached,
+        }
+
+        # Only attach scroll position tracking if NOT autoscroll
+        # This prevents state updates from interfering with autoscroll behavior
+        if not autoscroll:
+            sa_props["on_scroll_position_change"] = cls.on_position
+
+        # For autoscroll, pass id directly;
+        # for regular ScrollArea, id goes in viewport_props
+        if autoscroll:
+            sa_props["id"] = viewport_id
+
         # Basis ScrollArea (Viewport-ID + Scroll-Tracking -> State)
-        sa = ScrollArea.create(
+        sa = base_component_class.create(
             *children,
-            height=height,
-            type=type,
-            scrollbars=scrollbars,
-            scrollbar_size=scrollbar_size,
-            offset_scrollbars=offset_scrollbars,
-            overscroll_behavior=overscroll_behavior,
-            scroll_hide_delay=scroll_hide_delay,
-            on_scroll_position_change=cls.on_position,
-            viewport_props=vp_props,
-            on_top_reached=on_top_reached,
-            on_bottom_reached=on_bottom_reached,
+            **sa_props,
         )
 
         # Ohne Controls: nur State-Init + Restore
@@ -539,7 +643,12 @@ class ScrollAreaWithState(rx.ComponentState):
                 id=wrapper_id,
                 style={"position": "relative", "width": "100%"},
                 on_mount=cls.setup_controls(
-                    viewport_id, wrapper_id, top_buffer, bottom_buffer, persist_key
+                    viewport_id,
+                    wrapper_id,
+                    top_buffer,
+                    bottom_buffer,
+                    persist_key,
+                    autoscroll,
                 ),
                 on_unmount=cls.capture_scroll_from_dom,
                 data_scroll_y=cls.scroll_y,
@@ -590,9 +699,17 @@ class ScrollAreaWithState(rx.ComponentState):
             js = (
                 "(function(){"
                 f"const w=document.getElementById('{wrapper_id}');"
-                "const vp=w?.querySelector('[data-radix-scroll-area-viewport]')||document.getElementById('"  # noqa: E501
-                f"{viewport_id}"
-                "');"
+                "if(!w)return;"
+                # Try both Radix and Mantine viewport selectors
+                "let vp=w.querySelector('[data-radix-scroll-area-viewport]')||"
+                "w.querySelector('.mantine-ScrollArea-viewport');"
+                "if(!vp){"
+                f"const sa=document.getElementById('{viewport_id}');"
+                "if(sa){"
+                "vp=sa.querySelector('[data-radix-scroll-area-viewport]')||"
+                "sa.querySelector('.mantine-ScrollArea-viewport');"
+                "}"
+                "}"
                 "if(!vp)return;"
                 "vp.scrollTo({ top:"
                 f"{0 if to_top else 'vp.scrollHeight'}"
@@ -655,7 +772,12 @@ class ScrollAreaWithState(rx.ComponentState):
             id=wrapper_id,
             style={"position": "relative", "width": "100%"},
             on_mount=cls.setup_controls(
-                viewport_id, wrapper_id, top_buffer, bottom_buffer, persist_key
+                viewport_id,
+                wrapper_id,
+                top_buffer,
+                bottom_buffer,
+                persist_key,
+                autoscroll,
             ),
             on_unmount=cls.capture_scroll_from_dom,
             data_scroll_y=cls.scroll_y,

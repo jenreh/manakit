@@ -92,30 +92,18 @@ class Assistant:
                     wrap="nowrap",
                 ),
                 type="hover",
-                scrollbar_size="6px",
-                offset_scrollbars=False,
-                controls="bottom",
-                controls_position="bottom",
+                autoscroll=True,
+                show_controls=True,
+                controls="both",
+                top_button_text="↑",
                 bottom_button_text="↓",
+                offset_scrollbars=False,
+                scrollbars="y",
+                scrollbar_size="6px",
                 height="100%",
                 min_height="0",
-                auto_scroll=True,
                 **props,
             ),
-            # rx.auto_scroll(
-            #     rx.foreach(
-            #         messages,
-            #         lambda message: MessageComponent.render_message(message),
-            #     ),
-            #     rx.spacer(
-            #         id="scroll-anchor",
-            #         display="hidden",
-            #         min_height="44px",
-            #         wrap="nowrap",
-            #     ),
-            #     id="messages-scroll-area",
-            #     **props,
-            # ),
         )
 
     @staticmethod

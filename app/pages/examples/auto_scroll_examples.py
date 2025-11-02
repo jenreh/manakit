@@ -206,6 +206,77 @@ def auto_scroll_with_controls_example() -> rx.Component:
     )
 
 
+def stateful_autoscroll_example() -> rx.Component:
+    """ScrollAreaWithState with autoscroll enabled.
+
+    Combines state tracking with autoscroll.
+    """
+    return rx.card(
+        rx.vstack(
+            rx.heading("ScrollArea.Stateful with AutoScroll", size="5"),
+            rx.text(
+                "Combines state-based scroll tracking, top/bottom buttons, "
+                "and autoscroll behavior.",
+                size="2",
+                color="gray",
+            ),
+            rx.hstack(
+                rx.button(
+                    "Add Message",
+                    on_click=ChatStreamState.add_message("User: New message here!"),
+                    size="2",
+                ),
+                rx.button(
+                    "Stream Response",
+                    on_click=ChatStreamState.stream_response,
+                    size="2",
+                    color_scheme="blue",
+                ),
+                spacing="3",
+            ),
+            mn.scroll_area.stateful(
+                rx.vstack(
+                    rx.foreach(
+                        ChatStreamState.messages,
+                        lambda msg, idx: rx.card(
+                            rx.text(msg, size="2"),
+                            padding="2",
+                            background_color=rx.cond(
+                                msg.contains("User:"),
+                                rx.color("blue", 2),
+                                rx.color("gray", 2),
+                            ),
+                            key=f"msg-{idx}",
+                        ),
+                    ),
+                    spacing="2",
+                    width="100%",
+                ),
+                autoscroll=True,  # ✨ New feature!
+                persist_key="stateful-autoscroll-demo",
+                height="300px",
+                show_controls=True,
+                controls="both",
+                scrollbars="y",
+                type="hover",
+            ),
+            rx.callout(
+                "✨ New: autoscroll=True enables auto-scroll while "
+                "preserving state tracking, scroll persistence "
+                "(try refreshing!), and navigation buttons.",
+                icon="info",
+                color_scheme="blue",
+                size="1",
+            ),
+            spacing="3",
+            width="100%",
+        ),
+        padding="4",
+        border_radius="md",
+        width="100%",
+    )
+
+
 @navbar_layout(
     route="/auto-scroll",
     title="AutoScroll Examples",
@@ -227,6 +298,7 @@ def auto_scroll_examples() -> rx.Component:
             rx.divider(),
             auto_scroll_example(),
             auto_scroll_with_controls_example(),
+            stateful_autoscroll_example(),
             spacing="6",
             width="100%",
         ),
