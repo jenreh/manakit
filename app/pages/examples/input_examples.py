@@ -48,27 +48,22 @@ class MantineInputState(rx.State):
     email_error: str = ""
 
     # Explicit setters for all state variables
-    @rx.event
     def set_username(self, value: str) -> None:
         """Set username value."""
         self.username = value
 
-    @rx.event
     def set_email(self, value: str) -> None:
         """Set email value."""
         self.email = value
 
-    @rx.event
     def set_search_query(self, value: str) -> None:
         """Set search query value."""
         self.search_query = value
 
-    @rx.event
-    def set_phone(self, value: str) -> None:
+    def set_phone(self, value: str | None) -> None:
         """Set phone value."""
         self.phone = value
 
-    @rx.event
     def set_password(self, value: str) -> None:
         """Set password value."""
         self.password = value

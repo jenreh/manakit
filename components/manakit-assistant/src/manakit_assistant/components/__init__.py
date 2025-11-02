@@ -1,5 +1,6 @@
 from manakit_assistant.backend.models import Suggestion
-from manakit_assistant.components.thread import ComposerComponent, Assistant
+from manakit_assistant.components.composer import composer
+from manakit_assistant.components.thread import Assistant
 from manakit_assistant.components.message import MessageComponent
 from manakit_assistant.backend.models import (
     AIModel,
@@ -22,7 +23,6 @@ __all__ = [
     "Assistant",
     "Chunk",
     "ChunkType",
-    "ComposerComponent",
     "MCPServer",
     "Message",
     "MessageComponent",
@@ -33,6 +33,6 @@ __all__ = [
     "ThreadModel",
     "ThreadState",
     "ThreadStatus",
+    "composer",
     "mcp_servers_table",
-    "thread_list_item",
 ]

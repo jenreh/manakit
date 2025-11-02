@@ -323,6 +323,15 @@ class ThreadState(rx.State):
         await self.persist_current_thread(prompt=self.prompt)
         yield ThreadState.process_message
 
+        yield rx.call_script("""
+            const textarea = document.getElementById('composer-area');
+            if (textarea) {
+                textarea.value = '';
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
+        """)
+
     def _clear_chunks(self) -> None:
         """Clear all chunk categorization lists except thinking_items for display."""
         self.current_chunks = []

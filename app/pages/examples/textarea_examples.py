@@ -105,6 +105,11 @@ def basic_textarea_example() -> rx.Component:
             default_value=TextareaState.basic_value,
             on_blur=TextareaState.set_basic_value,
         ),
+        rx.text_area(
+            placeholder="Enter your comment...",
+            value=TextareaState.basic_value,
+            on_change=TextareaState.set_basic_value,
+        ),
         rx.text(
             f"Characters: {TextareaState.basic_value.length()}",
             size="2",
