@@ -6,6 +6,7 @@ import asyncio
 import logging
 import random
 from collections.abc import AsyncGenerator
+from typing import Any
 
 from appkit_assistant.backend.models import (
     AIModel,
@@ -15,6 +16,7 @@ from appkit_assistant.backend.models import (
     Message,
 )
 from appkit_assistant.backend.processor import Processor
+from appkit_commons.processors import create_text_chunk, validate_model_support
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +58,7 @@ class LoremIpsumProcessor(Processor):
         model_id: str,
         files: list[str] | None = None,  # noqa: ARG002
         mcp_servers: list[MCPServer] | None = None,  # noqa: ARG002
-    ) -> AsyncGenerator[Chunk, None]:
+    ) -> AsyncGenerator[Chunk | Any, None]:
         """
         Generate a Lorem Ipsum response of varying lengths based on the model_id.
 
@@ -69,8 +71,7 @@ class LoremIpsumProcessor(Processor):
         Returns:
             An async generator that yields Chunk objects with text content.
         """
-        if model_id not in self.models:
-            raise ValueError(f"Model {model_id} not supported by Lorem Ipsum processor")
+        validate_model_support(model_id, self.models, "Lorem Ipsum")
 
         # Simulate thinking process
         yield Chunk(
@@ -87,24 +88,20 @@ class LoremIpsumProcessor(Processor):
             for word in words:
                 content = word + " "
                 await asyncio.sleep(0.01)
-                yield Chunk(
-                    type=ChunkType.TEXT,
-                    text=content,
-                    chunk_metadata={
-                        "source": "lorem_ipsum",
-                        "paragraph": str(i + 1),
-                        "total_paragraphs": str(num_paragraphs),
-                    },
+                yield create_text_chunk(
+                    content,
+                    source="lorem_ipsum",
+                    streaming=True,
+                    paragraph=str(i + 1),
+                    total_paragraphs=str(num_paragraphs),
                 )
 
             if i < num_paragraphs - 1:
-                yield Chunk(
-                    type=ChunkType.TEXT,
-                    text="\n\n",
-                    chunk_metadata={
-                        "source": "lorem_ipsum",
-                        "type": "paragraph_separator",
-                    },
+                yield create_text_chunk(
+                    "\n\n",
+                    source="lorem_ipsum",
+                    streaming=True,
+                    type="paragraph_separator",
                 )
 
         yield Chunk(

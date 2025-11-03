@@ -3,16 +3,18 @@ from collections.abc import AsyncGenerator
 from typing import Any
 
 from openai import AsyncStream
-from openai.types.chat import ChatCompletionMessageParam
 
 from appkit_assistant.backend.models import (
     Chunk,
-    ChunkType,
     MCPServer,
     Message,
-    MessageType,
 )
 from appkit_assistant.backend.processors.openai_base import BaseOpenAIProcessor
+from appkit_commons.processors import (
+    convert_messages_to_openai_format,
+    create_text_chunk,
+    validate_model_support,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +42,7 @@ class OpenAIChatCompletionsProcessor(BaseOpenAIProcessor):
         if not self.client:
             raise ValueError("OpenAI Client not initialized.")
 
-        if model_id not in self.models:
-            raise ValueError(f"Model {model_id} not supported by OpenAI processor")
+        validate_model_support(model_id, self.models, "OpenAI Chat Completions")
 
         if mcp_servers:
             logger.warning(
@@ -52,7 +53,7 @@ class OpenAIChatCompletionsProcessor(BaseOpenAIProcessor):
         model = self.models[model_id]
 
         try:
-            chat_messages = self._convert_messages_to_openai_format(messages)
+            chat_messages = convert_messages_to_openai_format(messages)
             session = await self.client.chat.completions.create(
                 model=model.model,
                 messages=chat_messages[:-1],
@@ -66,52 +67,20 @@ class OpenAIChatCompletionsProcessor(BaseOpenAIProcessor):
                     if event.choices and event.choices[0].delta:
                         content = event.choices[0].delta.content
                         if content:
-                            yield self._create_chunk(content, model.model, stream=True)
+                            yield create_text_chunk(
+                                content,
+                                source="chat_completions",
+                                model=model.model,
+                                streaming=True,
+                            )
             else:
                 content = session.choices[0].message.content
                 if content:
-                    yield self._create_chunk(content, model.model)
+                    yield create_text_chunk(
+                        content,
+                        source="chat_completions",
+                        model=model.model,
+                        streaming=False,
+                    )
         except Exception as e:
             raise e
-
-    def _create_chunk(self, content: str, model: str, stream: bool = False) -> Chunk:
-        return Chunk(
-            type=ChunkType.TEXT,
-            text=content,
-            chunk_metadata={
-                "source": "chat_completions",
-                "streaming": str(stream),
-                "model": model,
-            },
-        )
-
-    def _convert_messages_to_openai_format(
-        self, messages: list[Message]
-    ) -> list[ChatCompletionMessageParam]:
-        """Convert internal messages to OpenAI chat completion format.
-
-        Notes:
-        - OpenAI Chat Completions requires that after any system messages,
-          user/tool messages must alternate with assistant messages. To
-          ensure this, merge consecutive user (human) or assistant messages
-          into a single message by concatenating their text with a blank
-          line separator.
-        """
-        formatted: list[ChatCompletionMessageParam] = []
-        role_map = {
-            MessageType.HUMAN: "user",
-            MessageType.SYSTEM: "system",
-            MessageType.ASSISTANT: "assistant",
-        }
-
-        for msg in messages or []:
-            if msg.type not in role_map:
-                continue
-            role = role_map[msg.type]
-            if formatted and role != "system" and formatted[-1]["role"] == role:
-                # Merge consecutive user/assistant messages
-                formatted[-1]["content"] = formatted[-1]["content"] + "\n\n" + msg.text
-            else:
-                formatted.append({"role": role, "content": msg.text})
-
-        return formatted

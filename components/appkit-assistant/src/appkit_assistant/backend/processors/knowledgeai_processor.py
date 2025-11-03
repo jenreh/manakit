@@ -4,17 +4,19 @@ from collections.abc import AsyncGenerator
 from typing import Any
 
 from openai import AsyncOpenAI, AsyncStream
-from openai.types.chat import ChatCompletionMessageParam
 
 from appkit_assistant.backend.models import (
     AIModel,
     Chunk,
-    ChunkType,
     MCPServer,
     Message,
-    MessageType,
 )
 from appkit_assistant.backend.processor import Processor
+from appkit_commons.processors import (
+    convert_messages_to_openai_format,
+    create_text_chunk,
+    validate_model_support,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -88,9 +90,7 @@ class KnowledgeAIProcessor(Processor):
                 "knai_avvia package is required for KnowledgeAIProcessor"
             ) from e
 
-        if model_id not in self.models:
-            logger.error("Model %s not supported by OpenAI processor", model_id)
-            raise ValueError(f"Model {model_id} not supported by OpenAI processor")
+        validate_model_support(model_id, self.models, "KnowledgeAI")
 
         chat_messages = self._convert_messages(messages)
 
@@ -105,14 +105,12 @@ class KnowledgeAIProcessor(Processor):
             )
 
             if result.answer:
-                yield Chunk(
-                    type=ChunkType.TEXT,
-                    text=result.answer,
-                    chunk_metadata={
-                        "source": "knowledgeai",
-                        "project_id": model_id,
-                        "streaming": str(False),
-                    },
+                yield create_text_chunk(
+                    result.answer,
+                    source="knowledgeai",
+                    model=model_id,
+                    streaming=False,
+                    project_id=model_id,
                 )
         except Exception as e:
             raise e
@@ -121,6 +119,9 @@ class KnowledgeAIProcessor(Processor):
         return self.models if self.api_key else {}
 
     def _convert_messages(self, messages: list[Message]) -> list[dict[str, str]]:
+        # Import needed for message type filtering
+        from appkit_assistant.backend.models import MessageType  # noqa: PLC0415
+
         return [
             {"role": "Human", "message": msg.text}
             if msg.type == MessageType.HUMAN
@@ -200,13 +201,10 @@ class KnowledgeAIOpenAIProcessor(Processor):
         if not self.client:
             raise ValueError("KnowledgeAI OpenAI Client not initialized.")
 
-        model = self.models.get(model_id)
-        if not model:
-            raise ValueError(
-                "Model %s not supported by KnowledgeAI processor", model_id
-            )
+        validate_model_support(model_id, self.models, "KnowledgeAI OpenAI")
+        model = self.models[model_id]
 
-        chat_messages = self._convert_messages_to_openai_format(messages)
+        chat_messages = convert_messages_to_openai_format(messages)
 
         try:
             session_params: dict[str, Any] = {
@@ -224,27 +222,21 @@ class KnowledgeAIOpenAIProcessor(Processor):
                     if event.choices and event.choices[0].delta:
                         content = event.choices[0].delta.content
                         if content:
-                            yield Chunk(
-                                type=ChunkType.TEXT,
-                                text=content,
-                                chunk_metadata={
-                                    "source": "knowledgeai_openai",
-                                    "streaming": str(True),
-                                    "model_id": model_id,
-                                },
+                            yield create_text_chunk(
+                                content,
+                                source="knowledgeai_openai",
+                                model=model_id,
+                                streaming=True,
                             )
             elif session.choices and session.choices[0].message:
                 content = session.choices[0].message.content
                 if content:
                     logger.debug("Content:\n%s", content)
-                    yield Chunk(
-                        type=ChunkType.TEXT,
-                        text=content,
-                        chunk_metadata={
-                            "source": "knowledgeai_openai",
-                            "streaming": str(False),
-                            "model_id": model_id,
-                        },
+                    yield create_text_chunk(
+                        content,
+                        source="knowledgeai_openai",
+                        model=model_id,
+                        streaming=False,
                     )
         except Exception as e:
             logger.exception("Failed to get response from OpenAI: %s", e)
@@ -253,23 +245,14 @@ class KnowledgeAIOpenAIProcessor(Processor):
     def get_supported_models(self) -> dict[str, AIModel]:
         return self.models if self.api_key else {}
 
-    def _convert_messages_to_openai_format(
-        self, messages: list[Message]
-    ) -> list[ChatCompletionMessageParam]:
-        formatted: list[ChatCompletionMessageParam] = []
-        role_map = {
-            MessageType.HUMAN: "user",
-            MessageType.SYSTEM: "system",
-            MessageType.ASSISTANT: "assistant",
-        }
+    def _convert_messages(self, messages: list[Message]) -> list[dict[str, str]]:
+        # Import needed for message type filtering
+        from appkit_assistant.backend.models import MessageType  # noqa: PLC0415
 
-        for msg in messages or []:
-            if msg.type not in role_map:
-                continue
-            role = role_map[msg.type]
-            if formatted and role != "system" and formatted[-1]["role"] == role:
-                formatted[-1]["content"] = formatted[-1]["content"] + "\n\n" + msg.text
-            else:
-                formatted.append({"role": role, "content": msg.text})
-
-        return formatted
+        return [
+            {"role": "Human", "message": msg.text}
+            if msg.type == MessageType.HUMAN
+            else {"role": "AI", "message": msg.text}
+            for msg in (messages or [])
+            if msg.type in (MessageType.HUMAN, MessageType.ASSISTANT)
+        ]
