@@ -1,5 +1,6 @@
 ---
 applyTo: "**"
+description: "Main Copilot instructions for the appkit project - Reflex-Mantine component library with comprehensive development workflow and architecture guidelines"
 ---
 
 # Reflex-Mantine Component Library
