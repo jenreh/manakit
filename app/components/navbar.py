@@ -36,11 +36,16 @@ VERSION: Final[str] = (
 
 def navbar_header() -> rx.Component:
     return rx.hstack(
-        rx.image("/img/logo.svg", height="48px", margin_top="1.2em", margin_left="0px"),
-        rx.heading("appkit", size="8", margin_top="22px", margin_left="8px"),
+        rx.image(
+            "/img/logo.svg",
+            class_name="h-[54px]",
+            margin_top="1.2em",
+            margin_left="0px",
+        ),
+        rx.heading("AppKit", size="8", margin_top="36px", margin_left="6px"),
         rx.spacer(),
         align="center",
-        justify="center",
+        justify="start",
         width="100%",
         padding="0.35em",
         margin_bottom="0",
@@ -81,7 +86,7 @@ def navbar_admin_items() -> rx.Component:
 
 def navbar_items() -> rx.Component:
     return rx.vstack(
-        rx.text("Demos", size="2", weight="bold", style=sub_heading_styles),
+        # rx.text("Demos", size="2", weight="bold", style=sub_heading_styles),
         sidebar_item(
             label="Assistent",
             icon="bot-message-square",
@@ -124,7 +129,7 @@ def navbar_items() -> rx.Component:
         rx.spacer(min_height="1em"),
         spacing="1",
         width="95%",
-        margin_top="-1em",
+        # margin_top="-1em",
     )
 
 

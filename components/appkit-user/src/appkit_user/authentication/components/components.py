@@ -44,21 +44,31 @@ def default_fallback(
     )
 
 
-def login_form(logo: str, logo_dark: str, margin_left: str = "-12px") -> rx.Component:
+def login_form(
+    header: str, logo: str, logo_dark: str, margin_left: str = "0px"
+) -> rx.Component:
     icon_class = "absolute left-[30px] top-1/2 -translate-y-1/2 w-5 h-5"
 
     return rx.center(
         rx.card(
             rx.vstack(
-                rx.color_mode_cond(
-                    rx.image(
-                        logo, class_name="h-[72px]", style={"marginLeft": margin_left}
+                rx.hstack(
+                    rx.color_mode_cond(
+                        rx.image(
+                            logo,
+                            class_name="h-[60px]",
+                            style={"marginLeft": margin_left},
+                        ),
+                        rx.image(
+                            logo_dark,
+                            class_name="h-[60px]",
+                            style={"marginLeft": margin_left},
+                        ),
                     ),
-                    rx.image(
-                        logo_dark,
-                        class_name="h-[72px]",
-                        style={"marginLeft": margin_left},
-                    ),
+                    rx.heading(header, size="8", margin_left="9px", margin_top="24px"),
+                    align="center",
+                    justify="start",
+                    margin_bottom="0.5em",
                 ),
                 rx.form(
                     rx.vstack(

@@ -34,8 +34,15 @@ def _password_rule(check: bool, message: str) -> rx.Component:
 
 
 @default_layout(route=LOGIN_ROUTE, title="Login")
-def login_page() -> rx.Component:
-    return login_form(logo="/img/logo.svg", logo_dark="/img/logo_dark.svg")
+def login_page(
+    header: str = "AppKit",
+    logo: str = "/img/logo.svg",
+    logo_dark: str = "/img/logo_dark.svg",
+    margin_left: str = "0px",
+) -> rx.Component:
+    return login_form(
+        header=header, logo=logo, logo_dark=logo_dark, margin_left=margin_left
+    )
 
 
 def create_profile_page(
