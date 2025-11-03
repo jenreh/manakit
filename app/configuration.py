@@ -1,14 +1,14 @@
 import logging
 from functools import lru_cache
 
-from manakit_assistant.configuration import AssistantConfig
-from manakit_commons.configuration.configuration import (
+from appkit_assistant.configuration import AssistantConfig
+from appkit_commons.configuration.configuration import (
     ApplicationConfig,
     Configuration,
 )
-from manakit_commons.registry import service_registry
-from manakit_imagecreator.configuration import ImageGeneratorConfig
-from manakit_user.configuration import AuthenticationConfiguration
+from appkit_commons.registry import service_registry
+from appkit_imagecreator.configuration import ImageGeneratorConfig
+from appkit_user.configuration import AuthenticationConfiguration
 
 logger = logging.getLogger(__name__)
 

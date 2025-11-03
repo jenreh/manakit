@@ -2,9 +2,9 @@ from typing import Final
 
 import reflex as rx
 
-from manakit_commons.registry import service_registry
-from manakit_user.authentication.backend.models import Role
-from manakit_user.authentication.components.components import requires_role
+from appkit_commons.registry import service_registry
+from appkit_user.authentication.backend.models import Role
+from appkit_user.authentication.components.components import requires_role
 
 from app.components.navbar_component import (
     admin_sidebar_item,
@@ -37,7 +37,7 @@ VERSION: Final[str] = (
 def navbar_header() -> rx.Component:
     return rx.hstack(
         rx.image("/img/logo.svg", height="48px", margin_top="1.2em", margin_left="0px"),
-        rx.heading("ManaKit", size="8", margin_top="22px", margin_left="8px"),
+        rx.heading("appkit", size="8", margin_top="22px", margin_left="8px"),
         rx.spacer(),
         align="center",
         justify="center",

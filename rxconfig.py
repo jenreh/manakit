@@ -2,10 +2,10 @@ import logging
 
 import reflex as rx
 
-from manakit_commons.configuration.configuration import ReflexConfig
-from manakit_commons.configuration.logging import init_logging
-from manakit_commons.database.configuration import DatabaseConfig
-from manakit_commons.registry import service_registry
+from appkit_commons.configuration.configuration import ReflexConfig
+from appkit_commons.configuration.logging import init_logging
+from appkit_commons.database.configuration import DatabaseConfig
+from appkit_commons.registry import service_registry
 
 from app import configuration
 

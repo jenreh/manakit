@@ -2,10 +2,10 @@ import logging
 
 import reflex as rx
 
-import manakit_mantine as mn
-from manakit_ui.global_states import LoadingState
-from manakit_user.authentication.components.components import requires_admin
-from manakit_user.authentication.states import LoginState
+import appkit_mantine as mn
+from appkit_ui.global_states import LoadingState
+from appkit_user.authentication.components.components import requires_admin
+from appkit_user.authentication.states import LoginState
 
 logger = logging.getLogger(__name__)
 

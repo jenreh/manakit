@@ -27,7 +27,7 @@ jobs:
       acr_image: ${{ steps.set_outputs.outputs.acr_image }}
     env:
       # Source image (GHCR)
-      GHCR_IMAGE: ghcr.io/jenreh/manakit-app
+      GHCR_IMAGE: ghcr.io/jenreh/appkit-app
       # Target ACR settings. Configure these as Repository Variables or set here.
       # Example: ACR_NAME=myregistry; ACR_LOGIN_SERVER=myregistry.azurecr.io
       ACR_NAME: ${{ vars.ACR_NAME }}
@@ -97,7 +97,7 @@ jobs:
       - name: Mirror images (preserve multi-arch)
         shell: bash
         env:
-          ACR_IMAGE: ${{ env.ACR_LOGIN_SERVER }}/manakit-app
+          ACR_IMAGE: ${{ env.ACR_LOGIN_SERVER }}/appkit-app
         run: |
           set -euo pipefail
           AUTHFILE="$HOME/.docker/config.json"
@@ -112,7 +112,7 @@ jobs:
       - name: Set job outputs
         id: set_outputs
         env:
-          ACR_IMAGE: ${{ env.ACR_LOGIN_SERVER }}/manakit-app
+          ACR_IMAGE: ${{ env.ACR_LOGIN_SERVER }}/appkit-app
         run: |
           echo "acr_image=$ACR_IMAGE" >> "$GITHUB_OUTPUT"
 

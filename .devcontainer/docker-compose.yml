@@ -1,7 +1,7 @@
 services:
   app:
-    container_name: manakit-dev
-    image: manakit/ui-dev
+    container_name: appkit-dev
+    image: appkit/ui-dev
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
@@ -11,27 +11,27 @@ services:
       - ../..:/workspaces:rw,cached
     command: sleep infinity
     networks:
-      - manakit-network
+      - appkit-network
 
   db:
-    container_name: manakit-db
+    container_name: appkit-db
     image: pgvector/pgvector:pg15
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: manakit-db
+      POSTGRES_DB: appkit-db
       POSTGRES_PASSWORD: postgres
     ports:
       - 5433:5432
     networks:
-      - manakit-network
+      - appkit-network
 
 volumes:
   postgres-data:
-    name: manakit-postgres-data
+    name: appkit-postgres-data
 
 networks:
-  manakit-network:
+  appkit-network:
     driver: bridge

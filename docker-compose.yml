@@ -1,7 +1,7 @@
 services:
-  manakit-app:
-    container_name: manakit-app
-    image: manakit-app
+  appkit-app:
+    container_name: appkit-app
+    image: appkit-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,37 +12,37 @@ services:
       - db
     # Put the app into the same network as the DB so it can reach the DB at host 'db'
     networks:
-      - manakit-network
+      - appkit-network
     # Optional explicit DB defaults (overridden by .env.docker if present)
     environment:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=manakit-db
+      - POSTGRES_DB=appkit-db
     ports:
       - "3030:3030"
       - "8080:8080"
 
   db:
-    container_name: manakit-db
+    container_name: appkit-db
     image: pgvector/pgvector:pg15
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: manakit-db
+      POSTGRES_DB: appkit-db
       POSTGRES_PASSWORD: postgres
     ports:
       - 5433:5432
     networks:
-      - manakit-network
+      - appkit-network
 
 volumes:
   postgres-data:
-    name: manakit-postgres-data
+    name: appkit-postgres-data
 
 networks:
-  manakit-network:
+  appkit-network:
     driver: bridge

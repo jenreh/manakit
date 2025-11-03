@@ -1,8 +1,8 @@
 import reflex as rx
 
-from manakit_imagecreator.pages import image_generator_page
-from manakit_user.authentication.components.components import requires_role
-from manakit_user.authentication.templates import authenticated
+from appkit_imagecreator.pages import image_generator_page
+from appkit_user.authentication.components.components import requires_role
+from appkit_user.authentication.templates import authenticated
 
 from app.components.navbar import app_navbar
 from app.roles import IMAGE_GENERATOR_ROLE

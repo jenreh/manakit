@@ -1,16 +1,16 @@
 [project]
-name = "manakit"
+name = "appkit"
 version = "0.5.0"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "manakit-assistant",
-    "manakit-commons",
-    "manakit-imagecreator",
-    "manakit-mantine",
-    "manakit-ui",
-    "manakit-user",
+    "appkit-assistant",
+    "appkit-commons",
+    "appkit-imagecreator",
+    "appkit-mantine",
+    "appkit-ui",
+    "appkit-user",
     "psycopg>=3.2.12",
     "psycopg-binary>=3.2.12",
     "reflex>=0.8.17",
@@ -21,23 +21,23 @@ dev = ["pytest==8.4.1", "ruff==0.12.4", "bump-my-version>=1.2.1", "detect-secret
 
 [tool.setuptools.packages.find]
 where = [
-    "components/manakit-assistant/src",
-    "components/manakit-commons/src",
-    "components/manakit-imagecreator/src",
-    "components/manakit-mantine/src",
-    "components/manakit-ui/src",
-    "components/manakit-user/src",
+    "components/appkit-assistant/src",
+    "components/appkit-commons/src",
+    "components/appkit-imagecreator/src",
+    "components/appkit-mantine/src",
+    "components/appkit-ui/src",
+    "components/appkit-user/src",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
     "app",
-    "manakit_assistant",
-    "manakit_commons",
-    "manakit_imagecreator",
-    "manakit_mantine",
-    "manakit_ui",
-    "manakit_user",
+    "appkit_assistant",
+    "appkit_commons",
+    "appkit_imagecreator",
+    "appkit_mantine",
+    "appkit_ui",
+    "appkit_user",
 ]
 
 [tool.uv]
@@ -48,12 +48,12 @@ members = ["components/*"]
 exclude = ["**/__pycache__"]
 
 [tool.uv.sources]
-manakit-assistant = { workspace = true }
-manakit-commons = { workspace = true }
-manakit-imagecreator = { workspace = true }
-manakit-mantine = { workspace = true }
-manakit-ui = { workspace = true }
-manakit-user = { workspace = true }
+appkit-assistant = { workspace = true }
+appkit-commons = { workspace = true }
+appkit-imagecreator = { workspace = true }
+appkit-mantine = { workspace = true }
+appkit-ui = { workspace = true }
+appkit-user = { workspace = true }
 
 [tool.bumpversion]
 current_version = "0.5.0"
@@ -72,32 +72,32 @@ search = 'version: {current_version}'
 replace = 'version: {new_version}'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-assistant/pyproject.toml"
+filename = "components/appkit-assistant/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-commons/pyproject.toml"
+filename = "components/appkit-commons/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-imagecreator/pyproject.toml"
+filename = "components/appkit-imagecreator/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-mantine/pyproject.toml"
+filename = "components/appkit-mantine/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-ui/pyproject.toml"
+filename = "components/appkit-ui/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "components/manakit-user/pyproject.toml"
+filename = "components/appkit-user/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
@@ -107,9 +107,9 @@ indent-width = 4
 line-length = 88
 target-version = "py312"
 extend-exclude = [".cache", "docs", "infra", "prompts", "scripts", "static"]
-extend-select = ["I"]
 
 [tool.ruff.lint]
+extend-select = ["I"]
 ignore = [
     "EM101", # Exception must not use a string literal
     "EM102", # Exception must not use a string literal with a format specifier
@@ -179,7 +179,7 @@ exclude = ["*.pyi"]
 
 [tool.ruff.lint.isort]
 known-local-folder = ["app", "alembic"]
-known-first-party = ["manakit_*"]
+known-first-party = ["appkit_*"]
 
 [tool.pytest.ini_options]
 cache_dir = ".cache/pytest"

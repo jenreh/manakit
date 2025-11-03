@@ -4,38 +4,38 @@ import logging
 
 import reflex as rx
 
-from manakit_assistant.backend.model_manager import ModelManager
-from manakit_assistant.backend.models import AIModel
-from manakit_assistant.backend.processors.ai_models import (
+from appkit_assistant.backend.model_manager import ModelManager
+from appkit_assistant.backend.models import AIModel
+from appkit_assistant.backend.processors.ai_models import (
     GPT_5,
     GPT_5_MINI,
     O4_MINI,
     GPT_4o,
 )
-from manakit_assistant.backend.processors.lorem_ipsum_processor import (
+from appkit_assistant.backend.processors.lorem_ipsum_processor import (
     LoremIpsumProcessor,
 )
-from manakit_assistant.backend.processors.openai_responses_processor import (
+from appkit_assistant.backend.processors.openai_responses_processor import (
     OpenAIResponsesProcessor,
 )
-from manakit_assistant.backend.processors.perplexity_processor import (
+from appkit_assistant.backend.processors.perplexity_processor import (
     SONAR,
     SONAR_DEEP_RESEARCH,
     PerplexityProcessor,
 )
-from manakit_assistant.components import (
+from appkit_assistant.components import (
     Suggestion,
 )
-from manakit_assistant.components.thread import Assistant
-from manakit_assistant.configuration import AssistantConfig
-from manakit_assistant.state.thread_state import ThreadListState, ThreadState
-from manakit_commons.registry import service_registry
-from manakit_ui.components.header import header
-from manakit_user.authentication.components.components import (
+from appkit_assistant.components.thread import Assistant
+from appkit_assistant.configuration import AssistantConfig
+from appkit_assistant.state.thread_state import ThreadListState, ThreadState
+from appkit_commons.registry import service_registry
+from appkit_ui.components.header import header
+from appkit_user.authentication.components.components import (
     default_fallback,
     requires_role,
 )
-from manakit_user.authentication.templates import authenticated
+from appkit_user.authentication.templates import authenticated
 
 from app.components.navbar import app_navbar
 from app.roles import ASSISTANT_ROLE

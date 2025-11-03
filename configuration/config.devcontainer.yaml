@@ -14,7 +14,7 @@ app:
     host: db # pragma: allowlist secret
     port: 5432
     echo: True
-    name: manakit-db
+    name: appkit-db
 
   authentication:
     server_url: http://localhost

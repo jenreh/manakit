@@ -315,7 +315,7 @@ __all__ = ["MyInput", "my_input", ...]
 
 ```python
 import reflex as rx
-import manakit_mantine as mn
+import appkit_mantine as mn
 
 class MyInputState(rx.State):
     value: str = ""

@@ -1,4 +1,4 @@
-from manakit_user.authentication.backend.models import Role
+from appkit_user.authentication.backend.models import Role
 
 ASSISTANT_ROLE = Role(
     id=1,

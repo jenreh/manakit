@@ -8,13 +8,13 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "manakit",
-    "manakit-assistant",
-    "manakit-commons",
-    "manakit-imagecreator",
-    "manakit-mantine",
-    "manakit-ui",
-    "manakit-user",
+    "appkit",
+    "appkit-assistant",
+    "appkit-commons",
+    "appkit-imagecreator",
+    "appkit-mantine",
+    "appkit-ui",
+    "appkit-user",
 ]
 
 [[package]]
@@ -563,16 +563,16 @@ wheels = [
 ]
 
 [[package]]
-name = "manakit"
+name = "appkit"
 version = "0.5.0"
 source = { editable = "." }
 dependencies = [
-    { name = "manakit-assistant" },
-    { name = "manakit-commons" },
-    { name = "manakit-imagecreator" },
-    { name = "manakit-mantine" },
-    { name = "manakit-ui" },
-    { name = "manakit-user" },
+    { name = "appkit-assistant" },
+    { name = "appkit-commons" },
+    { name = "appkit-imagecreator" },
+    { name = "appkit-mantine" },
+    { name = "appkit-ui" },
+    { name = "appkit-user" },
     { name = "psycopg" },
     { name = "psycopg-binary" },
     { name = "reflex" },
@@ -588,12 +588,12 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "manakit-assistant", editable = "components/manakit-assistant" },
-    { name = "manakit-commons", editable = "components/manakit-commons" },
-    { name = "manakit-imagecreator", editable = "components/manakit-imagecreator" },
-    { name = "manakit-mantine", editable = "components/manakit-mantine" },
-    { name = "manakit-ui", editable = "components/manakit-ui" },
-    { name = "manakit-user", editable = "components/manakit-user" },
+    { name = "appkit-assistant", editable = "components/appkit-assistant" },
+    { name = "appkit-commons", editable = "components/appkit-commons" },
+    { name = "appkit-imagecreator", editable = "components/appkit-imagecreator" },
+    { name = "appkit-mantine", editable = "components/appkit-mantine" },
+    { name = "appkit-ui", editable = "components/appkit-ui" },
+    { name = "appkit-user", editable = "components/appkit-user" },
     { name = "psycopg", specifier = ">=3.2.12" },
     { name = "psycopg-binary", specifier = ">=3.2.12" },
     { name = "reflex", specifier = ">=0.8.17" },
@@ -608,24 +608,24 @@ dev = [
 ]
 
 [[package]]
-name = "manakit-assistant"
+name = "appkit-assistant"
 version = "0.5.0"
-source = { editable = "components/manakit-assistant" }
+source = { editable = "components/appkit-assistant" }
 dependencies = [
-    { name = "manakit-commons" },
+    { name = "appkit-commons" },
     { name = "openai" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "manakit-commons", editable = "components/manakit-commons" },
+    { name = "appkit-commons", editable = "components/appkit-commons" },
     { name = "openai", specifier = ">=2.3.0" },
 ]
 
 [[package]]
-name = "manakit-commons"
+name = "appkit-commons"
 version = "0.5.0"
-source = { editable = "components/manakit-commons" }
+source = { editable = "components/appkit-commons" }
 dependencies = [
     { name = "colorlog" },
     { name = "cryptography" },
@@ -654,13 +654,13 @@ requires-dist = [
 ]
 
 [[package]]
-name = "manakit-imagecreator"
+name = "appkit-imagecreator"
 version = "0.5.0"
-source = { editable = "components/manakit-imagecreator" }
+source = { editable = "components/appkit-imagecreator" }
 dependencies = [
     { name = "google-genai" },
     { name = "httpx" },
-    { name = "manakit-commons" },
+    { name = "appkit-commons" },
     { name = "openai" },
 ]
 
@@ -668,14 +668,14 @@ dependencies = [
 requires-dist = [
     { name = "google-genai", specifier = ">=1.26.0" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "manakit-commons", editable = "components/manakit-commons" },
+    { name = "appkit-commons", editable = "components/appkit-commons" },
     { name = "openai", specifier = ">=2.3.0" },
 ]
 
 [[package]]
-name = "manakit-mantine"
+name = "appkit-mantine"
 version = "0.5.0"
-source = { editable = "components/manakit-mantine" }
+source = { editable = "components/appkit-mantine" }
 dependencies = [
     { name = "reflex" },
 ]
@@ -684,36 +684,36 @@ dependencies = [
 requires-dist = [{ name = "reflex", specifier = ">=0.8.12" }]
 
 [[package]]
-name = "manakit-ui"
+name = "appkit-ui"
 version = "0.5.0"
-source = { editable = "components/manakit-ui" }
+source = { editable = "components/appkit-ui" }
 dependencies = [
-    { name = "manakit-commons" },
+    { name = "appkit-commons" },
     { name = "reflex" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "manakit-commons", editable = "components/manakit-commons" },
+    { name = "appkit-commons", editable = "components/appkit-commons" },
     { name = "reflex", specifier = ">=0.8.12" },
 ]
 
 [[package]]
-name = "manakit-user"
+name = "appkit-user"
 version = "0.5.0"
-source = { editable = "components/manakit-user" }
+source = { editable = "components/appkit-user" }
 dependencies = [
     { name = "greenlet" },
-    { name = "manakit-commons" },
-    { name = "manakit-ui" },
+    { name = "appkit-commons" },
+    { name = "appkit-ui" },
     { name = "requests-oauthlib" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "greenlet", specifier = ">=3.2.4" },
-    { name = "manakit-commons", editable = "components/manakit-commons" },
-    { name = "manakit-ui", editable = "components/manakit-ui" },
+    { name = "appkit-commons", editable = "components/appkit-commons" },
+    { name = "appkit-ui", editable = "components/appkit-ui" },
     { name = "requests-oauthlib", specifier = ">=2.0.0" },
 ]
 

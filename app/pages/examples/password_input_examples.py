@@ -9,8 +9,8 @@ Run with: reflex run
 
 import reflex as rx
 
-import manakit_mantine as mn
-from manakit_user.authentication.templates import navbar_layout
+import appkit_mantine as mn
+from appkit_user.authentication.templates import navbar_layout
 
 from app.components.navbar import app_navbar
 

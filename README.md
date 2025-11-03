@@ -1,9 +1,9 @@
-# manakit
+# appkit
 
-[![PyPI version](https://badge.fury.io/py/manakit-mantine.svg)](https://badge.fury.io/py/manakit-mantine)
+[![PyPI version](https://badge.fury.io/py/appkit-mantine.svg)](https://badge.fury.io/py/appkit-mantine)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/manakit)
+[![Pre-release](https://img.shields.io/badge/status-pre--release-orange.svg)](https://github.com/jenreh/appkit)
 
 **Production-ready Mantine UI input components for Reflex with type safety and comprehensive examples.**
 
@@ -27,13 +27,13 @@ A Reflex wrapper library focusing on [Mantine UI v8.3.3](https://mantine.dev) in
 ### Using pip
 
 ```bash
-pip install manakit-mantine
+pip install appkit-mantine
 ```
 
 ### Using uv (recommended)
 
 ```bash
-uv add manakit-mantine
+uv add appkit-mantine
 ```
 
 ### Development Installation
@@ -42,8 +42,8 @@ For local development or to run the demo application:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jenreh/manakit.git
-cd manakit
+git clone https://github.com/jenreh/appkit.git
+cd appkit
 
 # Install with uv (installs workspace components)
 uv sync

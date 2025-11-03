@@ -4,14 +4,12 @@ import logging
 
 import reflex as rx
 
-from manakit_user.authentication.pages import (  # noqa: F401
+from appkit_user.authentication.pages import (  # noqa: F401
     azure_oauth_callback_page,
     github_oauth_callback_page,
 )
-from manakit_user.authentication.templates import (
-    navbar_layout,
-)
-from manakit_user.user_management.pages import (  # noqa: F401
+from appkit_user.authentication.templates import navbar_layout
+from appkit_user.user_management.pages import (  # noqa: F401
     create_profile_page,
     login_page,
 )
@@ -59,14 +57,14 @@ create_profile_page(app_navbar())
 @navbar_layout(
     route="/index",
     title="Home",
-    description="A demo page for the ManaKit components",
+    description="A demo page for the appkit components",
     navbar=app_navbar(),
     with_header=False,
 )
 def index() -> rx.Component:
     return rx.container(
         rx.vstack(
-            rx.heading("Welcome to ManaKit!", size="9"),
+            rx.heading("Welcome to appkit!", size="9"),
             rx.text(
                 "A component library for ",
                 rx.link("Reflex.dev", href="https://reflex.dev/", is_external=True),
@@ -113,7 +111,7 @@ def index() -> rx.Component:
 base_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@400;500;600;700;800&display=swap",
     "https://fonts.googleapis.com/css2?family=Audiowide&family=Honk:SHLN@5&family=Major+Mono+Display&display=swap",
-    "css/manakit.css",
+    "css/appkit.css",
     #    "css/styles.css",
     "css/react-zoom.css",
 ]
