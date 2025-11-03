@@ -29,7 +29,6 @@ class MCPServerRepository:
             return result.first()
 
     @staticmethod
-    @staticmethod
     async def create(
         name: str,
         url: str,

@@ -1,48 +1,20 @@
-from datetime import UTC, datetime, timedelta
 from enum import StrEnum
-from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from appkit_commons.utils import (
+    get_current_utc_time,
+    get_expiration_time,
+    get_name_from_email,
+    normalize_scope,
+)
 from appkit_user.authentication.backend.entities import (
     OAuthAccountEntity,
     UserEntity,
 )
 from appkit_user.authentication.backend.models import UserCreate
-
-
-# Helper functions for cleaner code
-def get_current_utc_time() -> datetime:
-    """Get current UTC time."""
-    return datetime.now(UTC)
-
-
-def get_expiration_time(seconds: int) -> datetime:
-    """Calculate expiration time from seconds."""
-    base_time = get_current_utc_time().replace(second=0, microsecond=0)
-    return base_time + timedelta(seconds=seconds)
-
-
-def normalize_scope(scope_data: Any) -> str | None:
-    """Normalize scope data to string format."""
-    if isinstance(scope_data, list):
-        return " ".join(scope_data)
-    if scope_data is not None:
-        return str(scope_data)
-    return None
-
-
-def get_name_from_email(
-    email: str | None, fallback_name: str | None = None
-) -> str | None:
-    """Extract name from email address if name is empty or None."""
-    if fallback_name and fallback_name.strip():
-        return fallback_name
-    if email and "@" in email:
-        return email.split("@")[0]
-    return fallback_name
 
 
 class DefaultUserRoles(StrEnum):
