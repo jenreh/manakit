@@ -93,6 +93,13 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
         for handler in handlers:
             result = handler(event_type)
             if result:
+                content_preview = result.text[:50] if result.text else ""
+                logger.info(
+                    "Event %s → Chunk: type=%s, content=%s",
+                    event_type,
+                    result.type,
+                    content_preview,
+                )
                 return result
 
         # Log unhandled events for debugging
@@ -131,14 +138,6 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
                 {"annotation": event.annotation},
             )
 
-        if (
-            event_type == "response.content_part.added"
-            and hasattr(event, "part")
-            and hasattr(event.part, "text")
-        ):
-            return self._create_chunk(
-                ChunkType.TEXT, event.part.text, {"content_part": "added"}
-            )
         return None
 
     def _handle_item_events(self, event_type: str, event: Any) -> Chunk | None:
@@ -248,19 +247,19 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
 
     def _handle_mcp_events(self, event_type: str, event: Any) -> Chunk | None:
         """Handle MCP-specific events."""
-        # if event_type == "response.mcp_call_arguments.delta":
-        #     tool_id = getattr(event, "item_id", "unknown_id")
-        #     arguments_delta = getattr(event, "delta", "")
-        #     return self._create_chunk(
-        #         ChunkType.TOOL_CALL,
-        #         arguments_delta,
-        #         {
-        #             "tool_id": tool_id,
-        #             "status": "arguments_streaming",
-        #             "delta": arguments_delta,
-        #             "reasoning_session": self._current_reasoning_session,
-        #         },
-        #     )
+        if event_type == "response.mcp_call_arguments.delta":
+            tool_id = getattr(event, "item_id", "unknown_id")
+            arguments_delta = getattr(event, "delta", "")
+            return self._create_chunk(
+                ChunkType.TOOL_CALL,
+                arguments_delta,
+                {
+                    "tool_id": tool_id,
+                    "status": "arguments_streaming",
+                    "delta": arguments_delta,
+                    "reasoning_session": self._current_reasoning_session,
+                },
+            )
 
         if event_type == "response.mcp_call_arguments.done":
             tool_id = getattr(event, "item_id", "unknown_id")
@@ -289,29 +288,43 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
                 },
             )
 
-        # if event_type == "response.mcp_call.in_progress":
-        #     tool_id = getattr(event, "item_id", "unknown_id")
-        #     return self._create_chunk(
-        #         ChunkType.TOOL_CALL,
-        #         "Tool call in progress...",
-        #         {"tool_id": tool_id, "status": "in_progress"},
-        #     )
+        if event_type == "response.mcp_call.in_progress":
+            tool_id = getattr(event, "item_id", "unknown_id")
+            return self._create_chunk(
+                ChunkType.TOOL_CALL,
+                "Tool call in progress...",
+                {"tool_id": tool_id, "status": "in_progress"},
+            )
 
-        # if event_type == "response.mcp_list_tools.in_progress":
-        #     tool_id = getattr(event, "item_id", "unknown_id")
-        #     return self._create_chunk(
-        #         ChunkType.TOOL_CALL,
-        #         "Lade verfügbare Werkzeuge...",
-        #         {"tool_id": tool_id, "status": "listing_tools"},
-        #     )
+        if event_type == "response.mcp_list_tools.in_progress":
+            tool_id = getattr(event, "item_id", "unknown_id")
+            return self._create_chunk(
+                ChunkType.TOOL_CALL,
+                "Lade verfügbare Werkzeuge...",
+                {"tool_id": tool_id, "status": "listing_tools"},
+            )
 
-        # if event_type == "response.mcp_list_tools.completed":
-        #     tool_id = getattr(event, "item_id", "unknown_id")
-        #     return self._create_chunk(
-        #         ChunkType.TOOL_RESULT,
-        #         "Verfügbare Werkzeuge geladen.",
-        #         {"tool_id": tool_id, "status": "tools_listed"},
-        #     )
+        if event_type == "response.mcp_list_tools.completed":
+            tool_id = getattr(event, "item_id", "unknown_id")
+            return self._create_chunk(
+                ChunkType.TOOL_RESULT,
+                "Verfügbare Werkzeuge geladen.",
+                {"tool_id": tool_id, "status": "tools_listed"},
+            )
+
+        if event_type == "response.mcp_list_tools.failed":
+            tool_id = getattr(event, "item_id", "unknown_id")
+            logger.error("MCP tool listing failed for tool_id: %s", str(event))
+            return self._create_chunk(
+                ChunkType.TOOL_RESULT,
+                f"Werkzeugliste konnte nicht geladen werden: {tool_id}",
+                {
+                    "tool_id": tool_id,
+                    "status": "listing_failed",
+                    "error": True,
+                    "reasoning_session": self._current_reasoning_session,
+                },
+            )
 
         return None
 
@@ -325,15 +338,11 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
             # Content part completed - this typically ends text streaming
             return None  # No need to show this as a separate chunk
 
-        # if event_type == "response.output_text.done":
-        #     # Text output completed - this contains the final text
-        #     text = getattr(event, "text", "")
-        #     if text:  # Only create chunk if there's actual text content
-        #         return self._create_chunk(
-        #             ChunkType.TEXT,
-        #             text,
-        #             {"status": "text_complete", "final_text": True},
-        #         )
+        if event_type == "response.output_text.done":
+            # Text output completed - already received via delta events
+            # Skip to avoid duplicate content
+            return None
+
         return None
 
     def _handle_completion_events(self, event_type: str, event: Any) -> Chunk | None:  # noqa: ARG002

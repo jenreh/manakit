@@ -1,0 +1,117 @@
+# AppKit - Reflex-Mantine Component Library
+
+> Production-ready Mantine UI components for Reflex web applications, focusing on form inputs, user authentication, image generation, and assistant functionality. Built with Python 3.13, Reflex 0.8+, React 18, and Mantine 8.3.3. Features type-safe components, inheritance-based architecture eliminating code duplication, and comprehensive examples.
+
+AppKit is a modular workspace-based project with six specialized component libraries designed to accelerate development of robust web applications. The project emphasizes clean architecture, inheritance-based design patterns, and production-ready examples.
+
+**Key Stack:** Python 3.13 · Reflex (UI Framework) · FastAPI · SQLAlchemy 2.0 · Alembic · Pydantic · Mantine 8.3.3 · React 18 · FastMCP · LangChain
+
+## Documentation
+
+- [Main README](README.md): Project overview, features, installation instructions, and acknowledgments
+- [Copilot Instructions](.github/copilot-instructions.md): Comprehensive development workflow, golden rules, architecture patterns, and best practices for extending the codebase
+- [GitHub README](.github/README.md): GitHub-specific documentation and guidelines
+- [License](LICENSE.md): MIT License for the project
+
+## Component Libraries
+
+- [appkit-mantine README](components/appkit-mantine/README.md): Mantine UI component wrappers - Input, DateInput, NumberInput, PasswordInput, Textarea, NavigationProgress, RichTextEditor with full type safety
+- [appkit-commons README](components/appkit-commons/README.md): Shared utilities, configuration, database helpers, registry, and common patterns across all modules
+- [appkit-user README](components/appkit-user/README.md): User authentication, OAuth integration (Azure, GitHub), user management, and role-based access control (RBAC)
+- [appkit-assistant README](components/appkit-assistant/README.md): AI assistant functionality with multiple LLM integrations (OpenAI, Perplexity, custom processors) and MCP server management
+- [appkit-imagecreator README](components/appkit-imagecreator/README.md): Image generation capabilities with state management and processor integration
+- [appkit-ui README](components/appkit-ui/README.md): Reusable UI components, dialogs, form inputs, headers, and common UI patterns
+
+## Architecture & Design
+
+- [Mantine Component Architecture](components/appkit-mantine/README.md#project-architecture): Inheritance-based design with MantineComponentBase, MantineInputComponentBase for 40+ common props, MantineProvider integration
+- [Base Classes & Inheritance](.github/copilot-instructions.md#critical-integration-patterns): Parent class hierarchies, event handler transformations, prop inheritance patterns
+- [Design Patterns](.github/copilot-instructions.md#project-architecture): Strategy, Factory, Template Method, Builder, Repository patterns applied across the workspace
+- [State Management Patterns](.github/copilot-instructions.md#code-quality-standards): Type-safe state definitions, event handlers, controlled vs uncontrolled components
+
+## Development Workflow
+
+- [Golden Rules](.github/copilot-instructions.md#1-golden-rules-short-actionable): Think → Memory → Tools → Code → Memory, tests are truth, small safe changes, consistency
+- [Task Bootstrap Pattern](.github/copilot-instructions.md#2-task-bootstrap-pattern-for-inline-copilot--chat): Template for planning and documenting task changes
+- [Tooling Decision Matrix](.github/copilot-instructions.md#3-tooling-decision-matrix-condensed): When to use Context7, DuckDuckGo, Memory, etc.
+- [Development Workflow SOP](.github/copilot-instructions.md#4-sop--development-workflow): Prepare, Triage, Implement, Quality Gates, Commit & PR, Learn phases
+
+## Configuration & Setup
+
+- [Pyproject Configuration](pyproject.toml): Workspace members, dependencies, tool configurations (ruff, pytest, mypy, coverage)
+- [Reflex Configuration](rxconfig.py): Reflex app settings, database configuration, plugin setup
+- [Environment Configuration](configuration/): YAML-based configuration files for different environments (local, docker_test, devcontainer, prod)
+- [Alembic Configuration](alembic.ini): Database migration settings and version control configuration
+- [Docker Setup](docker-compose.yml): Multi-container development environment with PostgreSQL and application services
+- [Makefile](Makefile): Development commands for install, test, run, migrations, and utility tasks
+
+## Examples
+
+- [Button Examples](app/pages/examples/button_examples.py): Button component usage with sizes, variants, loading states, and full-width demonstrations
+- [Input Examples](app/pages/examples/input_examples.py): Text input patterns including basic, disabled, required, left/right sections
+- [Password Input Examples](app/pages/examples/password_examples.py): Secure password input with validation and strength indicators
+- [Date Input Examples](app/pages/examples/date_input_examples.py): Date picker with range selection, disabled dates, and formatting
+- [Number Input Examples](app/pages/examples/number_examples.py): Numeric input with min/max, decimal scaling, and formatting
+- [Textarea Examples](app/pages/examples/textarea_examples.py): Multi-line text input with resize, character count, and validation
+- [JSON Input Examples](app/pages/examples/json_input_examples.py): JSON editor with validation and formatting
+- [Select Examples](app/pages/examples/select_examples.py): Dropdown selection with data binding and event handling
+- [MultiSelect Examples](app/pages/examples/multi_select_examples.py): Multi-value selection with grouping and search
+- [Autocomplete Examples](app/pages/examples/autocomplete_examples.py): Auto-completing input with suggestions
+- [Rich Text Editor Examples](app/pages/examples/tiptap_examples.py): Full-featured rich text editor with toolbars and formatting controls
+- [Navigation Progress Examples](app/pages/examples/nprogress_examples.py): Page loading progress bar with start/stop control
+- [Action Icon Examples](app/pages/examples/action_icon_examples.py): Icon buttons with groups and variants
+- [Nav Link Examples](app/pages/examples/nav_link_examples.py): Navigation link patterns
+- [Table Examples](app/pages/examples/table_examples.py): Data table display and interactions
+- [Auto Scroll Examples](app/pages/examples/auto_scroll_examples.py): Automatic scrolling behavior patterns
+
+## Testing & Quality Assurance
+
+- [Test Configuration](pyproject.toml#tool.pytest.ini_options): Pytest settings, cache directory, test paths
+- [Ruff Configuration](pyproject.toml#tool.ruff): Code linting and formatting with isort integration
+- [MyPy Configuration](pyproject.toml#tool.mypy): Type checking configuration for Python 3.13
+- [Coverage Configuration](pyproject.toml#tool.coverage.run): Test coverage settings with 80% minimum threshold
+
+## GitHub Actions CI/CD
+
+- [CI/CD Workflows](.github/workflows/): GitHub Actions for testing, linting, type checking, and deployment
+- [Best Practices](.github/instructions/github-actions-ci-cd-best-practices.instructions.md): Comprehensive guide for robust and secure CI/CD pipelines
+
+## Instructions & Guidelines
+
+- [Python Instructions](.github/instructions/python.instructions.md): Python development guidelines and best practices for appkit
+- [Terraform Instructions](.github/instructions/terraform.instructions.md): Terraform conventions and guidelines
+- [Terraform Azure Instructions](.github/instructions/terraform-azure.instructions.md): Azure-specific Terraform best practices
+
+## Project Structure
+
+**Workspace Components:**
+- `components/appkit-mantine/` - Mantine UI component wrappers with inheritance-based architecture
+- `components/appkit-commons/` - Shared configuration, database, utilities, and registry
+- `components/appkit-user/` - Authentication, user management, OAuth integration
+- `components/appkit-assistant/` - AI assistant with LLM processors and MCP server support
+- `components/appkit-imagecreator/` - Image generation with state management
+- `components/appkit-ui/` - Reusable UI components and patterns
+
+**Application:**
+- `app/` - Demo application showcasing all components with example pages and state management
+- `app/components/` - Application-level UI components (navbar, navigation)
+- `app/pages/` - Example pages demonstrating each component type
+- `app/pages/assitant/` - Assistant integration pages
+- `app/pages/examples/` - Comprehensive examples for all input components
+
+**Infrastructure:**
+- `alembic/` - Database migrations and version control
+- `configuration/` - Environment-specific configuration files (YAML-based)
+- `assets/` - CSS, JavaScript, icons, and static files
+- `.github/` - GitHub configuration, workflows, instructions, and prompts
+
+## Optional
+
+- [Architecture Deep Dive](components/appkit-mantine/README.md#project-architecture): Component architecture, integration patterns, event transformations
+- [State Management Guide](app/pages/examples/tiptap_examples.py): Advanced state patterns with multiple editors and content management
+- [Custom CSS Integration](components/appkit-mantine/README.md#critical-integration-patterns): Custom CSS and JavaScript injection patterns
+- [Form Validation Patterns](components/appkit-user/src/appkit_user/user_management/pages.py): Password rules, validation helpers, async validation
+- [MCP Server Integration](components/appkit-assistant/README.md): Model Context Protocol server management and integration
+- [Alembic Migrations](alembic/versions/): Database schema evolution with multiple migration versions
+- [Prompt Templates](.github/prompts/): Reusable prompt templates for common development tasks
+- [Chat Modes Configuration](.github/chatmodes/): AI assistant chat mode configurations and integrations
