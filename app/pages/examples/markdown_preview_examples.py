@@ -212,10 +212,12 @@ With some additional text after it.
 
     current_example: str = "basic"
     current_security: str = "standard"
-    show_source: bool = False
 
     def set_show_source(self, value: bool) -> None:
         self.show_source = value
+
+    def set_current_security(self, value: str) -> None:
+        self.current_security = value
 
 
 def example_section(
@@ -298,9 +300,7 @@ def example_tabs() -> rx.Component:
                 rx.hstack(
                     rx.button(
                         "Strict",
-                        on_click=MarkdownExampleState.setvar(
-                            "current_security", "strict"
-                        ),
+                        on_click=MarkdownExampleState.set_current_security("strict"),
                         variant="soft",
                         color_scheme=rx.cond(
                             MarkdownExampleState.current_security == "strict",
@@ -310,9 +310,7 @@ def example_tabs() -> rx.Component:
                     ),
                     rx.button(
                         "Standard",
-                        on_click=MarkdownExampleState.setvar(
-                            "current_security", "standard"
-                        ),
+                        on_click=MarkdownExampleState.set_current_security("standard"),
                         variant="soft",
                         color_scheme=rx.cond(
                             MarkdownExampleState.current_security == "standard",
@@ -322,9 +320,7 @@ def example_tabs() -> rx.Component:
                     ),
                     rx.button(
                         "None",
-                        on_click=MarkdownExampleState.setvar(
-                            "current_security", "none"
-                        ),
+                        on_click=MarkdownExampleState.set_current_security("none"),
                         variant="soft",
                         color_scheme=rx.cond(
                             MarkdownExampleState.current_security == "none",
