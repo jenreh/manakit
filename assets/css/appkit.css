@@ -125,8 +125,18 @@
         cursor: progress !important;
     }
 
-    /* Markdown table styles */
+    .wmde-markdown ul li {
+        list-style-type: disc;
+        margin-left: 1.5em;
+    }
 
+    .wmde-markdown ol li {
+        list-style-type: decimal;
+        margin-left: 1.5em;
+    }
+
+    /* Markdown table styles */
+    .wmde-markdown table,
     .markdown table {
         border-radius: 9px;
         box-shadow: 0 0 8px var(--gray-3);
@@ -147,6 +157,8 @@
     }
 
 
+    .wmde-markdown th,
+    .wmde-markdown td,
     .markdown th,
     .markdown td {
         padding: 12px 15px;
@@ -156,16 +168,19 @@
         font-size: 0.85em;
     }
 
+    .wmde-markdown th,
     .markdown th {
         background-color: var(--gray-2);
         font-weight: 600;
         color: var(--gray-11);
     }
 
+    .wmde-markdown tbody tr:last-child td,
     .markdown tbody tr:last-child td {
         border-bottom: none;
     }
 
+    .wmde-markdown tbody tr:hover,
     .markdown tbody tr:hover {
         background-color: var(--gray-2);
     }

@@ -30,6 +30,10 @@ from appkit_mantine.table import table
 from appkit_mantine.scroll_area import scroll_area
 from appkit_mantine.tags_input import tags_input
 from appkit_mantine.rich_select import rich_select
+from appkit_mantine.markdown_preview import (
+    MarkdownPreview,
+    markdown_preview,
+)
 
 __all__ = [
     "MANTINE_LIBARY",
@@ -38,10 +42,12 @@ __all__ = [
     "MantineComponentBase",
     "MantineInputComponentBase",
     "MantineProvider",
+    "MarkdownPreview",
     "ToolbarControlGroup",
     "action_icon",
     "button",
     "form",
+    "markdown_preview",
     "nav_link",
     "navigation_progress",
     "number_formatter",
