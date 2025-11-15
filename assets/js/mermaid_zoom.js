@@ -1,8 +1,8 @@
 /**
- * Mermaid SVG Zoom - Click-to-zoom functionality for Mermaid diagrams
+ * Mermaid SVG Zoom - Click-to-zoom functionality for Mermaid diagrams and images.
  *
- * Provides modal overlay zoom for SVG diagrams rendered by Mermaid in markdown content.
- * Mimics behavior of react-medium-image-zoom library.
+ * Provides modal overlay zoom for SVG diagrams rendered by Mermaid and images
+ * within markdown-driven content. Mimics behavior of react-medium-image-zoom.
  */
 
 (function () {
@@ -10,6 +10,28 @@
 
     let activeModal = null;
     let originalBodyOverflow = null;
+
+    const ZOOMABLE_SELECTORS = [
+        'code[data-name="mermaid"] svg',
+        '.wmde-markdown svg[id^="mermaid-"]',
+        '.markdown svg[id^="mermaid-"]',
+        '.wmde-markdown img',
+        '.markdown img',
+    ];
+
+    /**
+     * Ensure zoomable elements expose cursor styling hooks.
+     */
+    function markZoomableElements(root = document) {
+        ZOOMABLE_SELECTORS.forEach((selector) => {
+            const elements = root.querySelectorAll?.(selector) ?? [];
+            elements.forEach((element) => {
+                if (!element.hasAttribute('data-mermaid-zoomable')) {
+                    element.setAttribute('data-mermaid-zoomable', 'true');
+                }
+            });
+        });
+    }
 
     /**
      * Initialize zoom functionality when DOM is ready
@@ -20,34 +42,42 @@
         document.addEventListener('click', handleClick);
         document.addEventListener('keydown', handleKeydown);
 
-        // Log available mermaid diagrams
+        markZoomableElements();
+
+        // Log available mermaid diagrams and images
         setTimeout(() => {
-            const diagrams = document.querySelectorAll('code[data-name="mermaid"] svg, .wmde-markdown svg[id^="mermaid-"], .markdown svg[id^="mermaid-"]');
-            console.log('[Mermaid Zoom] Found diagrams:', diagrams.length);
+            const diagrams = document.querySelectorAll(ZOOMABLE_SELECTORS[0] + ', ' + ZOOMABLE_SELECTORS[1] + ', ' + ZOOMABLE_SELECTORS[2]);
+            const images = document.querySelectorAll(ZOOMABLE_SELECTORS[3] + ', ' + ZOOMABLE_SELECTORS[4]);
+            console.log('[Mermaid Zoom] Found diagrams:', diagrams.length, 'images:', images.length);
         }, 1000);
     }
 
     /**
-     * Handle click events on Mermaid SVGs
+     * Handle click events on zoomable elements.
      */
     function handleClick(event) {
         const target = event.target;
 
         // Check if click is on a Mermaid SVG (or child element of SVG)
         // Try multiple selectors to match different Mermaid rendering structures
-        let svg = target.closest('code[data-name="mermaid"] svg');
+        let zoomable = target.closest('code[data-name="mermaid"] svg');
 
         // Fallback: check if it's an SVG with mermaid ID in markdown container
-        if (!svg) {
-            svg = target.closest('.wmde-markdown svg[id^="mermaid-"], .markdown svg[id^="mermaid-"]');
+        if (!zoomable) {
+            zoomable = target.closest('.wmde-markdown svg[id^="mermaid-"], .markdown svg[id^="mermaid-"]');
         }
 
-        if (svg && !activeModal) {
-            // Click on unzoomed SVG - open zoom
-            console.log('[Mermaid Zoom] Opening zoom for:', svg);
+        // Finally check for zoomable markdown images
+        if (!zoomable) {
+            zoomable = target.closest('.wmde-markdown img, .markdown img');
+        }
+
+        if (zoomable && !activeModal) {
+            // Click on unzoomed element - open zoom
+            console.log('[Mermaid Zoom] Opening zoom for:', zoomable);
             event.preventDefault();
             event.stopPropagation();
-            openZoom(svg);
+            openZoom(zoomable);
         } else if (activeModal && (target === activeModal || target.closest('[data-mermaid-zoom-modal]'))) {
             // Click on modal or zoomed content - close zoom
             console.log('[Mermaid Zoom] Closing zoom');
@@ -68,13 +98,13 @@
     }
 
     /**
-     * Open zoom modal with cloned SVG
+     * Open zoom modal with cloned element
      */
-    function openZoom(originalSvg) {
+    function openZoom(originalElement) {
         if (activeModal) return;
 
-        // Clone the SVG
-        const svgClone = originalSvg.cloneNode(true);
+        // Clone the source element (supports SVG and IMG)
+        const clone = originalElement.cloneNode(true);
 
         // Create modal container
         const modal = document.createElement('div');
@@ -86,7 +116,7 @@
         // Create content wrapper
         const content = document.createElement('div');
         content.setAttribute('data-mermaid-zoom-content', '');
-        content.appendChild(svgClone);
+        content.appendChild(clone);
         modal.appendChild(content);
 
         // Lock body scroll
@@ -158,17 +188,23 @@
     const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
             if (mutation.addedNodes.length > 0) {
-                const hasMermaid = Array.from(mutation.addedNodes).some(node => {
+                const hasZoomableContent = Array.from(mutation.addedNodes).some(node => {
                     if (node.nodeType === 1) {
                         return node.querySelector && (
                             node.querySelector('svg[id^="mermaid-"]') ||
-                            node.querySelector('code[data-name="mermaid"] svg')
+                            node.querySelector('code[data-name="mermaid"] svg') ||
+                            node.querySelector('.wmde-markdown img, .markdown img')
                         );
                     }
                     return false;
                 });
-                if (hasMermaid) {
-                    console.log('[Mermaid Zoom] New Mermaid diagram detected');
+                if (hasZoomableContent) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) {
+                            markZoomableElements(node);
+                        }
+                    });
+                    console.log('[Mermaid Zoom] New zoomable content detected');
                 }
             }
         }

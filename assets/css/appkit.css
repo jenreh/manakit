@@ -225,9 +225,12 @@
         }
     }
 
-    /* Mermaid SVG Zoom Styles */
+    /* Markdown Image Zoom Styles */
 
-    /* Hover state for zoomable Mermaid diagrams */
+    /* Hover state for zoomable images and diagrams */
+    [data-mermaid-zoomable],
+    .wmde-markdown img,
+    .markdown img,
     .wmde-markdown code[data-name="mermaid"] svg,
     .markdown code[data-name="mermaid"] svg,
     .wmde-markdown svg[id^="mermaid-"],
@@ -236,6 +239,9 @@
         transition: opacity 0.2s;
     }
 
+    [data-mermaid-zoomable]:hover,
+    .wmde-markdown img:hover,
+    .markdown img:hover,
     .wmde-markdown code[data-name="mermaid"] svg:hover,
     .markdown code[data-name="mermaid"] svg:hover,
     .wmde-markdown svg[id^="mermaid-"]:hover,
@@ -243,7 +249,7 @@
         opacity: 0.9;
     }
 
-    /* Modal overlay for zoomed Mermaid diagrams */
+    /* Modal overlay for zoomed images and diagrams */
     [data-mermaid-zoom-modal] {
         position: fixed;
         top: 0;
@@ -286,8 +292,9 @@
         padding: 2rem;
     }
 
-    /* Zoomed SVG styles */
-    [data-mermaid-zoom-modal] svg {
+    /* Zoomed element styles (SVG and IMG) */
+    [data-mermaid-zoom-modal] svg,
+    [data-mermaid-zoom-modal] img {
         max-width: 90vw;
         max-height: 90vh;
         width: auto;
@@ -299,7 +306,8 @@
         transform: scale(0.95);
     }
 
-    [data-mermaid-zoom-modal="visible"] svg {
+    [data-mermaid-zoom-modal="visible"] svg,
+    [data-mermaid-zoom-modal="visible"] img {
         opacity: 1;
         transform: scale(1);
     }
@@ -308,7 +316,8 @@
         background-color: rgba(0, 0, 0, 0);
     }
 
-    [data-mermaid-zoom-modal="closing"] svg {
+    [data-mermaid-zoom-modal="closing"] svg,
+    [data-mermaid-zoom-modal="closing"] img {
         opacity: 0;
         transform: scale(0.95);
     }
