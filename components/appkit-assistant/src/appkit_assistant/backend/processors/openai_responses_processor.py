@@ -12,6 +12,7 @@ from appkit_assistant.backend.models import (
     MessageType,
 )
 from appkit_assistant.backend.processors.openai_base import BaseOpenAIProcessor
+from appkit_assistant.backend.system_prompt import SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -397,14 +398,15 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
         payload: dict[str, Any] | None = None,
     ) -> Any:
         """Create a simplified responses API request."""
-        # Convert messages to responses format
-        input_messages = self._convert_messages_to_responses_format(messages)
-
-        # Extract system message if present
-        system_message = self._extract_system_message(messages)
-
         # Configure MCP tools if provided
-        tools = self._configure_mcp_tools(mcp_servers) if mcp_servers else []
+        tools, mcp_prompt = (
+            self._configure_mcp_tools(mcp_servers) if mcp_servers else ([], "")
+        )
+
+        # Convert messages to responses format with system message
+        input_messages = self._convert_messages_to_responses_format(
+            messages, mcp_prompt=mcp_prompt
+        )
 
         params = {
             "model": model.model,
@@ -416,20 +418,22 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
             **(payload or {}),
         }
 
-        # Add system message if present
-        if system_message:
-            params["system"] = system_message
-
+        logger.debug("Responses API request params: %s", params)
         return await self.client.responses.create(**params)
 
     def _configure_mcp_tools(
         self, mcp_servers: list[MCPServer] | None
-    ) -> list[dict[str, Any]]:
-        """Configure MCP servers as tools for the responses API."""
+    ) -> tuple[list[dict[str, Any]], str]:
+        """Configure MCP servers as tools for the responses API.
+
+        Returns:
+            tuple: (tools list, concatenated prompts string)
+        """
         if not mcp_servers:
-            return []
+            return [], ""
 
         tools = []
+        prompts = []
         for server in mcp_servers:
             tool_config = {
                 "type": "mcp",
@@ -443,17 +447,34 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
 
             tools.append(tool_config)
 
-        return tools
+            if server.prompt:
+                prompts.append(f"- {server.prompt}")
+
+        prompt_string = "\n".join(prompts) if prompts else ""
+        return tools, prompt_string
 
     def _convert_messages_to_responses_format(
-        self, messages: list[Message]
+        self, messages: list[Message], mcp_prompt: str = ""
     ) -> list[dict[str, Any]]:
-        """Convert messages to the responses API input format."""
+        """Convert messages to the responses API input format.
+
+        The system message is always prepended as the first message with role="system".
+        """
         input_messages = []
 
+        # Always add system message as first message
+        system_text = SYSTEM_PROMPT.format(mcp_prompts=mcp_prompt)
+        input_messages.append(
+            {
+                "role": "system",
+                "content": [{"type": "input_text", "text": system_text}],
+            }
+        )
+
+        # Add conversation messages
         for msg in messages:
             if msg.type == MessageType.SYSTEM:
-                continue  # System messages are handled differently
+                continue  # System messages are handled above
 
             role = "user" if msg.type == MessageType.HUMAN else "assistant"
             content_type = "input_text" if role == "user" else "output_text"
@@ -462,13 +483,6 @@ class OpenAIResponsesProcessor(BaseOpenAIProcessor):
             )
 
         return input_messages
-
-    def _extract_system_message(self, messages: list[Message]) -> str | None:
-        """Extract system message from messages list."""
-        for msg in messages:
-            if msg.type == MessageType.SYSTEM:
-                return msg.text
-        return None
 
     def _extract_responses_content(self, session: Any) -> str | None:
         """Extract content from non-streaming responses."""
