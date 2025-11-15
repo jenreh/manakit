@@ -24,10 +24,12 @@ class ValidationState(rx.State):
     url: str = ""
     name: str = ""
     desciption: str = ""
+    prompt: str = ""
 
     url_error: str = ""
     name_error: str = ""
     description_error: str = ""
+    prompt_error: str = ""
 
     @rx.event
     def initialize(self, server: MCPServer | None = None) -> None:
@@ -37,14 +39,17 @@ class ValidationState(rx.State):
             self.url = ""
             self.name = ""
             self.desciption = ""
+            self.prompt = ""
         else:
             self.url = server.url
             self.name = server.name
             self.desciption = server.description
+            self.prompt = server.prompt or ""
 
         self.url_error = ""
         self.name_error = ""
         self.description_error = ""
+        self.prompt_error = ""
 
     @rx.event
     def validate_url(self) -> None:
@@ -78,13 +83,31 @@ class ValidationState(rx.State):
         else:
             self.description_error = ""
 
+    @rx.event
+    def validate_prompt(self) -> None:
+        """Validate the prompt field."""
+        if self.prompt and len(self.prompt) > 2000:  # noqa: PLR2004
+            self.prompt_error = "Die Anweisung darf maximal 2000 Zeichen lang sein."
+        else:
+            self.prompt_error = ""
+
     @rx.var
     def has_errors(self) -> bool:
         """Check if the form can be submitted."""
-        errors = bool(self.url_error or self.name_error or self.description_error)
+        errors = bool(
+            self.url_error
+            or self.name_error
+            or self.description_error
+            or self.prompt_error
+        )
 
         logger.debug("Has validation errors: %s", errors)
         return errors
+
+    @rx.var
+    def prompt_remaining(self) -> int:
+        """Calculate remaining characters for prompt field."""
+        return 2000 - len(self.prompt or "")
 
     def set_url(self, url: str) -> None:
         """Set the URL and validate it."""
@@ -100,6 +123,11 @@ class ValidationState(rx.State):
         """Set the description and validate it."""
         self.desciption = description
         self.validate_description()
+
+    def set_prompt(self, prompt: str) -> None:
+        """Set the prompt and validate it."""
+        self.prompt = prompt
+        self.validate_prompt()
 
 
 @var_operation
@@ -135,10 +163,10 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
             label="Beschreibung",
             hint=(
                 "Kurze Beschreibung zur besseren Identifikation und Auswahl "
-                "durch das Modell"
+                "durch den Nutzer"
             ),
             type="text",
-            placeholder="Anweisung an das Modell",
+            placeholder="Beschreibung...",
             max_length=200,
             default_value=server.description if is_edit_mode else "",
             required=True,
@@ -158,6 +186,47 @@ def mcp_server_form_fields(server: MCPServer | None = None) -> rx.Component:
             on_change=ValidationState.set_url,
             on_blur=ValidationState.validate_url,
             validation_error=ValidationState.url_error,
+        ),
+        rx.flex(
+            mn.textarea(
+                name="prompt",
+                label="Prompt",
+                description=(
+                    "Beschreiben Sie, wie das MCP-Tool verwendet werden soll. "
+                    "Dies wird als Ergänzung des Systemprompts im Chat genutzt."
+                ),
+                placeholder=("Anweidungen an das Modell..."),
+                default_value=server.prompt if is_edit_mode else "",
+                on_change=ValidationState.set_prompt,
+                on_blur=ValidationState.validate_prompt,
+                validation_error=ValidationState.prompt_error,
+                autosize=True,
+                min_rows=3,
+                max_rows=8,
+                width="100%",
+            ),
+            rx.flex(
+                rx.cond(
+                    ValidationState.prompt_remaining >= 0,
+                    rx.text(
+                        f"{ValidationState.prompt_remaining}/2000",
+                        size="1",
+                        color="gray",
+                    ),
+                    rx.text(
+                        f"{ValidationState.prompt_remaining}/2000",
+                        size="1",
+                        color="red",
+                        weight="bold",
+                    ),
+                ),
+                justify="end",
+                width="100%",
+                margin_top="4px",
+            ),
+            direction="column",
+            spacing="0",
+            width="100%",
         ),
         mn.form.json(
             name="headers_json",

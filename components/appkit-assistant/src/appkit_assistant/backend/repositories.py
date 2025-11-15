@@ -29,12 +29,12 @@ class MCPServerRepository:
             return result.first()
 
     @staticmethod
-    @staticmethod
     async def create(
         name: str,
         url: str,
         headers: str,
         description: str | None = None,
+        prompt: str | None = None,
     ) -> MCPServer:
         """Create a new MCP server."""
         async with rx.asession() as session:
@@ -43,6 +43,7 @@ class MCPServerRepository:
                 url=url,
                 headers=headers,
                 description=description,
+                prompt=prompt,
             )
             session.add(server)
             await session.commit()
@@ -57,6 +58,7 @@ class MCPServerRepository:
         url: str,
         headers: str,
         description: str | None = None,
+        prompt: str | None = None,
     ) -> MCPServer | None:
         """Update an existing MCP server."""
         async with rx.asession() as session:
@@ -69,6 +71,7 @@ class MCPServerRepository:
                 server.url = url
                 server.headers = headers
                 server.description = description
+                server.prompt = prompt
                 await session.commit()
                 await session.refresh(server)
                 logger.debug("Updated MCP server: %s", name)

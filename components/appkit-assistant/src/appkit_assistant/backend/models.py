@@ -84,7 +84,7 @@ class ThreadModel(BaseModel):
     title: str = ""
     active: bool = False
     state: ThreadStatus = ThreadStatus.NEW
-    prompt: str = ""
+    prompt: str | None = ""
     messages: list[Message] = []
     ai_model: str = ""
 
@@ -99,3 +99,4 @@ class MCPServer(rx.Model, table=True):
     description: str = Field(default="", max_length=255, nullable=True)
     url: str = Field(nullable=False)
     headers: str = Field(nullable=False, sa_type=EncryptedString)
+    prompt: str = Field(default="", max_length=2000, nullable=True)

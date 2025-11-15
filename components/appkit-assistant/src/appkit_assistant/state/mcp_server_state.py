@@ -69,6 +69,7 @@ class MCPServerState(rx.State):
                 url=form_data["url"],
                 headers=headers,
                 description=form_data.get("description") or None,
+                prompt=form_data.get("prompt") or None,
             )
 
             await self.load_servers()
@@ -110,6 +111,7 @@ class MCPServerState(rx.State):
                 url=form_data["url"],
                 headers=headers,
                 description=form_data.get("description") or None,
+                prompt=form_data.get("prompt") or None,
             )
 
             if updated_server:
