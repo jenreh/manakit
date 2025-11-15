@@ -377,33 +377,36 @@ def example_tabs() -> rx.Component:
 )
 def markdown_preview_examples() -> rx.Component:
     """Main page demonstrating MarkdownPreview features."""
-    return rx.container(
-        rx.vstack(
-            rx.heading(
-                "MarkdownPreview Component Examples",
-                size="8",
-                margin_bottom="2",
-            ),
-            rx.text(
-                "Comprehensive demonstration of markdown rendering capabilities",
-                size="4",
-                color="gray",
-                margin_bottom="6",
-            ),
-            rx.callout.root(
-                rx.callout.icon(rx.icon("info")),
-                rx.callout.text(
-                    "This component wraps react-markdown-preview with "
-                    "GitHub-flavored markdown, mermaid diagrams, KaTeX math, "
-                    "and configurable security. Try switching between tabs "
-                    "to see different features!"
+    return rx.fragment(
+        mn.mermaid_zoom_script(),  # Enable click-to-zoom for Mermaid diagrams
+        rx.container(
+            rx.vstack(
+                rx.heading(
+                    "MarkdownPreview Component Examples",
+                    size="8",
+                    margin_bottom="2",
                 ),
-                margin_bottom="6",
+                rx.text(
+                    "Comprehensive demonstration of markdown rendering capabilities",
+                    size="4",
+                    color="gray",
+                    margin_bottom="6",
+                ),
+                rx.callout.root(
+                    rx.callout.icon(rx.icon("info")),
+                    rx.callout.text(
+                        "This component wraps react-markdown-preview with "
+                        "GitHub-flavored markdown, mermaid diagrams, KaTeX math, "
+                        "and configurable security. Try switching between tabs "
+                        "to see different features! Click on Mermaid diagrams to zoom."
+                    ),
+                    margin_bottom="6",
+                ),
+                example_tabs(),
+                spacing="4",
+                width="100%",
             ),
-            example_tabs(),
-            spacing="4",
-            width="100%",
+            max_width="1200px",
+            padding="4",
         ),
-        max_width="1200px",
-        padding="4",
     )

@@ -34,6 +34,7 @@ from appkit_mantine.markdown_preview import (
     MarkdownPreview,
     markdown_preview,
 )
+from appkit_mantine.markdown_zoom import mermaid_zoom_script
 
 __all__ = [
     "MANTINE_LIBARY",
@@ -48,6 +49,7 @@ __all__ = [
     "button",
     "form",
     "markdown_preview",
+    "mermaid_zoom_script",
     "nav_link",
     "navigation_progress",
     "number_formatter",

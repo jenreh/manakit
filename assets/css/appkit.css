@@ -224,4 +224,103 @@
             opacity: 1;
         }
     }
+
+    /* Mermaid SVG Zoom Styles */
+
+    /* Hover state for zoomable Mermaid diagrams */
+    .wmde-markdown code[data-name="mermaid"] svg,
+    .markdown code[data-name="mermaid"] svg,
+    .wmde-markdown svg[id^="mermaid-"],
+    .markdown svg[id^="mermaid-"] {
+        cursor: zoom-in;
+        transition: opacity 0.2s;
+    }
+
+    .wmde-markdown code[data-name="mermaid"] svg:hover,
+    .markdown code[data-name="mermaid"] svg:hover,
+    .wmde-markdown svg[id^="mermaid-"]:hover,
+    .markdown svg[id^="mermaid-"]:hover {
+        opacity: 0.9;
+    }
+
+    /* Modal overlay for zoomed Mermaid diagrams */
+    [data-mermaid-zoom-modal] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        width: 100dvw;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background-color: rgba(0, 0, 0, 0);
+        transition: background-color 0.3s;
+        cursor: zoom-out;
+        overflow: hidden;
+    }
+
+    [data-mermaid-zoom-modal="visible"] {
+        background-color: var(--gray-1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        [data-mermaid-zoom-modal="visible"] {
+            background-color: var(--gray-1);
+        }
+    }
+
+    /* Content wrapper inside modal */
+    [data-mermaid-zoom-content] {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 2rem;
+    }
+
+    /* Zoomed SVG styles */
+    [data-mermaid-zoom-modal] svg {
+        max-width: 90vw;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
+        cursor: zoom-out;
+        image-rendering: high-quality;
+        transition: transform 0.3s, opacity 0.3s;
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    [data-mermaid-zoom-modal="visible"] svg {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    [data-mermaid-zoom-modal="closing"] {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    [data-mermaid-zoom-modal="closing"] svg {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+
+        .wmde-markdown code[data-name="mermaid"] svg,
+        .markdown code[data-name="mermaid"] svg,
+        [data-mermaid-zoom-modal],
+        [data-mermaid-zoom-modal] svg {
+            transition-duration: 0.01ms !important;
+        }
+    }
 }
