@@ -13,52 +13,16 @@ import {
     useState,
 } from 'react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
+import mermaidModule from 'mermaid';
+import katex from 'katex';
+import 'katex/dist/katex.css';
 import { getCodeString } from 'rehype-rewrite';
 import rehypeSanitize from 'rehype-sanitize';
 import { ColorModeContext } from '$/utils/context';
 
-let mermaidLibPromise = null;
-let katexLibPromise = null;
-let katexStylesLoaded = false;
-
-async function loadMermaid() {
-    if (!mermaidLibPromise) {
-        mermaidLibPromise = import('mermaid')
-            .then((module) => {
-                const mermaid = module.default || module;
-                if (mermaid && typeof mermaid.initialize === 'function') {
-                    mermaid.initialize({ startOnLoad: false });
-                }
-                return mermaid;
-            })
-            .catch((error) => {
-                console.warn('[MarkdownPreview] Mermaid not available:', error);
-                return null;
-            });
-    }
-    return mermaidLibPromise;
-}
-
-async function loadKatex() {
-    if (!katexLibPromise) {
-        katexLibPromise = import('katex')
-            .then((module) => module.default || module)
-            .catch((error) => {
-                console.warn('[MarkdownPreview] KaTeX not available:', error);
-                return null;
-            });
-    }
-
-    const katex = await katexLibPromise;
-    if (katex && !katexStylesLoaded) {
-        try {
-            await import('katex/dist/katex.css');
-        } catch (error) {
-            console.warn('[MarkdownPreview] Failed to load KaTeX styles:', error);
-        }
-        katexStylesLoaded = true;
-    }
-    return katex;
+const mermaid = mermaidModule?.default ?? mermaidModule;
+if (mermaid && typeof mermaid.initialize === 'function') {
+    mermaid.initialize({ startOnLoad: false });
 }
 
 function generateRandomId() {
@@ -67,8 +31,8 @@ function generateRandomId() {
 
 const MermaidCode = memo(function MermaidCode({ children = [], className, node }) {
     const demoId = useRef(`mermaid-${generateRandomId()}`);
-    const containerRef = useRef(null);
     const [renderError, setRenderError] = useState(null);
+    const [svg, setSvg] = useState(null);
 
     const code = useMemo(() => {
         if (node && node.children) {
@@ -83,32 +47,37 @@ const MermaidCode = memo(function MermaidCode({ children = [], className, node }
     const isMermaid =
         typeof className === 'string' && /^language-mermaid/.test(className.toLowerCase());
 
-    const renderDiagram = useCallback(async () => {
-        if (!containerRef.current || !isMermaid || !code) {
-            return;
-        }
-        const mermaid = await loadMermaid();
-        if (!mermaid) {
-            setRenderError('Mermaid library is unavailable.');
-            return;
-        }
-        try {
-            const { svg, bindFunctions } = await mermaid.render(demoId.current, code);
-            containerRef.current.innerHTML = svg;
-            if (typeof bindFunctions === 'function') {
-                bindFunctions(containerRef.current);
-            }
-            setRenderError(null);
-        } catch (error) {
-            console.error('[MarkdownPreview] Mermaid render failed:', error);
-            setRenderError(error.message || 'Mermaid render failed.');
-            containerRef.current.innerHTML = '';
-        }
-    }, [code, isMermaid]);
-
     useEffect(() => {
+        if (!isMermaid || !code || !mermaid) {
+            return;
+        }
+
+        let cancelled = false;
+
+        const renderDiagram = async () => {
+            try {
+                console.log('[MarkdownPreview] Rendering Mermaid diagram:', demoId.current);
+                const { svg: renderedSvg } = await mermaid.render(demoId.current, code);
+                if (!cancelled) {
+                    setSvg(renderedSvg);
+                    setRenderError(null);
+                    console.log('[MarkdownPreview] Mermaid render successful');
+                }
+            } catch (error) {
+                console.error('[MarkdownPreview] Mermaid render failed:', error);
+                if (!cancelled) {
+                    setRenderError(error.message || 'Mermaid render failed.');
+                    setSvg(null);
+                }
+            }
+        };
+
         renderDiagram();
-    }, [renderDiagram]);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [code, isMermaid]);
 
     if (!isMermaid) {
         return createElement('code', { className }, children);
@@ -122,15 +91,17 @@ const MermaidCode = memo(function MermaidCode({ children = [], className, node }
         );
     }
 
+    if (!svg) {
+        return createElement('code', { id: demoId.current, style: { display: 'none' } });
+    }
+
     return createElement(
         Fragment,
         null,
         createElement('code', { id: demoId.current, style: { display: 'none' } }),
         createElement('code', {
-            ref: (nodeElement) => {
-                containerRef.current = nodeElement;
-            },
             'data-name': 'mermaid',
+            dangerouslySetInnerHTML: { __html: svg },
         })
     );
 });
@@ -167,32 +138,22 @@ const KatexCode = memo(function KatexCode({ children = [], className, node }) {
 
         let cancelled = false;
 
-        async function renderKatex() {
-            const katex = await loadKatex();
-            if (!katex) {
-                setError('KaTeX library is unavailable.');
-                return;
+        try {
+            const mathContent = isInlineKatex ? code.replace(/^\$\$(.*)\$\$/, '$1') : code;
+            const rendered = katex.renderToString(mathContent, {
+                throwOnError: false,
+            });
+            if (!cancelled) {
+                setHtml(rendered);
+                setError(null);
             }
-
-            try {
-                const mathContent = isInlineKatex ? code.replace(/^\$\$(.*)\$\$/, '$1') : code;
-                const rendered = katex.renderToString(mathContent, {
-                    throwOnError: false,
-                });
-                if (!cancelled) {
-                    setHtml(rendered);
-                    setError(null);
-                }
-            } catch (renderError) {
-                console.error('[MarkdownPreview] KaTeX render failed:', renderError);
-                if (!cancelled) {
-                    setError(renderError.message || 'KaTeX render failed.');
-                    setHtml(null);
-                }
+        } catch (renderError) {
+            console.error('[MarkdownPreview] KaTeX render failed:', renderError);
+            if (!cancelled) {
+                setError(renderError.message || 'KaTeX render failed.');
+                setHtml(null);
             }
         }
-
-        renderKatex();
 
         return () => {
             cancelled = true;
@@ -221,17 +182,17 @@ const KatexCode = memo(function KatexCode({ children = [], className, node }) {
     return createElement('code', { className }, children);
 });
 
-function buildCustomCodeRenderer(enableMermaid, enableKatex, baseRenderer) {
-    if (!enableMermaid && !enableKatex) {
+function buildCustomCodeRenderer(renderMermaid, renderKatex, baseRenderer) {
+    if (!renderMermaid && !renderKatex) {
         return baseRenderer;
     }
 
     return function CustomCodeComponent(props) {
         const { className } = props;
-        if (enableMermaid && typeof className === 'string' && className.includes('mermaid')) {
+        if (renderMermaid && typeof className === 'string' && className.includes('mermaid')) {
             return createElement(MermaidCode, props);
         }
-        if (enableKatex) {
+        if (renderKatex) {
             const inlineCandidate = props.children;
             const isInline =
                 typeof inlineCandidate === 'string' && /^\$\$(.*)\$\$/.test(inlineCandidate);
@@ -300,8 +261,10 @@ export function MarkdownPreviewWrapper(props) {
     } = props;
 
     const resolvedSecurityLevel = (typeof securityLevel !== 'undefined' ? securityLevel : security_level) || 'standard';
-    const mermaidEnabled = (typeof enableMermaid !== 'undefined' ? enableMermaid : enable_mermaid) || false;
-    const katexEnabled = (typeof enableKatex !== 'undefined' ? enableKatex : enable_katex) || false;
+    const mermaidFlag = typeof enableMermaid !== 'undefined' ? enableMermaid : enable_mermaid;
+    const katexFlag = typeof enableKatex !== 'undefined' ? enableKatex : enable_katex;
+    const renderMermaid = typeof mermaidFlag === 'boolean' ? mermaidFlag : Boolean(mermaidFlag);
+    const renderKatex = typeof katexFlag === 'boolean' ? katexFlag : Boolean(katexFlag);
     const resolvedClassName = typeof className !== 'undefined' ? className : class_name;
     const resolvedPrefixCls = typeof prefixCls !== 'undefined' ? prefixCls : prefix_cls;
     const resolvedDisableCopy = typeof disableCopy !== 'undefined' ? disableCopy : disable_copy;
@@ -374,15 +337,15 @@ export function MarkdownPreviewWrapper(props) {
     const resolvedComponents = useMemo(() => {
         const baseComponents = components && typeof components === 'object' ? { ...components } : {};
         const mergedRenderer = buildCustomCodeRenderer(
-            mermaidEnabled,
-            katexEnabled,
+            renderMermaid,
+            renderKatex,
             baseComponents.code
         );
-        if (mermaidEnabled || katexEnabled) {
+        if (renderMermaid || renderKatex) {
             baseComponents.code = mergedRenderer;
         }
         return Object.keys(baseComponents).length ? baseComponents : undefined;
-    }, [components, katexEnabled, mermaidEnabled]);
+    }, [components, renderKatex, renderMermaid]);
 
     const wrapperProps = useMemo(() => {
         const base = resolvedWrapperElement && typeof resolvedWrapperElement === 'object'

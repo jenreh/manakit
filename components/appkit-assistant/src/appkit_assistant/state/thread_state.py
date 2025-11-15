@@ -273,6 +273,7 @@ class ThreadState(rx.State):
                 self.messages.append(Message(text=str(ex), type=MessageType.ERROR))
         finally:
             async with self:
+                self.messages[-1].done = True
                 self.processing = False
 
     @rx.event

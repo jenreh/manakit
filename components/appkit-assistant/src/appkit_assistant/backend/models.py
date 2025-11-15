@@ -59,6 +59,7 @@ class Message(BaseModel):
     text: str
     editable: bool = False
     type: MessageType
+    done: bool = False
 
 
 class AIModel(BaseModel):

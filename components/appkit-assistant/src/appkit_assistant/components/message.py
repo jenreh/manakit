@@ -1,5 +1,6 @@
 import reflex as rx
 
+import appkit_mantine as mn
 from appkit_assistant.backend.models import (
     Message,
     MessageType,
@@ -110,13 +111,23 @@ class MessageComponent:
                     padding_right="18px",
                 ),
                 # Actual message content
-                rx.markdown(
-                    message.text,
+                mn.markdown_preview(
+                    source=message.text,
+                    enable_mermaid=message.done,
+                    enable_katex=message.done,
+                    security_level="standard",
                     padding="0.5em",
                     border_radius="9px",
                     max_width="90%",
                     class_name="markdown",
                 ),
+                # rx.markdown(
+                #     message.text,
+                #     padding="0.5em",
+                #     border_radius="9px",
+                #     max_width="90%",
+                #     class_name="markdown",
+                # ),
             ),
             spacing="3",
             width="100%",

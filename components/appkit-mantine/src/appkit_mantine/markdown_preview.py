@@ -44,17 +44,21 @@ class MarkdownPreview(NoSSRComponent):
 
         class DocsState(rx.State):
             content: str = "# Markdown Preview\n\nRender diagrams and math."
+            render_enhanced: bool = False
 
 
         def page() -> rx.Component:
             return mn.markdown_preview(
                 source=DocsState.content,
-                enable_mermaid=True,
-                enable_katex=True,
+                enable_mermaid=DocsState.render_enhanced,
+                enable_katex=DocsState.render_enhanced,
                 security_level="standard",
                 style={"padding": "16px"},
             )
         ```
+
+        Toggle ``DocsState.render_enhanced`` to ``True`` once streaming is complete
+        to transform Mermaid and KaTeX blocks.
     """
 
     tag = "MarkdownPreviewWrapper"
@@ -78,10 +82,10 @@ class MarkdownPreview(NoSSRComponent):
 
     # Feature toggles
     enable_mermaid: Var[bool] = False
-    """Render Mermaid diagrams when true."""
+    """Render Mermaid diagrams when true, otherwise show source fences."""
 
     enable_katex: Var[bool] = False
-    """Render KaTeX math expressions when true."""
+    """Render KaTeX math when true, otherwise show source text."""
 
     class_name: Var[str | None] = None
     """Custom CSS class applied to the wrapper element."""
@@ -114,9 +118,9 @@ class MarkdownPreview(NoSSRComponent):
 
     def _should_include_optional_dependency(self, value: Var[Any] | Any) -> bool:
         """Determine whether optional libraries should be bundled."""
-        if isinstance(value, Var):
-            return True
-        return bool(value)
+        _ = value
+        # Always include optional dependencies so rendering can be toggled at runtime.
+        return True
 
     def _get_dependencies_imports(self) -> dict[str, list[ImportVar]]:
         """Include optional dependencies when corresponding features are enabled."""
