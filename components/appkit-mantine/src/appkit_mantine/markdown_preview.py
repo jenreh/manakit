@@ -24,7 +24,9 @@ REHYPE_REWRITE_VERSION: str = "^4.0.0"
 MERMAID_VERSION: str = "^11.0.0"
 KATEX_VERSION: str = "0.16.35"
 _MARKDOWN_WRAPPER_ASSET = asset(path="markdown_preview_wrapper.js", shared=True)
-_MARKDOWN_WRAPPER_IMPORT = f"$/public/{_MARKDOWN_WRAPPER_ASSET}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+_MARKDOWN_WRAPPER_IMPORT = _MARKDOWN_WRAPPER_ASSET.importable_path
 
 
 class MarkdownPreview(NoSSRComponent):

@@ -23,7 +23,9 @@ from appkit_mantine.base import MantineComponentBase
 
 _MAPS_JSX = rx.asset("maps.jsx", shared=True)
 
-MAPS_LIBRARY = f"$/public{_MAPS_JSX}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+MAPS_LIBRARY = _MAPS_JSX.importable_path
 """Local asset path for the ported MapCN React components."""
 
 MAPLIBRE_GL_DEPENDENCY = "maplibre-gl@^5.8.0"
@@ -39,8 +41,6 @@ class MapComponentBase(MantineComponentBase):
 
     lib_dependencies: list[str] = [
         MAPLIBRE_GL_DEPENDENCY,
-        "react@^19.2.0",
-        "react-dom@^19.2.0",
     ]
 
     def _get_custom_code(self) -> str:

@@ -10,7 +10,9 @@ from reflex.vars.base import Var
 from appkit_mantine.base import MantineComponentBase
 
 _TREE_WRAPPER = asset(path="tree_advanced.jsx", shared=True)
-_TREE_WRAPPER_IMPORT = f"$/public/{_TREE_WRAPPER}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+_TREE_WRAPPER_IMPORT = _TREE_WRAPPER.importable_path
 
 
 class Tree(MantineComponentBase):

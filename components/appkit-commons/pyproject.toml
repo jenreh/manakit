@@ -22,7 +22,7 @@ classifiers = [
 ]
 dependencies = [
     "colorlog>=6.10.1",
-    "cryptography>=49.0.0",
+    "cryptography>=50.0.0",
     "pydantic-settings>=2.14.2",
     "pyyaml>=6.0.3",
     "sqlalchemy-utils>=0.42.1",

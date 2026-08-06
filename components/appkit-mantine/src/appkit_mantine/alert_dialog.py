@@ -44,13 +44,13 @@ from reflex.vars.base import Var
 from appkit_mantine.base import MANTINE_LIBARY, MANTINE_VERSION
 
 _WRAPPER_JS = asset(path="alert_dialog_wrapper.js", shared=True)
-_WRAPPER_IMPORT = f"$/public/{_WRAPPER_JS}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+_WRAPPER_IMPORT = _WRAPPER_JS.importable_path
 
 _LIB_DEPS: list[str] = [
     f"{MANTINE_LIBARY}@{MANTINE_VERSION}",
     f"@mantine/hooks@{MANTINE_VERSION}",
-    "react@^19.2.0",
-    "react-dom@^19.2.0",
 ]
 
 
