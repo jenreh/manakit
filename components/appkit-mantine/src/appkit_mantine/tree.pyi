@@ -13,7 +13,7 @@ from typing import Any
 from reflex import asset
 from appkit_mantine.base import MantineComponentBase
 _TREE_WRAPPER = asset(path='tree_advanced.jsx', shared=True)
-_TREE_WRAPPER_IMPORT = f'$/public/{_TREE_WRAPPER}'
+_TREE_WRAPPER_IMPORT = _TREE_WRAPPER.importable_path
 
 class Tree(MantineComponentBase):
 

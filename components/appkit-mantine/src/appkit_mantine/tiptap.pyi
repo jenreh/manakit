@@ -19,7 +19,7 @@ from appkit_mantine.base import MANTINE_VERSION, MemoizedMantineProvider
 TIPTAP_REACT_VERSION: Final[str]
 TIPTAP_VERSION: Final[str]
 _TIPTAP_WRAPPER = asset(path='tiptap_wrapper.js', shared=True)
-_TIPTAP_WRAPPER_IMPORT = f'$/public/{_TIPTAP_WRAPPER}'
+_TIPTAP_WRAPPER_IMPORT = _TIPTAP_WRAPPER.importable_path
 
 class ToolbarControlGroup(list, enum.Enum):
     __hash__ = enum.Enum.__hash__

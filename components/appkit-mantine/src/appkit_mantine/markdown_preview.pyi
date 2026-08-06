@@ -20,7 +20,7 @@ REHYPE_REWRITE_VERSION: str
 MERMAID_VERSION: str
 KATEX_VERSION: str
 _MARKDOWN_WRAPPER_ASSET = asset(path='markdown_preview_wrapper.js', shared=True)
-_MARKDOWN_WRAPPER_IMPORT = f'$/public/{_MARKDOWN_WRAPPER_ASSET}'
+_MARKDOWN_WRAPPER_IMPORT = _MARKDOWN_WRAPPER_ASSET.importable_path
 
 class MarkdownPreview(NoSSRComponent):
 

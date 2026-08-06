@@ -14,7 +14,7 @@ from collections.abc import Callable
 from typing import Any, Literal
 import reflex as rx
 from appkit_mantine.base import MantineInputComponentBase
-_JSX = rx.asset('rich_select.jsx', shared=True)
+_JSX_IMPORT = rx.asset('rich_select.jsx', shared=True).importable_path
 logger = logging.getLogger(__name__)
 "Mantine Combobox (RichSelect) wrapper for Reflex.\n\nThis module exposes a comprehensive set of props that map to Mantine's\n`Combobox` / `useCombobox` options and Combobox subcomponents. See:\nhttps://mantine.dev/core/combobox/\n\nNotes:\n- Python prop names use snake_case and map to Mantine camelCase props.\n- `store` is exposed as a passthrough Var[Any] so callers can provide a JS\n  combobox store created via Mantine's `useCombobox` hook.\n"
 

@@ -13,7 +13,7 @@ import reflex as rx
 from reflex.assets import asset
 from appkit_mantine.base import MANTINE_LIBARY, MANTINE_VERSION
 _WRAPPER_JS = asset(path='alert_dialog_wrapper.js', shared=True)
-_WRAPPER_IMPORT = f'$/public/{_WRAPPER_JS}'
+_WRAPPER_IMPORT = _WRAPPER_JS.importable_path
 
 class AlertDialogBase(rx.Component):
 
