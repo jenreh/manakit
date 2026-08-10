@@ -5,7 +5,7 @@ description = "Production-ready Mantine UI components for Reflex - Demo Applicat
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "alembic>=1.18.5",
+    "alembic>=1.19.0",
     "appkit-assistant",
     "appkit-commons[apscheduler,pgqueuer,azure]",
     "appkit-imagecreator",
@@ -31,9 +31,9 @@ dev = [
     "aiosqlite==0.22.1",
     "httpx==0.28.1",
     "responses==0.26.2",
-    "faker==40.28.1",
+    "faker==40.36.0",
     "ruff==0.16.1",
-    "bump-my-version==1.4.1",
+    "bump-my-version==1.5.1",
     "detect-secrets==1.5.0",
     "respx>=0.23.1",
 ]
