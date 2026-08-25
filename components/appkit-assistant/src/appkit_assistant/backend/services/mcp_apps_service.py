@@ -83,12 +83,16 @@ class McpAppsService:
     async def _connect_for_apps(self, server: MCPServer, user_id: int):
         """Create an authenticated MCP Apps client session context.
 
+        The session advertises the ``io.modelcontextprotocol/ui`` extension
+        via ``ClientCapabilities.extensions`` (spec §Capability Negotiation),
+        so the server can register UI-enabled tools.
+
         Args:
             server: The MCP server configuration
             user_id: The user's ID
 
         Yields:
-            An initialized _McpAppsClientSession
+            An initialized ClientSession
         """
         headers = await self._get_auth_headers(server, user_id)
         async with (
@@ -96,10 +100,13 @@ class McpAppsService:
             streamable_http_client(server.url, http_client=http_client) as (
                 read_stream,
                 write_stream,
-                _,
             ),
-            # Use _McpAppsClientSession to advertise io.modelcontextprotocol/ui
-            _McpAppsClientSession(read_stream, write_stream) as session,
+            ClientSession(
+                read_stream,
+                write_stream,
+                client_info=_CLIENT_INFO,
+                extensions={_EXTENSION_ID: {"mimeTypes": [_SUPPORTED_MIME_TYPE]}},
+            ) as session,
         ):
             await session.initialize()
             yield session
@@ -212,7 +219,7 @@ class McpAppsService:
             visibility=ui_meta.get("visibility", []),
             server_id=server.id or 0,
             server_label=server.name,
-            input_schema=tool.input_schema,
+            input_schema=(tool.input_schema or {}),
         )
 
     async def fetch_resource(
@@ -235,8 +242,8 @@ class McpAppsService:
                 if hasattr(content, "text"):
                     html_content += content.text
 
-                # Extract _meta.ui fields from resource content
-                raw_meta: dict[str, Any] = getattr(content, "_meta", None) or {}
+                # Extract wire-format _meta.ui fields (field name: meta)
+                raw_meta: dict[str, Any] = getattr(content, "meta", None) or {}
                 if ui_meta := raw_meta.get("ui", {}):
                     csp = ui_meta.get("csp", csp)
                     permissions = ui_meta.get("permissions", permissions)
@@ -319,9 +326,9 @@ class McpAppsService:
 
 
 def _call_tool_result_to_dict(result: CallToolResult) -> dict[str, Any]:
-    """Convert a CallToolResult to a serializable dictionary."""
+    """Convert a CallToolResult to a wire-format (camelCase) dictionary."""
     content_list = [
-        item.model_dump(exclude_none=True, by_alias=True) for item in result.content
+        item.model_dump(by_alias=True, exclude_none=True) for item in result.content
     ]
 
     return {
