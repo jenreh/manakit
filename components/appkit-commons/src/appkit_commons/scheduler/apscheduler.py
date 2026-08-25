@@ -7,7 +7,7 @@ import asyncio
 import logging
 from typing import Any
 
-from apscheduler import AsyncScheduler
+from apscheduler import AsyncScheduler, ConflictPolicy
 from apscheduler.datastores.sqlalchemy import SQLAlchemyDataStore
 from apscheduler.eventbrokers.psycopg import PsycopgEventBroker
 from apscheduler.triggers.calendarinterval import (
@@ -138,7 +138,7 @@ class APScheduler(Scheduler):
                 trigger=self._convert_trigger(service.trigger),
                 id=service.job_id,
                 job_executor="async",  # For async execute() methods
-                conflict_policy="replace",  # Safe for multi-instance
+                conflict_policy=ConflictPolicy.replace,  # Safe for multi-instance
             )
         except Exception as e:
             logger.exception(
