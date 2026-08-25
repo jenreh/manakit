@@ -63,6 +63,7 @@ class ResourcesScheduleExState(rx.State):
     date: str = "2026-05-21"
     view: str = "day"
     last_event: str = ""
+    last_resize: str = ""
 
     @rx.event
     def on_date_change(self, date: str) -> None:
@@ -76,6 +77,16 @@ class ResourcesScheduleExState(rx.State):
     def on_event_click(self, event: dict) -> None:
         title = event.get("title", "") if isinstance(event, dict) else str(event)
         self.last_event = str(title)
+
+    @rx.event
+    def on_event_resize(self, data: dict) -> None:
+        if isinstance(data, dict):
+            self.last_resize = (
+                f"{data.get('eventId', '')}: "
+                f"{data.get('newStart', '')} → {data.get('newEnd', '')}"
+            )
+        else:
+            self.last_resize = str(data)
 
 
 def _section(title: str, description: str, *children: rx.Component) -> rx.Component:
@@ -186,7 +197,9 @@ def resources_schedule_examples() -> rx.Component:
             ),
             _section(
                 "ResourcesMonthView",
-                "Resources as rows, days as columns; weekend columns toggleable.",
+                "Resources as rows, days as columns; weekend columns toggleable."
+                " Since Mantine 9.5 events can be resized (with_event_resize) —"
+                " resizing snaps to whole days and preserves the time of day.",
             ),
             _framed(
                 mn.resources_month_view(
@@ -194,8 +207,25 @@ def resources_schedule_examples() -> rx.Component:
                     events=_EVENTS,
                     date="2026-05-21",
                     with_weekend_days=False,
+                    with_event_resize=True,
+                    on_event_resize=ResourcesScheduleExState.on_event_resize,
                     h="100%",
                 ),
+            ),
+            rx.cond(
+                ResourcesScheduleExState.last_resize != "",
+                mn.badge(
+                    "Last resize: ",
+                    mn.text(
+                        ResourcesScheduleExState.last_resize,
+                        display="inline",
+                        fw="bold",
+                    ),
+                    color="teal",
+                    size="lg",
+                    mt="sm",
+                ),
+                rx.fragment(),
             ),
             _section(
                 "AgendaView",

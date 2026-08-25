@@ -47,7 +47,7 @@ from reflex.vars.base import Var
 from appkit_mantine.theme import get_app_theme
 
 MANTINE_LIBARY: Final[str] = "@mantine/core"
-MANTINE_VERSION: Final[str] = "9.4.1"
+MANTINE_VERSION: Final[str] = "9.5.2"
 
 
 MantineSize = Literal["xs", "sm", "md", "lg", "xl"]

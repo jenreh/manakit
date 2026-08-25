@@ -14,7 +14,7 @@ def example_box(
             state_value,
             mn.text(
                 "Selected: ",
-                mn.text(state_value, display="inline", fw="bold"),
+                mn.text(state_value, span=True, fw="bold"),
                 c="gray",
                 size="sm",
                 mt="md",

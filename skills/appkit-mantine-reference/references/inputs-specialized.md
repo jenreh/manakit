@@ -135,11 +135,12 @@ mn.color_input(
     with_picker=True,
     fix_on_blur=True,
     close_on_color_swatch_click=False,
+    full_width=False,  # True: dropdown picker matches input width
 )
 ```
 
 Props: `format`, `swatches`, `swatches_per_row`, `disallow_input`, `fix_on_blur`,
-`with_eye_dropper`, `with_picker`, `with_preview`, `picker_type`,
+`with_eye_dropper`, `with_picker`, `with_preview`, `picker_type`, `full_width`,
 `popover_props`, `close_on_color_swatch_click`, `eye_dropper_icon`,
 `left_section`, `right_section`, `label`, `description`, `error`, `placeholder`,
 `size`, `radius`, `disabled`, `required`, `with_asterisk`, `value`, `default_value`,
