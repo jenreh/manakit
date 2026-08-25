@@ -119,7 +119,7 @@ class TestMcpAppsClientSession:
         # Create a mock result for the initialize response
         init_result = MagicMock()
         init_result.capabilities = MagicMock()
-        init_result.protocolVersion = "2025-11-25"
+        init_result.protocol_version = "2025-11-25"
 
         with (
             patch.object(
@@ -134,7 +134,7 @@ class TestMcpAppsClientSession:
                 new_callable=AsyncMock,
             ) as mock_send_notif,
         ):
-            session = _McpAppsClientSession.__new__(_McpAppsClientSession)
+            session = _McpAppsClientSession(MagicMock(), MagicMock())
             result = await session.initialize()
 
             assert result is init_result
@@ -144,16 +144,15 @@ class TestMcpAppsClientSession:
             # Verify the request includes the UI extension
             call_args = mock_send_req.call_args
             request = call_args[0][0]
-            caps = request.root.params.capabilities
-            assert "extensions" in caps.experimental
-            ext = caps.experimental["extensions"]
-            assert "io.modelcontextprotocol/ui" in ext
+            caps = request.params.capabilities
+            assert caps.extensions is not None
+            assert "io.modelcontextprotocol/ui" in caps.extensions
 
     @pytest.mark.asyncio
     async def test_initialize_stores_server_capabilities(self) -> None:
         init_result = MagicMock()
         init_result.capabilities = MagicMock(spec=["tools"])
-        init_result.protocolVersion = "2025-11-25"
+        init_result.protocol_version = "2025-11-25"
 
         with (
             patch.object(
@@ -168,10 +167,10 @@ class TestMcpAppsClientSession:
                 new_callable=AsyncMock,
             ),
         ):
-            session = _McpAppsClientSession.__new__(_McpAppsClientSession)
+            session = _McpAppsClientSession(MagicMock(), MagicMock())
             await session.initialize()
 
-            assert session._server_capabilities is init_result.capabilities
+            assert session.server_capabilities is init_result.capabilities
 
 
 # ============================================================================
