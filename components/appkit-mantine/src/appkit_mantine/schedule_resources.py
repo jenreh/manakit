@@ -74,7 +74,11 @@ class _ResourcesTimeViewBase(_ResourcesViewBase):
     """Latest visible time slot, e.g. ``"18:00:00"``."""
 
     interval_minutes: Var[int] = None
-    """Granularity of time slots in minutes."""
+    """Granularity of time slots in minutes.
+
+    Since Mantine 9.5 values over 60 are supported — any whole number of
+    hours (e.g. ``120`` or ``240``) renders multi-hour time slots.
+    """
 
     start_scroll_time: Var[str] = None
     """Initial scroll position time string."""
@@ -127,6 +131,11 @@ class ResourcesWeekView(_ResourcesTimeViewBase):
 
 class ResourcesMonthView(_ResourcesViewBase):
     """Mantine ResourcesMonthView — resources as rows, days as columns.
+
+    Since Mantine 9.5 events can be resized via the inherited
+    ``with_event_resize`` / ``can_resize_event`` / ``on_event_resize``
+    props — resizing snaps to whole days, preserves the event's time of
+    day, and cannot cross resources.
 
     https://mantine.dev/x/schedule/#resources-month-view
     """

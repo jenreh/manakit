@@ -443,6 +443,8 @@ _VIEW_YEAR_RENAME: dict[str, str] = {
     "first_day_of_week": "firstDayOfWeek",
     "with_week_numbers": "withWeekNumbers",
     "with_week_days": "withWeekDays",
+    "with_weekend_days": "withWeekendDays",
+    "render_day": "renderDay",
     "with_outside_days": "withOutsideDays",
     "highlight_today": "highlightToday",
     "weekday_format": "weekdayFormat",
@@ -482,6 +484,18 @@ class YearView(MantineScheduleBase):
     first_day_of_week: Var[int] = None
     with_week_numbers: Var[bool] = None
     with_week_days: Var[bool] = None
+    with_weekend_days: Var[bool] = None
+    """Show/hide weekend day columns (Mantine 9.5).
+
+    Weekend days are controlled by ``weekend_days`` (default ``[0, 6]``).
+    """
+
+    render_day: Var[Any] = None
+    """Render-prop for custom day cell content (Mantine 9.5).
+
+    Receives the day date (``YYYY-MM-DD``) and the events of that day.
+    """
+
     with_outside_days: Var[bool] = None
     highlight_today: Var[bool] = None
     weekday_format: Var[Any] = None

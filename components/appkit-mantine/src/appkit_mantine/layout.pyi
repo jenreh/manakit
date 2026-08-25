@@ -1973,7 +1973,7 @@ Returns:
 class FloatingWindow(MantineLayoutComponentBase):
 
     @classmethod
-    def create(cls, *children, enabled: Var[bool] | bool | None=None, axis: Literal['x', 'y'] | Var[Literal['x', 'y']] | None=None, constrain_to_viewport: Var[bool] | bool | None=None, constrain_offset: Var[int] | int | None=None, drag_handle_selector: Var[str] | str | None=None, exclude_drag_handle_selector: Var[str] | str | None=None, initial_position: Var[dict] | dict | None=None, radius: Var[int | str] | int | str | None=None, shadow: Var[str] | str | None=None, with_border: Var[bool] | bool | None=None, within_portal: Var[bool] | bool | None=None, z_index: Var[int | str] | int | str | None=None, portal_props: Var[dict] | dict | None=None, w: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, h: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, miw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, maw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mih: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mah: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, m: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, my: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mx: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ml: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, p: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, py: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, px: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pl: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, display: Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none'] | Var[Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none']] | None=None, pos: Literal['absolute', 'fixed', 'relative', 'static', 'sticky'] | Var[Literal['absolute', 'fixed', 'relative', 'static', 'sticky']] | None=None, top: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, left: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bottom: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, right: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, inset: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bg: Var[str] | str | None=None, c: Var[str] | str | None=None, opacity: Var[int | str] | int | str | None=None, ff: Var[str] | str | None=None, fz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fw: Var[int | str] | int | str | None=None, lts: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ta: Literal['center', 'justify', 'left', 'right'] | Var[Literal['center', 'justify', 'left', 'right']] | None=None, lh: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fs: Literal['italic', 'normal'] | Var[Literal['italic', 'normal']] | None=None, tt: Literal['capitalize', 'lowercase', 'none', 'uppercase'] | Var[Literal['capitalize', 'lowercase', 'none', 'uppercase']] | None=None, td: Var[str] | str | None=None, bd: Var[str] | str | None=None, bgsz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bgp: Var[str] | str | None=None, bgr: Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space'] | Var[Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space']] | None=None, bga: Literal['fixed', 'local', 'scroll'] | Var[Literal['fixed', 'local', 'scroll']] | None=None, flex: Var[int | str] | int | str | None=None, hidden_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, visible_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_drag_end: Optional[EventType[()]]=None, on_drag_start: Optional[EventType[()]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_position_change: Optional[EventType[Any]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'FloatingWindow':
+    def create(cls, *children, enabled: Var[bool] | bool | None=None, axis: Literal['x', 'y'] | Var[Literal['x', 'y']] | None=None, constrain_to_viewport: Var[bool] | bool | None=None, constrain_offset: Var[int] | int | None=None, dimensions: Var[dict] | dict | None=None, drag_handle_selector: Var[str] | str | None=None, exclude_drag_handle_selector: Var[str] | str | None=None, initial_position: Var[dict] | dict | None=None, radius: Var[int | str] | int | str | None=None, shadow: Var[str] | str | None=None, with_border: Var[bool] | bool | None=None, within_portal: Var[bool] | bool | None=None, z_index: Var[int | str] | int | str | None=None, portal_props: Var[dict] | dict | None=None, w: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, h: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, miw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, maw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mih: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mah: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, m: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, my: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mx: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ml: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, p: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, py: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, px: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pl: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, display: Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none'] | Var[Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none']] | None=None, pos: Literal['absolute', 'fixed', 'relative', 'static', 'sticky'] | Var[Literal['absolute', 'fixed', 'relative', 'static', 'sticky']] | None=None, top: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, left: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bottom: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, right: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, inset: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bg: Var[str] | str | None=None, c: Var[str] | str | None=None, opacity: Var[int | str] | int | str | None=None, ff: Var[str] | str | None=None, fz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fw: Var[int | str] | int | str | None=None, lts: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ta: Literal['center', 'justify', 'left', 'right'] | Var[Literal['center', 'justify', 'left', 'right']] | None=None, lh: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fs: Literal['italic', 'normal'] | Var[Literal['italic', 'normal']] | None=None, tt: Literal['capitalize', 'lowercase', 'none', 'uppercase'] | Var[Literal['capitalize', 'lowercase', 'none', 'uppercase']] | None=None, td: Var[str] | str | None=None, bd: Var[str] | str | None=None, bgsz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bgp: Var[str] | str | None=None, bgr: Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space'] | Var[Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space']] | None=None, bga: Literal['fixed', 'local', 'scroll'] | Var[Literal['fixed', 'local', 'scroll']] | None=None, flex: Var[int | str] | int | str | None=None, hidden_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, visible_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_drag_end: Optional[EventType[()]]=None, on_drag_start: Optional[EventType[()]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_position_change: Optional[EventType[Any]]=None, on_resize_end: Optional[EventType[()]]=None, on_resize_start: Optional[EventType[()]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_size_change: Optional[EventType[Any]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'FloatingWindow':
         """Create the component.
 
 Args:
@@ -1982,6 +1982,7 @@ Args:
     axis: no description
     constrain_to_viewport: no description
     constrain_offset: no description
+    dimensions: no description
     drag_handle_selector: no description
     exclude_drag_handle_selector: no description
     initial_position: no description
@@ -2063,6 +2064,197 @@ Args:
     on_drag_start: no description
     on_drag_end: no description
     on_position_change: no description
+    on_resize_start: Called without payload when pointer resize starts (Mantine 9.5).
+    on_resize_end: Called without payload when pointer resize ends (Mantine 9.5).
+    on_size_change: Called with the applied ``{width, height}`` on resize (Mantine 9.5).
+    **props: The props of the component.
+
+Returns:
+    The component."""
+        ...
+
+class FloatingWindowResizeHandle(MantineLayoutComponentBase):
+
+    @classmethod
+    def create(cls, *children, aria_label: Var[str] | str | None=None, w: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, h: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, miw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, maw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mih: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mah: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, m: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, my: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mx: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ml: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, p: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, py: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, px: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pl: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, display: Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none'] | Var[Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none']] | None=None, pos: Literal['absolute', 'fixed', 'relative', 'static', 'sticky'] | Var[Literal['absolute', 'fixed', 'relative', 'static', 'sticky']] | None=None, top: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, left: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bottom: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, right: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, inset: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bg: Var[str] | str | None=None, c: Var[str] | str | None=None, opacity: Var[int | str] | int | str | None=None, ff: Var[str] | str | None=None, fz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fw: Var[int | str] | int | str | None=None, lts: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ta: Literal['center', 'justify', 'left', 'right'] | Var[Literal['center', 'justify', 'left', 'right']] | None=None, lh: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fs: Literal['italic', 'normal'] | Var[Literal['italic', 'normal']] | None=None, tt: Literal['capitalize', 'lowercase', 'none', 'uppercase'] | Var[Literal['capitalize', 'lowercase', 'none', 'uppercase']] | None=None, td: Var[str] | str | None=None, bd: Var[str] | str | None=None, bgsz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bgp: Var[str] | str | None=None, bgr: Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space'] | Var[Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space']] | None=None, bga: Literal['fixed', 'local', 'scroll'] | Var[Literal['fixed', 'local', 'scroll']] | None=None, flex: Var[int | str] | int | str | None=None, hidden_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, visible_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'FloatingWindowResizeHandle':
+        """Create the component.
+
+Args:
+    *children: The children of the component.
+    aria_label: no description
+    w: Width and Height
+    h: no description
+    miw: no description
+    maw: no description
+    mih: no description
+    mah: no description
+    m: Margins
+    my: no description
+    mx: no description
+    mt: no description
+    mb: no description
+    ml: no description
+    mr: no description
+    p: Paddings
+    py: no description
+    px: no description
+    pt: no description
+    pb: no description
+    pl: no description
+    pr: no description
+    display: Display and Position
+    pos: no description
+    top: no description
+    left: no description
+    bottom: no description
+    right: no description
+    inset: no description
+    bg: Background and Color
+    c: no description
+    opacity: no description
+    ff: Typography
+    fz: no description
+    fw: no description
+    lts: no description
+    ta: no description
+    lh: no description
+    fs: no description
+    tt: no description
+    td: no description
+    bd: Border
+    bgsz: Background (Extended)
+    bgp: no description
+    bgr: no description
+    bga: no description
+    flex: Other
+    hidden_from: no description
+    visible_from: no description
+    style: The style of the component.
+    key: A unique key for the component.
+    id: The id for the component.
+    ref: The Var to pass as the ref to the component.
+    class_name: The class name for the component.
+    custom_attrs: Attributes passed directly to the component.
+    on_focus: Fired when the element (or some element inside of it) receives focus. For example, it is called when the user clicks on a text input.
+    on_blur: Fired when focus has left the element (or left some element inside of it). For example, it is called when the user clicks outside of a focused text input.
+    on_click: Fired when the user clicks on an element. For example, it's called when the user clicks on a button.
+    on_context_menu: Fired when the user right-clicks on an element.
+    on_double_click: Fired when the user double-clicks on an element.
+    on_mouse_down: Fired when the user presses a mouse button on an element.
+    on_mouse_enter: Fired when the mouse pointer enters the element.
+    on_mouse_leave: Fired when the mouse pointer leaves the element.
+    on_mouse_move: Fired when the mouse pointer moves over the element.
+    on_mouse_out: Fired when the mouse pointer moves out of the element.
+    on_mouse_over: Fired when the mouse pointer moves onto the element.
+    on_mouse_up: Fired when the user releases a mouse button on an element.
+    on_scroll: Fired when the user scrolls the element.
+    on_scroll_end: Fired when scrolling ends on the element.
+    on_mount: Fired when the component is mounted to the page.
+    on_unmount: Fired when the component is removed from the page. Only called during navigation, not on page refresh.
+    **props: The props of the component.
+
+Returns:
+    The component."""
+        ...
+
+class FloatingWindowNamespace(rx.ComponentNamespace):
+    resize_handle = staticmethod(FloatingWindowResizeHandle.create)
+
+    @staticmethod
+    def __call__(*children, enabled: Var[bool] | bool | None=None, axis: Literal['x', 'y'] | Var[Literal['x', 'y']] | None=None, constrain_to_viewport: Var[bool] | bool | None=None, constrain_offset: Var[int] | int | None=None, dimensions: Var[dict] | dict | None=None, drag_handle_selector: Var[str] | str | None=None, exclude_drag_handle_selector: Var[str] | str | None=None, initial_position: Var[dict] | dict | None=None, radius: Var[int | str] | int | str | None=None, shadow: Var[str] | str | None=None, with_border: Var[bool] | bool | None=None, within_portal: Var[bool] | bool | None=None, z_index: Var[int | str] | int | str | None=None, portal_props: Var[dict] | dict | None=None, w: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, h: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, miw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, maw: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mih: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mah: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, m: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, my: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mx: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ml: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, mr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, p: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, py: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, px: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pt: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pb: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pl: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, pr: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, display: Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none'] | Var[Literal['block', 'flex', 'grid', 'inline', 'inline-block', 'inline-flex', 'none']] | None=None, pos: Literal['absolute', 'fixed', 'relative', 'static', 'sticky'] | Var[Literal['absolute', 'fixed', 'relative', 'static', 'sticky']] | None=None, top: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, left: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bottom: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, right: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, inset: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bg: Var[str] | str | None=None, c: Var[str] | str | None=None, opacity: Var[int | str] | int | str | None=None, ff: Var[str] | str | None=None, fz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fw: Var[int | str] | int | str | None=None, lts: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, ta: Literal['center', 'justify', 'left', 'right'] | Var[Literal['center', 'justify', 'left', 'right']] | None=None, lh: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, fs: Literal['italic', 'normal'] | Var[Literal['italic', 'normal']] | None=None, tt: Literal['capitalize', 'lowercase', 'none', 'uppercase'] | Var[Literal['capitalize', 'lowercase', 'none', 'uppercase']] | None=None, td: Var[str] | str | None=None, bd: Var[str] | str | None=None, bgsz: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs'] | int | str] | int | str | None=None, bgp: Var[str] | str | None=None, bgr: Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space'] | Var[Literal['no-repeat', 'repeat', 'repeat-x', 'repeat-y', 'round', 'space']] | None=None, bga: Literal['fixed', 'local', 'scroll'] | Var[Literal['fixed', 'local', 'scroll']] | None=None, flex: Var[int | str] | int | str | None=None, hidden_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, visible_from: Literal['lg', 'md', 'sm', 'xl', 'xs'] | Var[Literal['lg', 'md', 'sm', 'xl', 'xs']] | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_drag_end: Optional[EventType[()]]=None, on_drag_start: Optional[EventType[()]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_position_change: Optional[EventType[Any]]=None, on_resize_end: Optional[EventType[()]]=None, on_resize_start: Optional[EventType[()]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_size_change: Optional[EventType[Any]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'FloatingWindow':
+        """Create the component.
+
+Args:
+    *children: The children of the component.
+    enabled: no description
+    axis: no description
+    constrain_to_viewport: no description
+    constrain_offset: no description
+    dimensions: no description
+    drag_handle_selector: no description
+    exclude_drag_handle_selector: no description
+    initial_position: no description
+    radius: no description
+    shadow: no description
+    with_border: no description
+    within_portal: no description
+    z_index: no description
+    portal_props: no description
+    w: Width and Height
+    h: no description
+    miw: no description
+    maw: no description
+    mih: no description
+    mah: no description
+    m: Margins
+    my: no description
+    mx: no description
+    mt: no description
+    mb: no description
+    ml: no description
+    mr: no description
+    p: Paddings
+    py: no description
+    px: no description
+    pt: no description
+    pb: no description
+    pl: no description
+    pr: no description
+    display: Display and Position
+    pos: no description
+    top: no description
+    left: no description
+    bottom: no description
+    right: no description
+    inset: no description
+    bg: Background and Color
+    c: no description
+    opacity: no description
+    ff: Typography
+    fz: no description
+    fw: no description
+    lts: no description
+    ta: no description
+    lh: no description
+    fs: no description
+    tt: no description
+    td: no description
+    bd: Border
+    bgsz: Background (Extended)
+    bgp: no description
+    bgr: no description
+    bga: no description
+    flex: Other
+    hidden_from: no description
+    visible_from: no description
+    style: The style of the component.
+    key: A unique key for the component.
+    id: The id for the component.
+    ref: The Var to pass as the ref to the component.
+    class_name: The class name for the component.
+    custom_attrs: Attributes passed directly to the component.
+    on_focus: Fired when the element (or some element inside of it) receives focus. For example, it is called when the user clicks on a text input.
+    on_blur: Fired when focus has left the element (or left some element inside of it). For example, it is called when the user clicks outside of a focused text input.
+    on_click: Fired when the user clicks on an element. For example, it's called when the user clicks on a button.
+    on_context_menu: Fired when the user right-clicks on an element.
+    on_double_click: Fired when the user double-clicks on an element.
+    on_mouse_down: Fired when the user presses a mouse button on an element.
+    on_mouse_enter: Fired when the mouse pointer enters the element.
+    on_mouse_leave: Fired when the mouse pointer leaves the element.
+    on_mouse_move: Fired when the mouse pointer moves over the element.
+    on_mouse_out: Fired when the mouse pointer moves out of the element.
+    on_mouse_over: Fired when the mouse pointer moves onto the element.
+    on_mouse_up: Fired when the user releases a mouse button on an element.
+    on_scroll: Fired when the user scrolls the element.
+    on_scroll_end: Fired when scrolling ends on the element.
+    on_mount: Fired when the component is mounted to the page.
+    on_unmount: Fired when the component is removed from the page. Only called during navigation, not on page refresh.
+    on_drag_start: no description
+    on_drag_end: no description
+    on_position_change: no description
+    on_resize_start: Called without payload when pointer resize starts (Mantine 9.5).
+    on_resize_end: Called without payload when pointer resize ends (Mantine 9.5).
+    on_size_change: Called with the applied ``{width, height}`` on resize (Mantine 9.5).
     **props: The props of the component.
 
 Returns:
@@ -2611,7 +2803,7 @@ center = Center.create
 collapse = Collapse.create
 container = Container.create
 flex = Flex.create
-floating_window = FloatingWindow.create
+floating_window = FloatingWindowNamespace()
 group = Group.create
 marquee = Marquee.create
 overflow_list = OverflowList.create

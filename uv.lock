@@ -288,7 +288,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "reflex", specifier = ">=0.9.8" }]
+requires-dist = [{ name = "reflex", specifier = ">=0.9.8.post1" }]
 
 [[package]]
 name = "appkit-mcp-bpmn"
