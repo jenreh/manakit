@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from mcp import types
 
 from appkit_assistant.backend.schemas import (
     McpAppToolInfo,
@@ -52,19 +53,20 @@ def _make_tool(
     name: str = "qr_code",
     meta: dict | None = None,
     input_schema: dict | None = None,
-) -> MagicMock:
-    tool = MagicMock()
-    tool.name = name
-    tool.meta = meta
-    tool.inputSchema = input_schema or {"type": "object"}
-    return tool
+) -> types.Tool:
+    return types.Tool(
+        name=name,
+        meta=meta,
+        input_schema=input_schema or {"type": "object"},
+    )
 
 
 def _make_tool_with_ui(
     name: str = "qr_code",
     resource_uri: str = "ui://qr_code/view",
     visibility: list[str] | None = None,
-) -> MagicMock:
+    input_schema: dict | None = None,
+) -> types.Tool:
     return _make_tool(
         name=name,
         meta={
@@ -73,6 +75,7 @@ def _make_tool_with_ui(
                 "visibility": visibility or [],
             }
         },
+        input_schema=input_schema,
     )
 
 
@@ -231,8 +234,7 @@ class TestExtractUiToolInfo:
             "type": "object",
             "properties": {"text": {"type": "string"}},
         }
-        tool = _make_tool_with_ui(name="gen")
-        tool.inputSchema = schema
+        tool = _make_tool_with_ui(name="gen", input_schema=schema)
 
         result = service._extract_ui_tool_info(tool, server)
         assert result is not None
@@ -670,15 +672,10 @@ class TestProxyToolCall:
         service = McpAppsService()
         server = _make_server()
 
-        content_item = MagicMock()
-        content_item.model_dump.return_value = {
-            "type": "text",
-            "text": "result data",
-        }
-
-        mock_call_result = MagicMock()
-        mock_call_result.isError = False
-        mock_call_result.content = [content_item]
+        mock_call_result = types.CallToolResult(
+            content=[types.TextContent(type="text", text="result data")],
+            is_error=False,
+        )
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
@@ -931,14 +928,10 @@ class TestGetAuthHeaders:
 
 class TestCallToolResultToDict:
     def test_success_result(self) -> None:
-        result = MagicMock()
-        result.isError = False
-        content_item = MagicMock()
-        content_item.model_dump.return_value = {
-            "type": "text",
-            "text": "hello",
-        }
-        result.content = [content_item]
+        result = types.CallToolResult(
+            content=[types.TextContent(type="text", text="hello")],
+            is_error=False,
+        )
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
@@ -946,30 +939,37 @@ class TestCallToolResultToDict:
         assert converted["content"][0]["text"] == "hello"
 
     def test_error_result(self) -> None:
-        result = MagicMock()
-        result.isError = True
-        result.content = []
+        result = types.CallToolResult(content=[], is_error=True)
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is True
         assert converted["content"] == []
 
-    def test_none_is_error(self) -> None:
-        result = MagicMock()
-        result.isError = None
-        result.content = []
+    def test_default_is_error(self) -> None:
+        result = types.CallToolResult(content=[])
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
 
+    def test_content_uses_wire_format_aliases(self) -> None:
+        result = types.CallToolResult(
+            content=[
+                types.ImageContent(type="image", data="aGk=", mime_type="image/png")
+            ],
+        )
+
+        converted = _call_tool_result_to_dict(result)
+        assert converted["content"][0]["mimeType"] == "image/png"
+        assert "mime_type" not in converted["content"][0]
+
     def test_multiple_content_items(self) -> None:
-        result = MagicMock()
-        result.isError = False
-        item1 = MagicMock()
-        item1.model_dump.return_value = {"type": "text", "text": "a"}
-        item2 = MagicMock()
-        item2.model_dump.return_value = {"type": "text", "text": "b"}
-        result.content = [item1, item2]
+        result = types.CallToolResult(
+            content=[
+                types.TextContent(type="text", text="a"),
+                types.TextContent(type="text", text="b"),
+            ],
+            is_error=False,
+        )
 
         converted = _call_tool_result_to_dict(result)
         assert len(converted["content"]) == 2

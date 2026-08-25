@@ -212,7 +212,7 @@ class McpAppsService:
             visibility=ui_meta.get("visibility", []),
             server_id=server.id or 0,
             server_label=server.name,
-            input_schema=(tool.inputSchema or {}),
+            input_schema=tool.input_schema,
         )
 
     async def fetch_resource(
@@ -320,9 +320,11 @@ class McpAppsService:
 
 def _call_tool_result_to_dict(result: CallToolResult) -> dict[str, Any]:
     """Convert a CallToolResult to a serializable dictionary."""
-    content_list = [item.model_dump(exclude_none=True) for item in result.content]
+    content_list = [
+        item.model_dump(exclude_none=True, by_alias=True) for item in result.content
+    ]
 
     return {
-        "isError": bool(result.isError),
+        "isError": bool(result.is_error),
         "content": content_list,
     }
