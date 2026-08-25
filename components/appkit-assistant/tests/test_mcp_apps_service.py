@@ -909,6 +909,17 @@ class TestCallToolResultToDict:
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
 
+    def test_content_uses_wire_format_aliases(self) -> None:
+        result = types.CallToolResult(
+            content=[
+                types.ImageContent(type="image", data="aGk=", mime_type="image/png")
+            ],
+        )
+
+        converted = _call_tool_result_to_dict(result)
+        assert converted["content"][0]["mimeType"] == "image/png"
+        assert "mime_type" not in converted["content"][0]
+
     def test_multiple_content_items(self) -> None:
         result = t.CallToolResult(
             content=[
