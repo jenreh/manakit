@@ -136,7 +136,11 @@ mn.password_input(
 ```
 
 Props: `visible`, `default_visible`, `visibility_toggle_icon`,
-`visibility_toggle_button_props`, `on_visibility_change`.
+`visibility_toggle_button_props`, `visibility_toggle_focusable`,
+`on_visibility_change`.
+
+`visibility_toggle_focusable=True` puts the visibility toggle button into the
+keyboard tab order (default `False` renders it with `tabindex="-1"`).
 
 > [Mantine docs — PasswordInput](https://mantine.dev/core/password-input/)
 

@@ -310,7 +310,9 @@ def schedule_examples() -> rx.Component:
             # ------------------------------------------------------------------
             _section(
                 "YearView (mn.schedule.year_view)",
-                "Twelve-month overview that highlights event days.",
+                "Twelve-month overview that highlights event days. Mantine 9.5"
+                " adds render_day for fully custom day cells and"
+                " with_weekend_days=False to hide weekend days.",
             ),
             mn.card(
                 mn.schedule.year_view(
@@ -318,6 +320,25 @@ def schedule_examples() -> rx.Component:
                     date="2026-05-21",
                     highlight_today=True,
                     with_week_days=True,
+                ),
+                with_border=True,
+                shadow="sm",
+                radius="md",
+                p="md",
+            ),
+            _section(
+                "YearView without weekend days",
+                "with_weekend_days=False hides Saturday and Sunday columns;"
+                " which days count as weekend is controlled by weekend_days"
+                " (default [0, 6]).",
+            ),
+            mn.card(
+                mn.schedule.year_view(
+                    events=_EVENTS,
+                    date="2026-05-21",
+                    highlight_today=True,
+                    with_week_days=True,
+                    with_weekend_days=False,
                 ),
                 with_border=True,
                 shadow="sm",

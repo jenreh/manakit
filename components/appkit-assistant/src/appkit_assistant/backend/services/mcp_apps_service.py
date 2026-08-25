@@ -14,14 +14,11 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import httpx
-from mcp import ClientSession  # noqa: F401 - kept for re-export / type hints
-from mcp import types as t
+from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from mcp.types import (
     CallToolResult,
-    ClientCapabilities,
     Implementation,
-    InitializeResult,
     Tool,
 )
 
@@ -51,40 +48,19 @@ _CLIENT_INFO = Implementation(name="appkit", version="1.0.0")
 class _McpAppsClientSession(ClientSession):
     """ClientSession with MCP Apps capability advertised.
 
-    Overrides `initialize()` to include the ``io.modelcontextprotocol/ui``
-    extension in the ``experimental`` field of ``ClientCapabilities``.
+    Passes the ``io.modelcontextprotocol/ui`` extension to the base session
+    so ``initialize()`` advertises it in ``ClientCapabilities.extensions``.
     This signals to the MCP server that this host supports MCP Apps,
     so the server can register UI-enabled tools (spec §Capability Negotiation).
     """
 
-    async def initialize(self) -> InitializeResult:
-        result = await self.send_request(
-            t.ClientRequest(
-                t.InitializeRequest(
-                    params=t.InitializeRequestParams(
-                        protocolVersion=t.LATEST_PROTOCOL_VERSION,
-                        capabilities=ClientCapabilities(
-                            experimental={
-                                "extensions": {
-                                    _EXTENSION_ID: {
-                                        "mimeTypes": [_SUPPORTED_MIME_TYPE],
-                                    }
-                                }
-                            },
-                        ),
-                        clientInfo=_CLIENT_INFO,
-                    ),
-                )
-            ),
-            t.InitializeResult,
+    def __init__(self, read_stream: Any = None, write_stream: Any = None) -> None:
+        super().__init__(
+            read_stream,
+            write_stream,
+            client_info=_CLIENT_INFO,
+            extensions={_EXTENSION_ID: {"mimeTypes": [_SUPPORTED_MIME_TYPE]}},
         )
-        self._server_capabilities = result.capabilities  # type: ignore[attr-defined]
-        await self.send_notification(t.ClientNotification(t.InitializedNotification()))
-        logger.debug(
-            "MCP Apps session initialized (protocolVersion=%s)",
-            result.protocolVersion,
-        )
-        return result
 
 
 class McpAppsService:

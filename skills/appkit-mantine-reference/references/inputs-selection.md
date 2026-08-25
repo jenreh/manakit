@@ -8,6 +8,7 @@
 - Autocomplete
 - NativeSelect
 - TreeSelect
+- Cascader
 - RichSelect
 
 All selection inputs inherit from `MantineInputComponentBase` (`label`, `description`, `error`,
@@ -170,6 +171,68 @@ Props: `data`, `value`, `default_value`, `mode` (e.g. `"multiple"`), `searchable
 `on_search_change`, `on_dropdown_open`, `on_dropdown_close`, `on_expanded_change`.
 
 > [Mantine docs — TreeSelect](https://mantine.dev/core/tree-select/)
+
+## Cascader (Mantine 9.5)
+
+Select a value from hierarchical data by drilling down through cascading columns.
+
+```python
+mn.cascader(
+    label="Location",
+    placeholder="Pick location",
+    data=[
+        {
+            "value": "europe",
+            "label": "Europe",
+            "children": [
+                {
+                    "value": "germany",
+                    "label": "Germany",
+                    "children": [
+                        {"value": "berlin", "label": "Berlin"},
+                        {"value": "hamburg", "label": "Hamburg"},
+                    ],
+                },
+            ],
+        },
+    ],
+    value=State.location_path,
+    on_change=State.set_location_path,
+    searchable=True,
+    clearable=True,
+)
+```
+
+**on_change receives the selected path as `list[str] | None`** — the ordered `value`
+chain from root to the selected node, `None` when cleared. `value` / `default_value`
+use the same `list[str]` shape:
+
+```python
+class State(rx.State):
+    location_path: list[str] = []
+
+    @rx.event
+    def set_location_path(self, value: list[str] | None) -> None:
+        self.location_path = value or []
+```
+
+Data: nested dicts with `value` (required, must be unique across the **whole** tree),
+optional `label` (falls back to `value`), optional `children` (list of the same shape)
+and optional `disabled`.
+
+Props: `change_on_select` (allow selecting non-leaf options), `close_on_select`,
+`allow_deselect`, `expand_trigger` (`"click" | "hover"`), `safe_area_polygon`
+(keeps the next column open during diagonal hover movement; hover mode only),
+`with_columns` (default `True`; `False` renders a flat mobile-friendly list),
+`column_width`, `max_displayed_levels` (default 3), `max_dropdown_height`,
+`separator` (path separator in the input, default `"/"`), `searchable`,
+`search_value`, `nothing_found_message`, `filter`, `clearable`, `with_check_icon`,
+`check_icon_position`, `chevron_color`, `open_on_focus`, `format_value`,
+`render_option`, `render_search_option`, `scroll_area_props`, `combobox_props`,
+`on_clear`, `on_search_change` (receives `str`), `on_dropdown_open`,
+`on_dropdown_close`.
+
+> [Mantine docs — Cascader](https://mantine.dev/core/cascader/)
 
 ## RichSelect
 

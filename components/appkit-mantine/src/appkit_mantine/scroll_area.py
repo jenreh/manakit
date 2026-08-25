@@ -93,6 +93,11 @@ class ScrollArea(rx.Component):
     """Axis at which scrollbars are rendered: x (horizontal), y (vertical),
     xy (both), false (none)."""
 
+    vertical_scrollbar_position: Var[Literal["left", "right"]] = None
+    """Pins the vertical scrollbar to a physical side regardless of text
+    direction. Defaults to right in LTR and left in RTL; useful for RTL
+    applications where the scrollbar should stay on the right."""
+
     # Styling and sizing
     scrollbar_size: Var[str | int] = "9px"
     """Scrollbar size, any valid CSS value for width/height, numbers converted
@@ -493,6 +498,7 @@ class ScrollAreaWithState(rx.ComponentState):
         top_buffer: int = 0,
         top_button_text: str = "↑ Top",
         type: Literal["auto", "scroll", "always", "hover", "never"] = "auto",  # noqa: A002
+        vertical_scrollbar_position: Literal["left", "right"] | None = None,
         viewport_id: str | None = None,
         viewport_props: dict | None = None,
         on_bottom_reached: EventHandler[rx.event.no_args_event_spec] = None,
@@ -535,6 +541,7 @@ class ScrollAreaWithState(rx.ComponentState):
             "offset_scrollbars": offset_scrollbars,
             "overscroll_behavior": overscroll_behavior,
             "scroll_hide_delay": scroll_hide_delay,
+            "vertical_scrollbar_position": vertical_scrollbar_position,
             "viewport_props": vp_props,
             "on_top_reached": on_top_reached,
             "on_bottom_reached": on_bottom_reached,

@@ -210,6 +210,16 @@ def inputs_advanced_examples() -> rx.Component:
                     state_value=InputsAdvancedState.color_value,
                 ),
                 example_box(
+                    "Full Width Dropdown",
+                    mn.color_input(
+                        label="Accent Color",
+                        description="Dropdown matches input width",
+                        full_width=True,
+                        format="hex",
+                        default_value="#228be6",
+                    ),
+                ),
+                example_box(
                     "Color Picker",
                     mn.color_picker(
                         value=InputsAdvancedState.picker_value,

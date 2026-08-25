@@ -242,6 +242,29 @@ def scroll_area_examples() -> rx.Component:
                     padding="4",
                     border_radius="md",
                 ),
+                # ScrollArea with vertical scrollbar pinned to the left
+                rx.card(
+                    rx.vstack(
+                        rx.heading("Left Scrollbar Position", size="4"),
+                        mn.scroll_area(
+                            lorem_content,
+                            height="150px",
+                            width="100%",
+                            type="always",
+                            scrollbars="y",
+                            vertical_scrollbar_position="left",
+                        ),
+                        rx.text(
+                            "Vertical scrollbar pinned to the left side",
+                            size="2",
+                            color="gray",
+                        ),
+                        spacing="3",
+                        width="100%",
+                    ),
+                    padding="4",
+                    border_radius="md",
+                ),
                 # ScrollArea with custom scrollbar size
                 rx.card(
                     rx.vstack(
