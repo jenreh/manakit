@@ -51,6 +51,10 @@ class CategoricalChartBase(MantineChartComponentBase):
     tooltip_animation_duration: Var[int]
     tooltip_props: Var[dict[str, Any]]
 
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
+
     # Axes
     grid_axis: Var[Literal["none", "x", "y", "xy"]]
     tick_line: Var[Literal["none", "x", "y", "xy"]]
@@ -100,7 +104,11 @@ class AreaChart(CategoricalChartBase):
     tag = "AreaChart"
 
     chart_type: Var[Literal["default", "stacked", "percent", "split"]] = None  # type: ignore
-    _rename_props = {"chartType": "type"}
+    _rename_props = {
+        "chartType": "type",
+        "with_brush": "withBrush",
+        "brush_props": "brushProps",
+    }
 
     curve_type: Var[MantineCurveType]
     connect_nulls: Var[bool]
@@ -114,6 +122,12 @@ class AreaChart(CategoricalChartBase):
     stroke_width: Var[float]
     with_point_labels: Var[bool]
 
+    with_brush: Var[bool]
+    """Displays a brush (range selector) under the chart (Mantine 9.5+)."""
+
+    brush_props: Var[dict[str, Any]]
+    """Props passed down to the underlying recharts Brush (Mantine 9.5+)."""
+
 
 class BarChart(CategoricalChartBase):
     """Mantine BarChart component."""
@@ -121,7 +135,11 @@ class BarChart(CategoricalChartBase):
     tag = "BarChart"
 
     chart_type: Var[Literal["default", "stacked", "percent", "waterfall"]] = None  # type: ignore
-    _rename_props = {"chartType": "type"}
+    _rename_props = {
+        "chartType": "type",
+        "with_brush": "withBrush",
+        "brush_props": "brushProps",
+    }
 
     cursor_fill: Var[str]
     bar_label_color: Var[str]
@@ -130,6 +148,12 @@ class BarChart(CategoricalChartBase):
     min_bar_size: Var[int]
     orientation: Var[Literal["horizontal", "vertical"]]
     with_bar_value_label: Var[bool]
+
+    with_brush: Var[bool]
+    """Displays a brush (range selector) under the chart (Mantine 9.5+)."""
+
+    brush_props: Var[dict[str, Any]]
+    """Props passed down to the underlying recharts Brush (Mantine 9.5+)."""
 
 
 class LineChart(CategoricalChartBase):
@@ -145,6 +169,12 @@ class LineChart(CategoricalChartBase):
     active_dot_props: Var[dict[str, Any]]
     orientation: Var[Literal["horizontal", "vertical"]]
 
+    with_brush: Var[bool]
+    """Displays a brush (range selector) under the chart (Mantine 9.5+)."""
+
+    brush_props: Var[dict[str, Any]]
+    """Props passed down to the underlying recharts Brush (Mantine 9.5+)."""
+
 
 class CompositeChart(CategoricalChartBase):
     """Mantine CompositeChart component."""
@@ -159,6 +189,12 @@ class CompositeChart(CategoricalChartBase):
     with_dots: Var[bool]
     dot_props: Var[dict[str, Any]]
     active_dot_props: Var[dict[str, Any]]
+
+    with_brush: Var[bool]
+    """Displays a brush (range selector) under the chart (Mantine 9.5+)."""
+
+    brush_props: Var[dict[str, Any]]
+    """Props passed down to the underlying recharts Brush (Mantine 9.5+)."""
 
 
 class DonutChart(MantineChartComponentBase):
@@ -184,6 +220,10 @@ class DonutChart(MantineChartComponentBase):
     tooltip_animation_duration: Var[int]
     tooltip_props: Var[dict[str, Any]]
     pie_props: Var[dict[str, Any]]
+
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
 
     # Layout props
     h: Var[str | int]
@@ -221,6 +261,10 @@ class PieChart(MantineChartComponentBase):
     tooltip_props: Var[dict[str, Any]]
     pie_props: Var[dict[str, Any]]
 
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
+
     # Layout props
     h: Var[str | int]
     w: Var[str | int]
@@ -251,6 +295,10 @@ class RadarChart(MantineChartComponentBase):
     with_legend: Var[bool]
     legend_props: Var[dict[str, Any]]
 
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
+
     # Layout props
     h: Var[str | int]
     w: Var[str | int]
@@ -264,7 +312,13 @@ class RadarChart(MantineChartComponentBase):
 
 
 class ScatterChart(CategoricalChartBase):
-    """Mantine ScatterChart component."""
+    """Mantine ScatterChart component.
+
+    Supports a second y axis (Mantine 9.5+) via the inherited
+    ``with_right_y_axis`` / ``right_y_axis_label`` / ``right_y_axis_props``
+    props; bind a series to it with ``yAxisId: "right"`` in the ``data``
+    object.
+    """
 
     tag = "ScatterChart"
 
@@ -290,6 +344,10 @@ class BubbleChart(MantineChartComponentBase):
     legend_props: Var[dict[str, Any]]
     with_tooltip: Var[bool]
     tooltip_props: Var[dict[str, Any]]
+
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
 
     # Layout props
     h: Var[str | int]
@@ -330,6 +388,10 @@ class FunnelChart(MantineChartComponentBase):
     tooltip_props: Var[dict[str, Any]]
     with_labels: Var[bool]
 
+    accessibility_layer: Var[bool]
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
+
 
 class Heatmap(MantineChartComponentBase):
     """Mantine Heatmap component."""
@@ -339,6 +401,7 @@ class Heatmap(MantineChartComponentBase):
     _rename_props = {
         "with_legend": "withLegend",
         "legend_labels": "legendLabels",
+        "month_labels_position": "monthLabelsPosition",
     }
 
     data: Var[list[dict[str, Any]] | dict[str, Any]]
@@ -348,6 +411,9 @@ class Heatmap(MantineChartComponentBase):
 
     legend_labels: Var[list[str]] = None
     """Labels for the color legend (default: ['Less', 'More'])."""
+
+    month_labels_position: Var[Literal["top", "bottom"]] = None
+    """Position of month labels, 'top' by default (Mantine 9.5+)."""
 
     start_date: Var[str]
     end_date: Var[str]
@@ -384,6 +450,7 @@ class RadialBarChart(MantineChartComponentBase):
     tag = "RadialBarChart"
 
     _rename_props = {
+        "accessibility_layer": "accessibilityLayer",
         "bar_size": "barSize",
         "data_key": "dataKey",
         "empty_background_color": "emptyBackgroundColor",
@@ -411,6 +478,10 @@ class RadialBarChart(MantineChartComponentBase):
     with_tooltip: Var[bool] = None
     legend_props: Var[dict] = None
     tooltip_props: Var[dict] = None
+
+    accessibility_layer: Var[bool] = None
+    """Keyboard navigation via the recharts accessibility layer,
+    True by default (Mantine 9.5+)."""
 
     h: Var[str | int] = None
     w: Var[str | int] = None
@@ -494,6 +565,120 @@ class SankeyChart(MantineChartComponentBase):
     h: Var[str | int] = None
 
 
+class SunburstChart(MantineChartComponentBase):
+    """Mantine SunburstChart component — hierarchical data as concentric
+    rings, similar to a treemap plotted in polar coordinates.
+
+    Added in Mantine 9.5.
+
+    https://mantine.dev/charts/sunburst-chart/
+    """
+
+    tag = "SunburstChart"
+
+    _rename_props = {
+        "data_key": "dataKey",
+        "end_angle": "endAngle",
+        "inner_radius": "innerRadius",
+        "start_angle": "startAngle",
+        "stroke_color": "strokeColor",
+        "sunburst_chart_props": "sunburstChartProps",
+        "tooltip_animation_duration": "tooltipAnimationDuration",
+        "tooltip_props": "tooltipProps",
+        "value_formatter": "valueFormatter",
+        "with_labels": "withLabels",
+        "with_tooltip": "withTooltip",
+    }
+
+    data: Var[list[dict[str, Any]]] = None
+    """Hierarchical data: [{name, color, value | children: [...]}].
+    Leaf nodes need `value`; parent nodes have a `children` list."""
+
+    data_key: Var[str] = None
+    end_angle: Var[int] = None
+    gap: Var[int] = None
+    inner_radius: Var[int] = None
+    size: Var[int] = None
+    start_angle: Var[int] = None
+    stroke_color: Var[str] = None
+    sunburst_chart_props: Var[dict] = None
+    tooltip_animation_duration: Var[int] = None
+    tooltip_props: Var[dict] = None
+    with_labels: Var[bool] = None
+    with_tooltip: Var[bool] = None
+
+    w: Var[str | int] = None
+    h: Var[str | int] = None
+
+
+class BulletChart(MantineChartComponentBase):
+    """Mantine BulletChart component — compact KPI chart displaying a value
+    against a target and qualitative ranges.
+
+    Added in Mantine 9.5.
+
+    https://mantine.dev/charts/bullet-chart/
+    """
+
+    tag = "BulletChart"
+
+    _rename_props = {
+        "bar_color": "barColor",
+        "bar_size": "barSize",
+        "get_tooltip_label": "getTooltipLabel",
+        "target_color": "targetColor",
+        "target_ratio": "targetRatio",
+        "target_size": "targetSize",
+        "value_formatter": "valueFormatter",
+        "with_tooltip": "withTooltip",
+    }
+
+    value: Var[int | float] = None
+    """Current value displayed as the main bar (required)."""
+
+    ranges: Var[list[dict[str, Any]]] = None
+    """Qualitative range bands: [{value, color, label?}] (required)."""
+
+    target: Var[int | float] = None
+    label: Var[str] = None
+    orientation: Var[Literal["horizontal", "vertical"]] = None
+    size: Var[str | int] = None
+    bar_size: Var[str | int] = None
+    bar_color: Var[str] = None
+    target_color: Var[str] = None
+    target_ratio: Var[float] = None
+    target_size: Var[str | int] = None
+    with_tooltip: Var[bool] = None
+
+    w: Var[str | int] = None
+    h: Var[str | int] = None
+
+
+class ChartBrush(MantineChartComponentBase):
+    """Mantine ChartBrush component — themed recharts Brush.
+
+    Render as a child of AreaChart, BarChart, LineChart or CompositeChart
+    for full control over the brush instead of `with_brush`.
+
+    Added in Mantine 9.5.
+
+    https://mantine.dev/charts/area-chart/
+    """
+
+    tag = "ChartBrush"
+
+    _rename_props = {
+        "data_key": "dataKey",
+        "end_index": "endIndex",
+        "start_index": "startIndex",
+    }
+
+    data_key: Var[str] = None
+    start_index: Var[int] = None
+    end_index: Var[int] = None
+    height: Var[int] = None
+
+
 area_chart = AreaChart.create
 bar_chart = BarChart.create
 line_chart = LineChart.create
@@ -510,3 +695,6 @@ treemap = Treemap.create
 radial_bar_chart = RadialBarChart.create
 bars_list = BarsList.create
 sankey_chart = SankeyChart.create
+sunburst_chart = SunburstChart.create
+bullet_chart = BulletChart.create
+chart_brush = ChartBrush.create

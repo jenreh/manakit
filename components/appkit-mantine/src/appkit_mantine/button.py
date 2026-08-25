@@ -9,8 +9,6 @@ from reflex.vars.base import Var
 from appkit_mantine.base import MantineLayoutComponentBase
 
 _COMMON_RENAME_PROPS = {
-    "aria_label": "aria-label",
-    "data_disabled": "data-disabled",
     "loader_props": "loaderProps",
     "auto_contrast": "autoContrast",
 }

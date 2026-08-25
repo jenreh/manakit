@@ -15,6 +15,9 @@ class Accordion(MantineLayoutComponentBase):
     tag = "Accordion"
 
     multiple: Var[bool]
+    disable_collapse: Var[bool]
+    """Prevents the open item from collapsing when its control is clicked.
+    Only applies in single mode; has no effect when ``multiple`` is set."""
     value: Var[str | list[str]]
     default_value: Var[str | list[str]]
     transition_duration: Var[int]
@@ -178,6 +181,12 @@ class TimelineItem(MantineLayoutComponentBase):
     radius: Var[str | int]
     color: Var[str]
     line_variant: Var[Literal["solid", "dashed", "dotted"]]
+    opposite: Var[Any]
+    """Content rendered on the opposite side of the timeline. When any item
+    sets it, the timeline switches to a centered layout with content on both
+    sides of the line."""
+    alternate: Var[bool]
+    """Switches the position of content and ``opposite`` for this item."""
 
 
 class NumberFormatter(MantineInputComponentBase):

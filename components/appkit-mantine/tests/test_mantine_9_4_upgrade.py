@@ -1,14 +1,15 @@
-"""Tests for the Mantine 9.4.1 upgrade — version pin, new props, new components.
+"""Tests for the Mantine 9.4 upgrade — new props and new components.
 
 Covers the props added in 9.3/9.4 on existing wrappers and the newly wrapped
 components (Splitter, Menubar, ComboboxPopover, DataList, EmptyState and the
 ``@mantine/schedule`` resource/agenda views).
+
+Version-pin tests live in ``test_mantine_9_5_upgrade.py``.
 """
 
 from __future__ import annotations
 
 import appkit_mantine as mn
-from appkit_mantine.base import MANTINE_VERSION, MantineComponentBase
 
 
 def _rendered(component) -> dict:
@@ -23,23 +24,6 @@ def _prop_names(component) -> set[str]:
 
 def _tag(component) -> str:
     return _rendered(component).get("name", "")
-
-
-# ---------------------------------------------------------------------------
-# Version pin
-# ---------------------------------------------------------------------------
-
-
-def test_mantine_version_is_9_4_1() -> None:
-    assert MANTINE_VERSION == "9.4.1"
-
-
-def test_core_library_pins_9_4_1() -> None:
-    assert MantineComponentBase().library == "@mantine/core@9.4.1"
-
-
-def test_schedule_library_pins_9_4_1() -> None:
-    assert mn.schedule.day_view(events=[]).library == "@mantine/schedule@9.4.1"
 
 
 # ---------------------------------------------------------------------------

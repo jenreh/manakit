@@ -239,7 +239,6 @@ class NavLink(MantineComponentBase):
 
     # Prop renames from snake_case to camelCase / React names
     _rename_props = {
-        "aria_label": "aria-label",
         "right_section": "rightSection",
         "default_opened": "defaultOpened",
         "initially_opened": "initiallyOpened",

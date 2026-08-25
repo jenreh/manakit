@@ -40,6 +40,7 @@ from __future__ import annotations
 from typing import Any, Final, Literal
 
 import reflex as rx
+from reflex.components.tags import Tag
 from reflex.event import EventHandler
 from reflex.style import resolved_color_mode
 from reflex.vars.base import Var
@@ -47,7 +48,7 @@ from reflex.vars.base import Var
 from appkit_mantine.theme import get_app_theme
 
 MANTINE_LIBARY: Final[str] = "@mantine/core"
-MANTINE_VERSION: Final[str] = "9.4.1"
+MANTINE_VERSION: Final[str] = "9.5.2"
 
 
 MantineSize = Literal["xs", "sm", "md", "lg", "xl"]
@@ -63,6 +64,17 @@ MantineBackgroundRepeat = Literal[
     "no-repeat", "repeat", "repeat-x", "repeat-y", "round", "space"
 ]
 MantineBackgroundAttachment = Literal["scroll", "fixed", "local"]
+
+
+# Declared props whose DOM attribute name contains a hyphen. Reflex camelCases
+# every prop name in Tag.add_props before the _rename_props replacement runs,
+# so a rename like "aria_label" -> "aria-label" never matches and the DOM
+# receives an invalid camelCase attribute (e.g. ariaLabel). These keys are the
+# camelCased names as they appear on the rendered Tag.
+_HYPHENATED_PROP_NAMES: Final[dict[str, str]] = {
+    "ariaLabel": "aria-label",
+    "dataDisabled": "data-disabled",
+}
 
 
 _PROVIDER_RENAME_PROPS: Final[dict[str, str]] = {
@@ -182,6 +194,36 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(style);
   }
 }"""
+
+    def _render(self, props: dict[str, Any] | None = None) -> Tag:
+        """Render the tag, restoring hyphenated DOM attribute names.
+
+        Declared props such as ``aria_label`` are camelCased by
+        ``Tag.add_props`` before Reflex applies ``_rename_props``, so a
+        hyphenated target can never be produced that way. Rename the affected
+        keys on the rendered tag instead — ``format_props`` emits hyphenated
+        names as quoted object keys. An explicit ``custom_attrs`` entry for
+        the same attribute wins over the declared prop.
+
+        Args:
+            props: The props to render (if None, then use get_props).
+
+        Returns:
+            The tag to render.
+        """
+        tag = super()._render(props)
+        to_rename = {
+            camel: hyphen
+            for camel, hyphen in _HYPHENATED_PROP_NAMES.items()
+            if camel in tag.props
+        }
+        if not to_rename:
+            return tag
+        new_props = dict(tag.props)
+        for camel, hyphen in to_rename.items():
+            value = new_props.pop(camel)
+            new_props.setdefault(hyphen, value)
+        return tag.set(props=new_props)
 
     @staticmethod
     def _get_app_wrap_components() -> dict[tuple[int, str], rx.Component]:
@@ -522,7 +564,6 @@ class MantineInputComponentBase(MantineLayoutComponentBase):
         "max_length": "maxLength",
         "min_length": "minLength",
         "auto_complete": "autoComplete",
-        "aria_label": "aria-label",
         "loading_position": "loadingPosition",
         "clear_section_mode": "clearSectionMode",
     }

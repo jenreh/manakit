@@ -123,6 +123,21 @@ Renders 12 mini-months. Props: shared props plus
 `first_day_of_week`, `weekend_days`, `highlight_today`, `with_outside_days`,
 `with_week_numbers`, `on_day_click`, `on_month_click`.
 
+Mantine 9.5 additions:
+
+- `render_day` — render-prop for fully custom day cell content; receives the day
+  date (`YYYY-MM-DD`) and that day's events.
+- `with_weekend_days=False` — hide weekend day columns; which days count as
+  weekend is controlled by `weekend_days` (default `[0, 6]`).
+
+```python
+mn.schedule.year_view(
+    events=State.events,
+    date="2026-05-21",
+    with_weekend_days=False,
+)
+```
+
 ## MobileMonthView
 
 Stacked agenda layout for narrow viewports. Props: shared props plus
@@ -163,6 +178,15 @@ Shared props: `resources`, `events`, `date`, `on_date_change`, `groups`,
 `interval_minutes`, `slot_width`, `row_height`, `with_current_time_indicator`.
 Month adds `day_width`, `with_weekend_days`, `with_header`, `on_day_click`.
 
+Mantine 9.5 changes:
+
+- `interval_minutes` (Day/Week) now supports values over 60 — any whole number
+  of hours (e.g. `120`, `240`) renders multi-hour time slots.
+- `ResourcesMonthView` now supports event resizing via `with_event_resize` /
+  `can_resize_event` / `on_event_resize` (payload: `{eventId, newStart,
+  newEnd}`). Resizing snaps to whole days, preserves the event's time of day,
+  and cannot cross resources.
+
 ## AgendaView (Mantine 9.4)
 
 Vertical list of events grouped by date across a range.
@@ -179,5 +203,10 @@ mn.agenda_view(
 Props: `range_start`, `range_end`, `events`, `header_format`,
 `date_header_format`, `render_event`, `on_event_click`, `locale`, `labels`,
 `mode`.
+
+## Version notes
+
+Mantine 9.5.2 fixes recurring-events timezone handling and improves WeekView
+rendering performance — pure bugfixes, no API changes.
 
 > [Mantine docs — Schedule](https://mantine.dev/x/schedule/)
