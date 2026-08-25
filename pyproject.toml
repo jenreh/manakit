@@ -36,6 +36,8 @@ dev = [
     "bump-my-version==1.4.1",
     "detect-secrets==1.5.0",
     "respx>=0.23.1",
+    "mypy==2.1.0",
+    "types-pyyaml==6.0.12.20250915",
 ]
 
 [tool.setuptools.packages.find]
@@ -177,6 +179,7 @@ ignore = [
     "N811", # Constant {name} imported as non-constant {asname}
     "N818", # Exception name {name} should be named with an Error suffix
     "PLR0913", # Too many arguments in function
+    "PLR0917", # Too many positional arguments (sibling of PLR0913)
     "PT011", # pytest-raises-too-broad
     "PT012", # pytest.raises() block should contain a single simple statement
     "RUF012", # Mutable class attributes should be annotated with typing.ClassVar
