@@ -180,7 +180,7 @@ dev = [
     { name = "pytest-xdist", specifier = "==3.8.0" },
     { name = "responses", specifier = "==0.26.2" },
     { name = "respx", specifier = ">=0.23.1" },
-    { name = "ruff", specifier = "==0.16.1" },
+    { name = "ruff", specifier = "==0.16.4" },
     { name = "types-pyyaml", specifier = "==6.0.12.20250915" },
 ]
 
