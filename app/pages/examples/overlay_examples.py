@@ -117,6 +117,12 @@ def overlay_examples() -> rx.Component:
                         multiline=True,
                         w="200px",
                     ),
+                    mn.tooltip(
+                        mn.button("Interactive", variant="outline", color="teal"),
+                        label="Move the pointer onto me — I stay open",
+                        interactive=True,
+                        with_arrow=True,
+                    ),
                     spacing="lg",
                     justify="center",
                 ),

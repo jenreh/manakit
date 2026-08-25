@@ -184,6 +184,10 @@ class DatePickerInput(MantineDateInputBase):
     first_day_of_week: Var[int] = None
     """First day of the week (0-6)."""
 
+    with_native_level_select: Var[bool] = None
+    """Replace the calendar header level button with native select elements
+    (Mantine 9.5)."""
+
     @classmethod
     def get_event_triggers(cls) -> dict[str, Any]:
         return {
@@ -198,6 +202,7 @@ class DatePickerInput(MantineDateInputBase):
         "weekend_days": "weekendDays",
         "first_day_of_week": "firstDayOfWeek",
         "on_date_change": "onDateChange",
+        "with_native_level_select": "withNativeLevelSelect",
     }
 
 
@@ -215,6 +220,10 @@ class DateTimePicker(MantineDateInputBase):
     with_seconds: Var[bool] = None
     """Determines whether seconds input should be rendered."""
 
+    with_native_level_select: Var[bool] = None
+    """Replace the calendar header level button with native select elements
+    (Mantine 9.5)."""
+
     on_change: EventHandler[lambda value: [value]] = None
     """Called when value changes."""
 
@@ -228,6 +237,7 @@ class DateTimePicker(MantineDateInputBase):
     _rename_props = {
         **MantineDateInputBase._rename_props,  # noqa: SLF001
         "with_seconds": "withSeconds",
+        "with_native_level_select": "withNativeLevelSelect",
     }
 
 
@@ -368,6 +378,10 @@ class DatePicker(MantineDateComponentBase):
     weekend_days: Var[list[int]] = None
     """Indices of weekend days."""
 
+    with_native_level_select: Var[bool] = None
+    """Replace the calendar header level button with native select elements
+    (Mantine 9.5)."""
+
     @classmethod
     def get_event_triggers(cls) -> dict[str, Any]:
         return {
@@ -383,6 +397,7 @@ class DatePicker(MantineDateComponentBase):
         "default_date": "defaultDate",
         "allow_deselect": "allowDeselect",
         "default_value": "defaultValue",
+        "with_native_level_select": "withNativeLevelSelect",
     }
 
 
@@ -406,12 +421,17 @@ class MonthPicker(MantineDateComponentBase):
     on_date_change: EventHandler[lambda date: [date]] = None
     """Called when date displayed changes."""
 
+    with_native_level_select: Var[bool] = None
+    """Replace the calendar header level button with native select elements
+    (Mantine 9.5)."""
+
     _rename_props = {
         "on_date_change": "onDateChange",
         "min_date": "minDate",
         "max_date": "maxDate",
         "default_date": "defaultDate",
         "allow_deselect": "allowDeselect",
+        "with_native_level_select": "withNativeLevelSelect",
     }
 
 
@@ -432,12 +452,17 @@ class YearPicker(MantineDateComponentBase):
     on_change: EventHandler[lambda value: [value]] = None
     """Called when value changes."""
 
+    with_native_level_select: Var[bool] = None
+    """Replace the calendar header level button with native select elements
+    (Mantine 9.5)."""
+
     _rename_props = {
         "on_date_change": "onDateChange",
         "min_date": "minDate",
         "max_date": "maxDate",
         "default_date": "defaultDate",
         "allow_deselect": "allowDeselect",
+        "with_native_level_select": "withNativeLevelSelect",
     }
 
 

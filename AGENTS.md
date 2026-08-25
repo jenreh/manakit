@@ -131,7 +131,7 @@ Full rules in **reflex-state-and-architecture** skill. Appkit-specific:
 
 Full API in **appkit-mantine-reference** skill. Rules:
 
-- `import appkit_mantine as mn` — Mantine 9.2.0.
+- `import appkit_mantine as mn` — Mantine 9.5.2.
 - Never redeclare inherited props — `MantineComponentBase` → `MantineLayoutComponentBase` → `MantineInputComponentBase` provide ~40 common props.
 - `MantineProvider` auto-injected at priority 44 — no manual wrap.
 

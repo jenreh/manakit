@@ -85,6 +85,9 @@ class Tooltip(MantineLayoutComponentBase):
     transition_props: Var[dict]
     multiline: Var[bool]
     inline: Var[bool]
+    interactive: Var[bool]
+    """Keeps the tooltip open while the pointer moves from the target element
+    to the tooltip content."""
 
 
 class TooltipFloating(MantineLayoutComponentBase):

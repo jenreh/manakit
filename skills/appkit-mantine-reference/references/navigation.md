@@ -157,7 +157,10 @@ mn.scroll_area(
 ```
 
 Props: `type` (`"auto"`, `"always"`, `"scroll"`, `"hover"`, `"never"`),
-`scrollbar_size`, `offset_scrollbars`.
+`scrollbar_size`, `offset_scrollbars`,
+`vertical_scrollbar_position` (Mantine 9.5 — `"left"` | `"right"`, pins the
+vertical scrollbar to a physical side regardless of text direction; useful
+for RTL apps; available on all variants including `autosize` and `stateful`).
 
 ### Variants
 
