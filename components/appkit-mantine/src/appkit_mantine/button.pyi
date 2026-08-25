@@ -12,7 +12,7 @@ import reflex
 from typing import Any, Literal
 import reflex as rx
 from appkit_mantine.base import MantineLayoutComponentBase
-_COMMON_RENAME_PROPS = {'aria_label': 'aria-label', 'data_disabled': 'data-disabled', 'loader_props': 'loaderProps', 'auto_contrast': 'autoContrast'}
+_COMMON_RENAME_PROPS = {'loader_props': 'loaderProps', 'auto_contrast': 'autoContrast'}
 
 class MantineButtonBase(MantineLayoutComponentBase):
 
