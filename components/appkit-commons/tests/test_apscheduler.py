@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from apscheduler import ConflictPolicy
 
 from appkit_commons.database.configuration import DatabaseConfig
 from appkit_commons.scheduler.apscheduler import APScheduler
@@ -467,6 +468,10 @@ class TestAPSchedulerScheduleService:
         assert call_args[0][0] == service.execute
         assert call_args[1]["id"] == service.job_id
         assert call_args[1]["job_executor"] == "async"
+        # Must be the enum, not the string "replace": the data store compares
+        # with `is ConflictPolicy.replace`, so a string silently degrades to
+        # do_nothing on schedule ID conflicts.
+        assert call_args[1]["conflict_policy"] is ConflictPolicy.replace
 
     @pytest.mark.asyncio
     async def test_schedule_service_no_scheduler(self) -> None:
