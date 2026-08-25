@@ -14,14 +14,11 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import httpx
-from mcp import ClientSession  # noqa: F401 - kept for re-export / type hints
-from mcp import types as t
+from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from mcp.types import (
     CallToolResult,
-    ClientCapabilities,
     Implementation,
-    InitializeResult,
     Tool,
 )
 
@@ -48,45 +45,6 @@ _SUPPORTED_MIME_TYPE = "text/html;profile=mcp-app"
 _CLIENT_INFO = Implementation(name="appkit", version="1.0.0")
 
 
-class _McpAppsClientSession(ClientSession):
-    """ClientSession with MCP Apps capability advertised.
-
-    Overrides `initialize()` to include the ``io.modelcontextprotocol/ui``
-    extension in the ``experimental`` field of ``ClientCapabilities``.
-    This signals to the MCP server that this host supports MCP Apps,
-    so the server can register UI-enabled tools (spec §Capability Negotiation).
-    """
-
-    async def initialize(self) -> InitializeResult:
-        result = await self.send_request(
-            t.ClientRequest(
-                t.InitializeRequest(
-                    params=t.InitializeRequestParams(
-                        protocolVersion=t.LATEST_PROTOCOL_VERSION,
-                        capabilities=ClientCapabilities(
-                            experimental={
-                                "extensions": {
-                                    _EXTENSION_ID: {
-                                        "mimeTypes": [_SUPPORTED_MIME_TYPE],
-                                    }
-                                }
-                            },
-                        ),
-                        clientInfo=_CLIENT_INFO,
-                    ),
-                )
-            ),
-            t.InitializeResult,
-        )
-        self._server_capabilities = result.capabilities  # type: ignore[attr-defined]
-        await self.send_notification(t.ClientNotification(t.InitializedNotification()))
-        logger.debug(
-            "MCP Apps session initialized (protocolVersion=%s)",
-            result.protocolVersion,
-        )
-        return result
-
-
 class McpAppsService:
     """Service for direct MCP client communication with App support.
 
@@ -107,12 +65,16 @@ class McpAppsService:
     async def _connect_for_apps(self, server: MCPServer, user_id: int):
         """Create an authenticated MCP Apps client session context.
 
+        The session advertises the ``io.modelcontextprotocol/ui`` extension
+        via ``ClientCapabilities.extensions`` (spec §Capability Negotiation),
+        so the server can register UI-enabled tools.
+
         Args:
             server: The MCP server configuration
             user_id: The user's ID
 
         Yields:
-            An initialized _McpAppsClientSession
+            An initialized ClientSession
         """
         headers = await self._get_auth_headers(server, user_id)
         async with (
@@ -120,10 +82,13 @@ class McpAppsService:
             streamable_http_client(server.url, http_client=http_client) as (
                 read_stream,
                 write_stream,
-                _,
             ),
-            # Use _McpAppsClientSession to advertise io.modelcontextprotocol/ui
-            _McpAppsClientSession(read_stream, write_stream) as session,
+            ClientSession(
+                read_stream,
+                write_stream,
+                client_info=_CLIENT_INFO,
+                extensions={_EXTENSION_ID: {"mimeTypes": [_SUPPORTED_MIME_TYPE]}},
+            ) as session,
         ):
             await session.initialize()
             yield session
@@ -236,7 +201,7 @@ class McpAppsService:
             visibility=ui_meta.get("visibility", []),
             server_id=server.id or 0,
             server_label=server.name,
-            input_schema=(tool.inputSchema or {}),
+            input_schema=(tool.input_schema or {}),
         )
 
     async def fetch_resource(
@@ -259,8 +224,8 @@ class McpAppsService:
                 if hasattr(content, "text"):
                     html_content += content.text
 
-                # Extract _meta.ui fields from resource content
-                raw_meta: dict[str, Any] = getattr(content, "_meta", None) or {}
+                # Extract wire-format _meta.ui fields (field name: meta)
+                raw_meta: dict[str, Any] = getattr(content, "meta", None) or {}
                 if ui_meta := raw_meta.get("ui", {}):
                     csp = ui_meta.get("csp", csp)
                     permissions = ui_meta.get("permissions", permissions)
@@ -343,10 +308,12 @@ class McpAppsService:
 
 
 def _call_tool_result_to_dict(result: CallToolResult) -> dict[str, Any]:
-    """Convert a CallToolResult to a serializable dictionary."""
-    content_list = [item.model_dump(exclude_none=True) for item in result.content]
+    """Convert a CallToolResult to a wire-format (camelCase) dictionary."""
+    content_list = [
+        item.model_dump(by_alias=True, exclude_none=True) for item in result.content
+    ]
 
     return {
-        "isError": bool(result.isError),
+        "isError": bool(result.is_error),
         "content": content_list,
     }
