@@ -107,6 +107,30 @@ def data_display_examples() -> rx.Component:
                 ),
             ),
             example_box(
+                "Single Mode (disable_collapse)",
+                mn.accordion(
+                    mn.accordion.item(
+                        mn.accordion.control("Always one open"),
+                        mn.accordion.panel(
+                            "Clicking the open control again does not collapse "
+                            "this item — one section always stays open."
+                        ),
+                        value="1",
+                    ),
+                    mn.accordion.item(
+                        mn.accordion.control("Switch to me"),
+                        mn.accordion.panel(
+                            "Opening another item is the only way to change the state."
+                        ),
+                        value="2",
+                    ),
+                    default_value="1",
+                    disable_collapse=True,
+                    variant="contained",
+                    radius="md",
+                ),
+            ),
+            example_box(
                 "Advanced Tree (Lines)",
                 mn.stack(
                     mn.tree(
@@ -220,6 +244,59 @@ def data_display_examples() -> rx.Component:
                         active=1,
                         bullet_size=24,
                         line_width=2,
+                    ),
+                ),
+                # Timeline with opposite content (centered layout)
+                example_box(
+                    "Timeline with Opposite Content",
+                    mn.timeline(
+                        mn.timeline.item(
+                            rx.text("Repository initialized", size="2"),
+                            title="Kickoff",
+                            opposite=mn.text("09:00", size="xs", c="dimmed"),
+                        ),
+                        mn.timeline.item(
+                            rx.text("First review round done", size="2"),
+                            title="Review",
+                            opposite=mn.text("11:30", size="xs", c="dimmed"),
+                        ),
+                        mn.timeline.item(
+                            rx.text("Released to production", size="2"),
+                            title="Release",
+                            opposite=mn.text("16:45", size="xs", c="dimmed"),
+                        ),
+                        active=1,
+                        bullet_size=20,
+                        line_width=2,
+                        # Centered layout splits the width 1fr/1fr around the
+                        # line — cap it so the opposite column stays readable.
+                        maw="320px",
+                    ),
+                ),
+                # Timeline with alternating sides (alternate on single items)
+                example_box(
+                    "Timeline with Alternating Sides",
+                    mn.timeline(
+                        mn.timeline.item(
+                            rx.text("Repository initialized", size="2"),
+                            title="Kickoff",
+                            opposite=mn.text("09:00", size="xs", c="dimmed"),
+                        ),
+                        mn.timeline.item(
+                            rx.text("First review round done", size="2"),
+                            title="Review",
+                            opposite=mn.text("11:30", size="xs", c="dimmed"),
+                            alternate=True,
+                        ),
+                        mn.timeline.item(
+                            rx.text("Released to production", size="2"),
+                            title="Release",
+                            opposite=mn.text("16:45", size="xs", c="dimmed"),
+                        ),
+                        active=1,
+                        bullet_size=20,
+                        line_width=2,
+                        maw="320px",
                     ),
                 ),
                 cols=2,

@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 # Lokales Asset
 _JSX = rx.asset("mcp_app_bridge.jsx", shared=True)
-_JSX_IMPORT = f"$/public/{_JSX}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+_JSX_IMPORT = _JSX.importable_path
 
 
 class McpAppBridge(NoSSRComponent):

@@ -16,9 +16,11 @@ from appkit_mantine.alert_dialog import alert_dialog
 from appkit_mantine.button import button, action_icon, close_button, unstyled_button
 from appkit_mantine.carousel import carousel
 from appkit_mantine.combobox import (
+    Cascader,
     select,
     multi_select,
     autocomplete,
+    cascader,
     combobox,
     combobox_popover,
     pill,
@@ -204,10 +206,15 @@ from appkit_mantine.typography import (
     typography_styles_provider,
 )
 from appkit_mantine.charts import (
+    BulletChart,
+    ChartBrush,
+    SunburstChart,
     area_chart,
     bar_chart,
     bars_list,
     bubble_chart,
+    bullet_chart,
+    chart_brush,
     composite_chart,
     donut_chart,
     funnel_chart,
@@ -220,13 +227,17 @@ from appkit_mantine.charts import (
     sankey_chart,
     scatter_chart,
     sparkline,
+    sunburst_chart,
 )
 
 
 __all__ = [
     "MANTINE_LIBARY",
     "MANTINE_VERSION",
+    "BulletChart",
     "Calendar",
+    "Cascader",
+    "ChartBrush",
     "DateInput",
     "DatePicker",
     "DatePickerInput",
@@ -254,6 +265,7 @@ __all__ = [
     "MiniCalendar",
     "MonthPicker",
     "MonthPickerInput",
+    "SunburstChart",
     "TimeGrid",
     "TimeInput",
     "TimePicker",
@@ -284,12 +296,15 @@ __all__ = [
     "box",
     "breadcrumbs",
     "bubble_chart",
+    "bullet_chart",
     "burger",
     "button",
     "calendar",
     "card",
     "carousel",
+    "cascader",
     "center",
+    "chart_brush",
     "checkbox",
     "chip",
     "close_button",
@@ -404,6 +419,7 @@ __all__ = [
     "spoiler",
     "stack",
     "stepper",
+    "sunburst_chart",
     "switch",
     "table",
     "table_of_contents",

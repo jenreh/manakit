@@ -6,7 +6,7 @@
 
 **reflex.dev components based on MantineUI**
 
-A Reflex wrapper library exposing the full [Mantine UI v9.4.1](https://mantine.dev) component suite — inputs, buttons, overlays, navigation, layout, data display, feedback, charts, maps, scheduling and more — for building robust, type-safe Python web applications.
+A Reflex wrapper library exposing the full [Mantine UI v9.5.2](https://mantine.dev) component suite — inputs, buttons, overlays, navigation, layout, data display, feedback, charts, maps, scheduling and more — for building robust, type-safe Python web applications.
 
 ---
 
@@ -17,7 +17,7 @@ A Reflex wrapper library exposing the full [Mantine UI v9.4.1](https://mantine.d
 - **📚 Rich Examples** - Production-ready code examples for every component with common patterns and edge cases
 - **🏗️ Clean Architecture** - Inheritance-based design (`MantineComponentBase` → `MantineLayoutComponentBase` → `MantineInputComponentBase`) eliminating code duplication across ~40 common props
 - **🎨 Mantine Integration** - Seamless integration with Mantine's theming, color modes, and design system; `MantineProvider` is auto-injected
-- **⚡ Modern Stack** - Built on Reflex 0.9.6+ with React 18 and Mantine 9.4.1
+- **⚡ Modern Stack** - Built on Reflex 0.9.6+ with React 18 and Mantine 9.5.2
 
 ---
 
@@ -117,6 +117,7 @@ app.add_page(login_form)
 | **`checkbox`, `radio`, `switch`, `segmented_control`** | Toggle-style inputs | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/inputs_advanced_examples.py) |
 | **`slider`, `range_slider`, `hue_slider`, `alpha_slider`, `angle_slider`** | Slider family | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/inputs_advanced_examples.py) |
 | **`select`, `multi_select`, `autocomplete`, `combobox`, `tags_input`, `tree_select`** | Selection and combobox-based inputs | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/combobox_examples.py) |
+| **`cascader`** | Hierarchical select drilling down through cascading columns | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/combobox_examples.py) |
 | **`rich_select`** | Advanced select component with search and grouping | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/combobox_examples.py) |
 | **`date_input`, `date_picker`, `date_picker_input`, `date_time_picker`, `time_input`, `time_picker`, `month_picker`, `year_picker`, `calendar`** | Full date/time picker family | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/date_examples.py) |
 | **`rich_text_editor`** | WYSIWYG editor powered by Tiptap | [Guide](docs/MANTINE_TIPTAP_GUIDE.md) |
@@ -147,6 +148,7 @@ app.add_page(login_form)
 | **`navigation_progress`** | Page loading progress indicator | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/nprogress_examples.py) |
 | **`app_shell`, `container`, `stack`, `group`, `grid`, `simple_grid`, `flex`, `center`, `space`, `divider`, `affix`, `scroller`, `splitter`** | Layout building blocks | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/layout_examples.py) |
 | **`scroll_area`** | Scrollable container with custom scrollbars and virtualization | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/scroll_area_examples.py) |
+| **`floating_window`** | Draggable floating panel, resizable via the `resize_handle` sub-component | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/layout_examples.py) |
 
 ### Data Display & Feedback
 
@@ -162,7 +164,8 @@ app.add_page(login_form)
 
 | Component | Description | Documentation |
 |-----------|-------------|---------------|
-| **`area_chart`, `bar_chart`, `line_chart`, `pie_chart`, `donut_chart`, `radar_chart`, `radial_bar_chart`, `scatter_chart`, `composite_chart`, `bubble_chart`, `funnel_chart`, `heatmap`, `treemap`, `sankey_chart`, `sparkline`, `bars_list`** | Recharts-powered charting components | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/charts_examples.py) |
+| **`area_chart`, `bar_chart`, `line_chart`, `pie_chart`, `donut_chart`, `radar_chart`, `radial_bar_chart`, `scatter_chart`, `composite_chart`, `bubble_chart`, `funnel_chart`, `heatmap`, `treemap`, `sankey_chart`, `sunburst_chart`, `bullet_chart`, `sparkline`, `bars_list`** | Recharts-powered charting components | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/charts_examples.py) |
+| **`chart_brush`** | Range selector (brush) for area/bar/line/composite charts | [Examples](https://github.com/jenreh/appkit/tree/main/app/pages/examples/charts_examples.py) |
 
 ### Maps & Scheduling
 

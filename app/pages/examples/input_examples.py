@@ -726,6 +726,17 @@ def password_input_content() -> rx.Component:
                 ),
             ),
             example_box(
+                "Focusable Toggle",
+                mn.stack(
+                    mn.password_input(
+                        label="Password",
+                        description="Toggle button reachable via Tab",
+                        visibility_toggle_focusable=True,
+                    ),
+                    gap="md",
+                ),
+            ),
+            example_box(
                 "Strong Password",
                 mn.stack(
                     mn.password_input(

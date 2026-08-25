@@ -40,16 +40,14 @@ from __future__ import annotations
 from typing import Any, Final, Literal
 
 import reflex as rx
-from reflex.assets import asset
 from reflex.event import EventHandler
+from reflex.style import resolved_color_mode
 from reflex.vars.base import Var
 
 from appkit_mantine.theme import get_app_theme
 
-public_provider_path = "$/public/" + asset(path="mantine_provider.js", shared=True)
-
 MANTINE_LIBARY: Final[str] = "@mantine/core"
-MANTINE_VERSION: Final[str] = "9.4.1"
+MANTINE_VERSION: Final[str] = "9.5.2"
 
 
 MantineSize = Literal["xs", "sm", "md", "lg", "xl"]
@@ -80,17 +78,26 @@ _PROVIDER_RENAME_PROPS: Final[dict[str, str]] = {
 }
 
 
+def _reflex_color_scheme() -> Var:
+    """Mirror Reflex's resolved color mode, falling back to light.
+
+    Returns:
+        A Var carrying the ``useContext(ColorModeContext)`` hook.
+    """
+    return rx.cond(resolved_color_mode, resolved_color_mode, "light")
+
+
 class MemoizedMantineProvider(rx.Component):
     """Internal MantineProvider rendered as the app-level wrapper.
 
     Reads the theme configured via :func:`appkit_mantine.set_app_theme` and
-    forwards every supported ``MantineProvider`` prop to ``@mantine/core``'s
-    provider through the local ``mantine_provider.js`` shim.
+    forwards every supported ``MantineProvider`` prop to ``@mantine/core``.
     """
 
-    library = public_provider_path
-    tag = "MemoizedMantineProvider"
-    is_default = True
+    library = f"{MANTINE_LIBARY}@{MANTINE_VERSION}"
+    tag = "MantineProvider"
+
+    lib_dependencies: list[str] = [f"@mantine/hooks@{MANTINE_VERSION}"]
 
     theme: Var[dict] = None
     """Theme override merged with Mantine's defaults."""
@@ -101,8 +108,7 @@ class MemoizedMantineProvider(rx.Component):
     force_color_scheme: Var[Literal["light", "dark"]] = None
     """When set, locks the color scheme regardless of manager/default.
 
-    Leave unset to mirror Reflex's color mode (the default behavior of the
-    underlying JS shim)."""
+    Left unset, it follows Reflex's resolved color mode."""
 
     css_variables_selector: Var[str] = None
     with_css_variables: Var[bool] = None
@@ -113,6 +119,20 @@ class MemoizedMantineProvider(rx.Component):
     with_global_classes: Var[bool] = None
 
     _rename_props = _PROVIDER_RENAME_PROPS
+
+    @classmethod
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
+        """Create the provider, mirroring Reflex's color mode by default.
+
+        Args:
+            children: The subtree to theme.
+            props: MantineProvider props.
+
+        Returns:
+            The provider component.
+        """
+        props.setdefault("force_color_scheme", _reflex_color_scheme())
+        return super().create(*children, **props)
 
 
 class MantineComponentBase(rx.Component):
@@ -133,8 +153,6 @@ class MantineComponentBase(rx.Component):
 
     lib_dependencies: list[str] = [
         f"@mantine/hooks@{MANTINE_VERSION}",
-        "react@^19.2.0",
-        "react-dom@^19.2.0",
     ]
 
     def _get_custom_code(self) -> str:
@@ -201,9 +219,7 @@ class MantineProvider(MantineComponentBase):
             )
     """
 
-    library = public_provider_path
     tag = "MantineProvider"
-    is_default = True
 
     theme: Var[dict] = None
     """Theme override merged with Mantine's defaults."""
@@ -225,6 +241,20 @@ class MantineProvider(MantineComponentBase):
     with_global_classes: Var[bool] = None
 
     _rename_props = _PROVIDER_RENAME_PROPS
+
+    @classmethod
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
+        """Create the provider, defaulting the color scheme to Reflex's.
+
+        Args:
+            children: The subtree to theme.
+            props: MantineProvider props.
+
+        Returns:
+            The provider component.
+        """
+        props.setdefault("force_color_scheme", _reflex_color_scheme())
+        return super().create(*children, **props)
 
 
 def mantine_provider(*children: Any, **props: Any) -> rx.Component:

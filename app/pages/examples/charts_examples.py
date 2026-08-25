@@ -146,6 +146,32 @@ SANKEY_DATA = {
     ],
 }
 
+SUNBURST_DATA = [
+    {
+        "name": "Frontend",
+        "color": "blue.6",
+        "children": [
+            {"name": "React", "value": 400},
+            {"name": "Vue", "value": 200},
+            {"name": "Angular", "value": 150},
+        ],
+    },
+    {
+        "name": "Backend",
+        "color": "teal.6",
+        "children": [
+            {"name": "Node", "value": 300},
+            {"name": "Python", "value": 250},
+        ],
+    },
+]
+
+BULLET_RANGES = [
+    {"value": 150, "color": "red.8", "label": "Low"},
+    {"value": 225, "color": "yellow.8", "label": "Medium"},
+    {"value": 300, "color": "teal.8", "label": "High"},
+]
+
 
 @navbar_layout(
     route="/charts",
@@ -378,6 +404,64 @@ def charts_examples() -> rx.Component:
                         node_width=14,
                         node_padding=18,
                         with_tooltip=True,
+                    ),
+                ),
+                # Sunburst Chart
+                example_box(
+                    "Sunburst Chart",
+                    mn.center(
+                        mn.sunburst_chart(
+                            data=SUNBURST_DATA,
+                            size=260,
+                            with_labels=True,
+                            with_tooltip=True,
+                        ),
+                    ),
+                ),
+                # Bullet Chart
+                example_box(
+                    "Bullet Chart",
+                    mn.bullet_chart(
+                        value=230,
+                        target=250,
+                        ranges=BULLET_RANGES,
+                        label="Revenue",
+                        bar_color="blue.6",
+                        with_tooltip=True,
+                    ),
+                ),
+                # Line Chart with Brush
+                example_box(
+                    "Line Chart with Brush",
+                    mn.line_chart(
+                        h=300,
+                        data=DATA,
+                        data_key="name",
+                        series=[
+                            {"name": "uv", "color": "indigo.6"},
+                            {"name": "pv", "color": "teal.6"},
+                        ],
+                        curve_type="monotone",
+                        with_brush=True,
+                        brush_props={"startIndex": 1, "endIndex": 5},
+                    ),
+                ),
+                # Area Chart with ChartBrush child
+                example_box(
+                    "Area Chart with ChartBrush",
+                    mn.area_chart(
+                        mn.chart_brush(
+                            data_key="name",
+                            height=24,
+                            start_index=0,
+                            end_index=4,
+                        ),
+                        h=300,
+                        data=DATA,
+                        data_key="name",
+                        series=[{"name": "uv", "color": "grape.6"}],
+                        curve_type="monotone",
+                        with_gradient=True,
                     ),
                 ),
                 cols=2,

@@ -11,9 +11,8 @@ from reflex_base.vars.base import Var
 import reflex
 from typing import Any, Final, Literal
 import reflex as rx
-from reflex.assets import asset
+from reflex.style import resolved_color_mode
 from appkit_mantine.theme import get_app_theme
-public_provider_path = '$/public/' + asset(path='mantine_provider.js', shared=True)
 MANTINE_LIBARY: Final[str]
 MANTINE_VERSION: Final[str]
 MantineSize = Literal['xs', 'sm', 'md', 'lg', 'xl']
@@ -30,46 +29,14 @@ class MemoizedMantineProvider(rx.Component):
 
     @classmethod
     def create(cls, *children, theme: Var[dict] | dict | None=None, default_color_scheme: Literal['auto', 'dark', 'light'] | Var[Literal['auto', 'dark', 'light']] | None=None, force_color_scheme: Literal['dark', 'light'] | Var[Literal['dark', 'light']] | None=None, css_variables_selector: Var[str] | str | None=None, with_css_variables: Var[bool] | bool | None=None, deduplicate_css_variables: Var[bool] | bool | None=None, deduplicate_inline_styles: Var[bool] | bool | None=None, class_names_prefix: Var[str] | str | None=None, with_static_classes: Var[bool] | bool | None=None, with_global_classes: Var[bool] | bool | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'MemoizedMantineProvider':
-        """Create the component.
+        """Create the provider, mirroring Reflex's color mode by default.
 
 Args:
-    *children: The children of the component.
-    theme: Theme override merged with Mantine's defaults.
-    default_color_scheme: Initial color scheme when no manager value is available.
-    force_color_scheme: When set, locks the color scheme regardless of manager/default.  Leave unset to mirror Reflex's color mode (the default behavior of the underlying JS shim).
-    css_variables_selector: no description
-    with_css_variables: no description
-    deduplicate_css_variables: no description
-    deduplicate_inline_styles: no description
-    class_names_prefix: no description
-    with_static_classes: no description
-    with_global_classes: no description
-    style: The style of the component.
-    key: A unique key for the component.
-    id: The id for the component.
-    ref: The Var to pass as the ref to the component.
-    class_name: The class name for the component.
-    custom_attrs: Attributes passed directly to the component.
-    on_focus: Fired when the element (or some element inside of it) receives focus. For example, it is called when the user clicks on a text input.
-    on_blur: Fired when focus has left the element (or left some element inside of it). For example, it is called when the user clicks outside of a focused text input.
-    on_click: Fired when the user clicks on an element. For example, it's called when the user clicks on a button.
-    on_context_menu: Fired when the user right-clicks on an element.
-    on_double_click: Fired when the user double-clicks on an element.
-    on_mouse_down: Fired when the user presses a mouse button on an element.
-    on_mouse_enter: Fired when the mouse pointer enters the element.
-    on_mouse_leave: Fired when the mouse pointer leaves the element.
-    on_mouse_move: Fired when the mouse pointer moves over the element.
-    on_mouse_out: Fired when the mouse pointer moves out of the element.
-    on_mouse_over: Fired when the mouse pointer moves onto the element.
-    on_mouse_up: Fired when the user releases a mouse button on an element.
-    on_scroll: Fired when the user scrolls the element.
-    on_scroll_end: Fired when scrolling ends on the element.
-    on_mount: Fired when the component is mounted to the page.
-    on_unmount: Fired when the component is removed from the page. Only called during navigation, not on page refresh.
-    **props: The props of the component.
+    children: The subtree to theme.
+    props: MantineProvider props.
 
 Returns:
-    The component."""
+    The provider component."""
         ...
 
 class MantineComponentBase(rx.Component):
@@ -112,46 +79,14 @@ class MantineProvider(MantineComponentBase):
 
     @classmethod
     def create(cls, *children, theme: Var[dict] | dict | None=None, default_color_scheme: Literal['auto', 'dark', 'light'] | Var[Literal['auto', 'dark', 'light']] | None=None, force_color_scheme: Literal['dark', 'light'] | Var[Literal['dark', 'light']] | None=None, css_variables_selector: Var[str] | str | None=None, with_css_variables: Var[bool] | bool | None=None, deduplicate_css_variables: Var[bool] | bool | None=None, deduplicate_inline_styles: Var[bool] | bool | None=None, class_names_prefix: Var[str] | str | None=None, with_static_classes: Var[bool] | bool | None=None, with_global_classes: Var[bool] | bool | None=None, style: Sequence[Mapping[str, Any]] | Mapping[str, Any] | Var[Mapping[str, Any]] | Breakpoints | None=None, key: Any | None=None, id: Any | None=None, ref: Var | None=None, class_name: Any | None=None, custom_attrs: dict[str, Any | Var] | None=None, on_blur: Optional[EventType[()]]=None, on_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]]=None, on_focus: Optional[EventType[()]]=None, on_mount: Optional[EventType[()]]=None, on_mouse_down: Optional[EventType[()]]=None, on_mouse_enter: Optional[EventType[()]]=None, on_mouse_leave: Optional[EventType[()]]=None, on_mouse_move: Optional[EventType[()]]=None, on_mouse_out: Optional[EventType[()]]=None, on_mouse_over: Optional[EventType[()]]=None, on_mouse_up: Optional[EventType[()]]=None, on_scroll: Optional[EventType[()]]=None, on_scroll_end: Optional[EventType[()]]=None, on_unmount: Optional[EventType[()]]=None, **props) -> 'MantineProvider':
-        """Create the component.
+        """Create the provider, defaulting the color scheme to Reflex's.
 
 Args:
-    *children: The children of the component.
-    theme: no description
-    default_color_scheme: no description
-    force_color_scheme: no description
-    css_variables_selector: no description
-    with_css_variables: no description
-    deduplicate_css_variables: no description
-    deduplicate_inline_styles: no description
-    class_names_prefix: no description
-    with_static_classes: no description
-    with_global_classes: no description
-    style: The style of the component.
-    key: A unique key for the component.
-    id: The id for the component.
-    ref: The Var to pass as the ref to the component.
-    class_name: The class name for the component.
-    custom_attrs: Attributes passed directly to the component.
-    on_focus: Fired when the element (or some element inside of it) receives focus. For example, it is called when the user clicks on a text input.
-    on_blur: Fired when focus has left the element (or left some element inside of it). For example, it is called when the user clicks outside of a focused text input.
-    on_click: Fired when the user clicks on an element. For example, it's called when the user clicks on a button.
-    on_context_menu: Fired when the user right-clicks on an element.
-    on_double_click: Fired when the user double-clicks on an element.
-    on_mouse_down: Fired when the user presses a mouse button on an element.
-    on_mouse_enter: Fired when the mouse pointer enters the element.
-    on_mouse_leave: Fired when the mouse pointer leaves the element.
-    on_mouse_move: Fired when the mouse pointer moves over the element.
-    on_mouse_out: Fired when the mouse pointer moves out of the element.
-    on_mouse_over: Fired when the mouse pointer moves onto the element.
-    on_mouse_up: Fired when the user releases a mouse button on an element.
-    on_scroll: Fired when the user scrolls the element.
-    on_scroll_end: Fired when scrolling ends on the element.
-    on_mount: Fired when the component is mounted to the page.
-    on_unmount: Fired when the component is removed from the page. Only called during navigation, not on page refresh.
-    **props: The props of the component.
+    children: The subtree to theme.
+    props: MantineProvider props.
 
 Returns:
-    The component."""
+    The provider component."""
         ...
 
 def mantine_provider(*children: Any, **props: Any) -> rx.Component:

@@ -323,6 +323,13 @@ class PasswordInput(MantineInputComponentBase):
     visibility_toggle_button_props: Var[dict] = None
     """Props to pass to the visibility toggle button."""
 
+    visibility_toggle_focusable: Var[bool] = None
+    """Whether the visibility toggle button is focusable with keyboard.
+
+    False by default: the button is excluded from the tab order
+    (tabindex="-1"). Set True to include it (tabindex="0").
+    """
+
     # Event handlers (password-specific)
     on_visibility_change: EventHandler[lambda visible: [visible]] = None
     """Called when visibility toggle is clicked (receives boolean)."""
@@ -833,6 +840,7 @@ class ColorInput(MantineInputComponentBase):
         "eye_dropper_button_props": "eyeDropperButtonProps",
         "eye_dropper_icon": "eyeDropperIcon",
         "fix_on_blur": "fixOnBlur",
+        "full_width": "fullWidth",
         "on_change_end": "onChangeEnd",
         "popover_props": "popoverProps",
         "swatches_per_row": "swatchesPerRow",
@@ -850,6 +858,7 @@ class ColorInput(MantineInputComponentBase):
     disallow_input: Var[bool] = None
     close_on_color_swatch_click: Var[bool] = None
     fix_on_blur: Var[bool] = None
+    full_width: Var[bool] = None
     popover_props: Var[dict] = None
     eye_dropper_icon: Var[Any] = None
 

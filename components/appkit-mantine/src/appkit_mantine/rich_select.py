@@ -13,7 +13,9 @@ from reflex.vars.base import Var
 from appkit_mantine.base import MantineInputComponentBase
 
 # Lokales Asset (kein npm "rich_select" mehr!)
-_JSX = rx.asset("rich_select.jsx", shared=True)
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning a stale React instance.
+_JSX_IMPORT = rx.asset("rich_select.jsx", shared=True).importable_path
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +42,7 @@ class RichSelect(MantineInputComponentBase):
     - classNames -> class_names
     """
 
-    library = f"$/public{_JSX}"
+    library = _JSX_IMPORT
     tag = "RichSelect"
 
     # Core props (existing)
@@ -145,7 +147,7 @@ class RichSelect(MantineInputComponentBase):
 class RichSelectItem(rx.Component):
     """Virtuelles Kind - trägt die Daten + Renderer-Node."""
 
-    library = f"$/public{_JSX}"
+    library = _JSX_IMPORT
     tag = "RichSelectItem"
 
     # value can be None when the source data doesn't provide a value.

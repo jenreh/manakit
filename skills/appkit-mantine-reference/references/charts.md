@@ -14,6 +14,13 @@
 - Sparkline
 - FunnelChart
 - Heatmap
+- Treemap
+- RadialBarChart
+- BarsList
+- SankeyChart
+- SunburstChart
+- BulletChart
+- ChartBrush
 
 All charts use the shared `appkit_mantine.base.MANTINE_VERSION` for
 `@mantine/charts` (Recharts under the hood).
@@ -47,7 +54,31 @@ mn.bar_chart(
 Common props: `data`, `data_key`, `series`, `with_legend`, `legend_props`,
 `with_tooltip`, `tooltip_props`, `grid_axis`, `tick_line`, `with_x_axis`,
 `x_axis_props`, `x_axis_label`, `with_y_axis`, `y_axis_props`, `y_axis_label`,
-`unit`, `with_right_y_axis`, `h`, `w`, `m*`, `p*`.
+`unit`, `with_right_y_axis`, `accessibility_layer`, `h`, `w`, `m*`, `p*`.
+
+### Mantine 9.5+ additions
+
+- `accessibility_layer` (bool, `True` by default) — keyboard navigation via
+  the Recharts accessibility layer. Available on all Recharts-based charts
+  (AreaChart, BarChart, LineChart, CompositeChart, ScatterChart, BubbleChart,
+  PieChart, DonutChart, RadarChart, RadialBarChart, FunnelChart).
+- `with_brush` (bool, `False` by default) and `brush_props` (dict passed to
+  the Recharts `Brush`) — range selector below the chart. Only on AreaChart,
+  BarChart, LineChart, CompositeChart with horizontal orientation.
+
+```python
+mn.line_chart(
+    data=data,
+    data_key="date",
+    series=[{"name": "value", "color": "indigo.6"}],
+    h=300,
+    with_brush=True,
+    brush_props={"startIndex": 3, "endIndex": 10, "height": 30},
+)
+```
+
+For full brush control, render `mn.chart_brush(...)` as a child instead of
+`with_brush` (see ChartBrush below).
 
 ### Series format
 
@@ -189,6 +220,22 @@ mn.scatter_chart(
 )
 ```
 
+Second y axis (Mantine 9.5+): set `with_right_y_axis=True` (plus optional
+`right_y_axis_label` / `right_y_axis_props`) and bind a series to it with
+`"yAxisId": "right"` inside the `data` object — series without `yAxisId`
+stay on the left axis.
+
+```python
+mn.scatter_chart(
+    data=scatter_data,  # series dicts may carry "yAxisId": "right"
+    data_key={"x": "month", "y": "value"},
+    h=300,
+    with_right_y_axis=True,
+    right_y_axis_label="Conversion rate",
+    right_y_axis_props={"unit": "%"},
+)
+```
+
 ## BubbleChart
 
 ```python
@@ -242,7 +289,8 @@ mn.heatmap(
 ```
 
 Props: `data`, `start_date`, `end_date`, `min`, `max`, `color_scale`,
-`value_label`, `enable_labels`.
+`value_label`, `enable_labels`, `with_legend`, `legend_labels`,
+`month_labels_position` (`"top"` default, `"bottom"`; Mantine 9.5+).
 
 ## Treemap
 
@@ -364,3 +412,87 @@ Props: `data` (`{nodes: [{name}], links: [{source, target, value}]}`), `height`,
 `tooltip_animation_duration`, `tooltip_props`, `w`, `h`.
 
 > [Mantine docs — SankeyChart](https://mantine.dev/charts/sankey-chart/)
+
+## SunburstChart
+
+Hierarchical data as concentric rings — a treemap in polar coordinates
+(Mantine 9.5+). Same data shape as Treemap: leaf nodes carry `value`,
+parents carry `children`.
+
+```python
+mn.sunburst_chart(
+    data=[
+        {
+            "name": "Frontend",
+            "color": "blue.6",
+            "children": [
+                {"name": "React", "value": 400},
+                {"name": "Vue", "value": 200},
+            ],
+        },
+        {
+            "name": "Backend",
+            "color": "teal.6",
+            "children": [{"name": "Python", "value": 250}],
+        },
+    ],
+    size=260,
+    with_labels=True,
+    with_tooltip=True,
+)
+```
+
+Props: `data`, `data_key`, `size`, `gap`, `inner_radius`, `start_angle`,
+`end_angle`, `stroke_color`, `with_labels`, `with_tooltip`,
+`tooltip_animation_duration`, `tooltip_props`, `sunburst_chart_props`,
+`w`, `h`.
+
+> [Mantine docs — SunburstChart](https://mantine.dev/charts/sunburst-chart/)
+
+## BulletChart
+
+Compact KPI chart — a value bar against a target marker and qualitative
+range bands (Mantine 9.5+). Required props: `value`, `ranges`.
+
+```python
+mn.bullet_chart(
+    value=230,
+    target=250,
+    ranges=[
+        {"value": 150, "color": "red.8", "label": "Low"},
+        {"value": 225, "color": "yellow.8", "label": "Medium"},
+        {"value": 300, "color": "teal.8", "label": "High"},
+    ],
+    label="Revenue",
+    bar_color="blue.6",
+    with_tooltip=True,
+)
+```
+
+Props: `value`, `ranges` (`[{value, color, label?}]`, rendered back-to-front),
+`target`, `label`, `orientation` (`"horizontal"` default, `"vertical"` needs
+`h`), `size` (track height), `bar_size`, `bar_color`, `target_color`,
+`target_ratio`, `target_size`, `with_tooltip`, `w`, `h`.
+
+> [Mantine docs — BulletChart](https://mantine.dev/charts/bullet-chart/)
+
+## ChartBrush
+
+Themed Recharts `Brush` (Mantine 9.5+). Render as a child of AreaChart,
+BarChart, LineChart, or CompositeChart for full control over the brush —
+use instead of `with_brush`, not together with it.
+
+```python
+mn.area_chart(
+    mn.chart_brush(data_key="date", height=24, start_index=0, end_index=10),
+    data=data,
+    data_key="date",
+    series=[{"name": "value", "color": "indigo.6"}],
+    h=300,
+)
+```
+
+Props: `data_key`, `start_index`, `end_index`, `height`. Accepts recharts
+`Brush` props in general (Mantine applies its theming).
+
+> [Mantine docs — Brush](https://mantine.dev/charts/area-chart/)

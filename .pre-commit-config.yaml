@@ -1,4 +1,4 @@
-exclude: '^(\.agents?/skills/|reflex\.lock/)'
+exclude: '^(\.agents?/skills/|reflex\.lock/)|\.pyi$'
 default_install_hook_types:
   - pre-commit
   - post-checkout

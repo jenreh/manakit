@@ -25,7 +25,9 @@ TIPTAP_VERSION: Final[str] = (
     TIPTAP_REACT_VERSION  # Same version for all @tiptap packages
 )
 _TIPTAP_WRAPPER = asset(path="tiptap_wrapper.js", shared=True)
-_TIPTAP_WRAPPER_IMPORT = f"$/public/{_TIPTAP_WRAPPER}"
+# importable_path omits the ?v= content hash, which Vite would treat as an
+# optimized-dep URL and cache immutably, pinning stale dependency URLs.
+_TIPTAP_WRAPPER_IMPORT = _TIPTAP_WRAPPER.importable_path
 
 
 class ToolbarControlGroup(list, enum.Enum):

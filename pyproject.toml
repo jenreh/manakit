@@ -1,6 +1,6 @@
 [project]
 name = "appkit"
-version = "1.13.3"
+version = "1.13.6"
 description = "Production-ready Mantine UI components for Reflex - Demo Application"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -32,7 +32,7 @@ dev = [
     "httpx==0.28.1",
     "responses==0.26.2",
     "faker==40.28.1",
-    "ruff==0.15.20",
+    "ruff==0.16.1",
     "bump-my-version==1.4.1",
     "detect-secrets==1.5.0",
     "respx>=0.23.1",
@@ -91,7 +91,7 @@ appkit-user = { workspace = true }
 
 [tool.bumpversion]
 commit = false
-current_version = "1.13.3"
+current_version = "1.13.6"
 tag = false
 allow-dirty = false
 

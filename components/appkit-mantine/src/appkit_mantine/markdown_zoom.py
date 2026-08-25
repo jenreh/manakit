@@ -9,10 +9,12 @@ class MermaidZoomScript(Component):
     """React component wrapper that loads the Mermaid zoom script."""
 
     tag = "MermaidZoomLoader"
-    library = "$/public/" + asset(
+    # importable_path omits the ?v= content hash, which Vite would treat as an
+    # optimized-dep URL and cache immutably, pinning a stale React instance.
+    library = asset(
         path="mermaid_zoom_loader.js",
         shared=True,
-    )
+    ).importable_path
     is_default = False
 
 

@@ -6,13 +6,13 @@ dependencies = [
     "appkit-ui",
     "appkit-user",
     "google-genai>=2.4.0",
-    "mcp>=1.27.1",
+    "mcp>=1.29.0",
     "openai>=2.37.0",
     "reflex>=0.9.5",
     "python-multipart>=0.0.27",
 ]
 name = "appkit-assistant"
-version = "1.13.3"
+version = "1.13.6"
 description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Jens Rehpöhler" }]
