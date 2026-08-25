@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from mcp import types as t
 
 from appkit_assistant.backend.schemas import (
     McpAppToolInfo,
@@ -17,7 +18,6 @@ from appkit_assistant.backend.schemas import (
 from appkit_assistant.backend.services.mcp_apps_service import (
     McpAppsService,
     _call_tool_result_to_dict,
-    _McpAppsClientSession,
 )
 
 
@@ -52,19 +52,21 @@ def _make_tool(
     name: str = "qr_code",
     meta: dict | None = None,
     input_schema: dict | None = None,
-) -> MagicMock:
-    tool = MagicMock()
-    tool.name = name
-    tool.meta = meta
-    tool.inputSchema = input_schema or {"type": "object"}
-    return tool
+) -> t.Tool:
+    """Build a real mcp.types.Tool so attribute-name drift fails tests."""
+    return t.Tool(
+        name=name,
+        input_schema=input_schema or {"type": "object"},
+        meta=meta,
+    )
 
 
 def _make_tool_with_ui(
     name: str = "qr_code",
     resource_uri: str = "ui://qr_code/view",
     visibility: list[str] | None = None,
-) -> MagicMock:
+    input_schema: dict | None = None,
+) -> t.Tool:
     return _make_tool(
         name=name,
         meta={
@@ -73,22 +75,18 @@ def _make_tool_with_ui(
                 "visibility": visibility or [],
             }
         },
+        input_schema=input_schema,
     )
 
 
 @asynccontextmanager
-async def _mock_streamable_http_client(
-    session_mock: AsyncMock | None = None,
-):
-    """Create a mock context manager for streamable_http_client.
+async def _mock_streamable_http_client(url, http_client=None):
+    """Mock context manager mirroring streamable_http_client (mcp 2.0).
 
-    Yields (read_stream, write_stream, _) triple.
-    When combined with _McpAppsClientSession patching, allows
-    testing the full connection flow.
+    Yields a (read_stream, write_stream) pair like TransportStreams.
+    Use as ``side_effect`` when patching streamable_http_client.
     """
-    read_stream = AsyncMock()
-    write_stream = AsyncMock()
-    yield read_stream, write_stream, None
+    yield AsyncMock(), AsyncMock()
 
 
 # ============================================================================
@@ -109,11 +107,11 @@ class TestInit:
 
 
 # ============================================================================
-# _McpAppsClientSession.initialize
+# _connect_for_apps capability negotiation
 # ============================================================================
 
 
-class TestMcpAppsClientSession:
+class TestConnectForApps:
     @pytest.mark.asyncio
     async def test_initialize_sends_request_and_notification(self) -> None:
         # Create a mock result for the initialize response
@@ -155,17 +153,16 @@ class TestMcpAppsClientSession:
         init_result.protocol_version = "2025-11-25"
 
         with (
-            patch.object(
-                _McpAppsClientSession,
-                "send_request",
-                new_callable=AsyncMock,
-                return_value=init_result,
+            patch(
+                "appkit_assistant.backend.services.mcp_apps_service.httpx.AsyncClient"
             ),
-            patch.object(
-                _McpAppsClientSession,
-                "send_notification",
-                new_callable=AsyncMock,
+            patch(
+                "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
+                side_effect=_mock_streamable_http_client,
             ),
+            patch(
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
+            ) as mock_session_cls,
         ):
             session = _McpAppsClientSession(MagicMock(), MagicMock())
             await session.initialize()
@@ -231,8 +228,7 @@ class TestExtractUiToolInfo:
             "type": "object",
             "properties": {"text": {"type": "string"}},
         }
-        tool = _make_tool_with_ui(name="gen")
-        tool.inputSchema = schema
+        tool = _make_tool_with_ui(name="gen", input_schema=schema)
 
         result = service._extract_ui_tool_info(tool, server)
         assert result is not None
@@ -391,16 +387,11 @@ class TestFetchUiTools:
         ui_tool = _make_tool_with_ui(name="qr_code", resource_uri="ui://qr/view")
         plain_tool = _make_tool(name="plain", meta={})
 
-        mock_list_result = MagicMock()
-        mock_list_result.tools = [ui_tool, plain_tool]
+        mock_list_result = t.ListToolsResult(tools=[ui_tool, plain_tool])
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.list_tools = AsyncMock(return_value=mock_list_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -408,10 +399,10 @@ class TestFetchUiTools:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -431,16 +422,11 @@ class TestFetchUiTools:
 
         plain_tool = _make_tool(name="plain", meta={})
 
-        mock_list_result = MagicMock()
-        mock_list_result.tools = [plain_tool]
+        mock_list_result = t.ListToolsResult(tools=[plain_tool])
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.list_tools = AsyncMock(return_value=mock_list_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -448,10 +434,10 @@ class TestFetchUiTools:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -498,20 +484,15 @@ class TestFetchResource:
         service = McpAppsService()
         server = _make_server()
 
-        content_item = MagicMock()
-        content_item.text = "<h1>Hello World</h1>"
-        content_item._meta = None
-
-        mock_read_result = MagicMock()
-        mock_read_result.contents = [content_item]
+        content_item = t.TextResourceContents(
+            uri="ui://test/view",
+            text="<h1>Hello World</h1>",
+        )
+        mock_read_result = t.ReadResourceResult(contents=[content_item])
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.read_resource = AsyncMock(return_value=mock_read_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -519,10 +500,10 @@ class TestFetchResource:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -543,26 +524,22 @@ class TestFetchResource:
         service = McpAppsService()
         server = _make_server()
 
-        content_item = MagicMock()
-        content_item.text = "<div>Styled</div>"
-        content_item._meta = {
-            "ui": {
-                "csp": {"default-src": "'self'"},
-                "permissions": {"allow-scripts": True},
-                "prefersBorder": True,
-            }
-        }
-
-        mock_read_result = MagicMock()
-        mock_read_result.contents = [content_item]
+        content_item = t.TextResourceContents(
+            uri="ui://styled/view",
+            text="<div>Styled</div>",
+            meta={
+                "ui": {
+                    "csp": {"default-src": "'self'"},
+                    "permissions": {"allow-scripts": True},
+                    "prefersBorder": True,
+                }
+            },
+        )
+        mock_read_result = t.ReadResourceResult(contents=[content_item])
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.read_resource = AsyncMock(return_value=mock_read_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -570,10 +547,10 @@ class TestFetchResource:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -593,24 +570,13 @@ class TestFetchResource:
         service = McpAppsService()
         server = _make_server()
 
-        part1 = MagicMock()
-        part1.text = "<h1>Title</h1>"
-        part1._meta = None
-
-        part2 = MagicMock()
-        part2.text = "<p>Body</p>"
-        part2._meta = None
-
-        mock_read_result = MagicMock()
-        mock_read_result.contents = [part1, part2]
+        part1 = t.TextResourceContents(uri="ui://multi", text="<h1>Title</h1>")
+        part2 = t.TextResourceContents(uri="ui://multi", text="<p>Body</p>")
+        mock_read_result = t.ReadResourceResult(contents=[part1, part2])
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.read_resource = AsyncMock(return_value=mock_read_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -618,10 +584,10 @@ class TestFetchResource:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -670,23 +636,13 @@ class TestProxyToolCall:
         service = McpAppsService()
         server = _make_server()
 
-        content_item = MagicMock()
-        content_item.model_dump.return_value = {
-            "type": "text",
-            "text": "result data",
-        }
-
-        mock_call_result = MagicMock()
-        mock_call_result.isError = False
-        mock_call_result.content = [content_item]
+        mock_call_result = t.CallToolResult(
+            content=[t.TextContent(type="text", text="result data")],
+        )
 
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
         mock_session.call_tool = AsyncMock(return_value=mock_call_result)
-
-        @asynccontextmanager
-        async def mock_http_client(url, http_client=None):
-            yield AsyncMock(), AsyncMock(), None
 
         with (
             patch(
@@ -694,10 +650,10 @@ class TestProxyToolCall:
             ),
             patch(
                 "appkit_assistant.backend.services.mcp_apps_service.streamable_http_client",
-                side_effect=mock_http_client,
+                side_effect=_mock_streamable_http_client,
             ),
             patch(
-                "appkit_assistant.backend.services.mcp_apps_service._McpAppsClientSession",
+                "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
             mock_session_ctx = AsyncMock()
@@ -931,14 +887,9 @@ class TestGetAuthHeaders:
 
 class TestCallToolResultToDict:
     def test_success_result(self) -> None:
-        result = MagicMock()
-        result.isError = False
-        content_item = MagicMock()
-        content_item.model_dump.return_value = {
-            "type": "text",
-            "text": "hello",
-        }
-        result.content = [content_item]
+        result = t.CallToolResult(
+            content=[t.TextContent(type="text", text="hello")],
+        )
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
@@ -946,30 +897,37 @@ class TestCallToolResultToDict:
         assert converted["content"][0]["text"] == "hello"
 
     def test_error_result(self) -> None:
-        result = MagicMock()
-        result.isError = True
-        result.content = []
+        result = t.CallToolResult(content=[], is_error=True)
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is True
         assert converted["content"] == []
 
-    def test_none_is_error(self) -> None:
-        result = MagicMock()
-        result.isError = None
-        result.content = []
+    def test_default_is_error_false(self) -> None:
+        result = t.CallToolResult(content=[])
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
 
     def test_multiple_content_items(self) -> None:
-        result = MagicMock()
-        result.isError = False
-        item1 = MagicMock()
-        item1.model_dump.return_value = {"type": "text", "text": "a"}
-        item2 = MagicMock()
-        item2.model_dump.return_value = {"type": "text", "text": "b"}
-        result.content = [item1, item2]
+        result = t.CallToolResult(
+            content=[
+                t.TextContent(type="text", text="a"),
+                t.TextContent(type="text", text="b"),
+            ],
+        )
 
         converted = _call_tool_result_to_dict(result)
         assert len(converted["content"]) == 2
+
+    def test_content_uses_wire_format_aliases(self) -> None:
+        """Content keys must stay camelCase for the frontend bridge."""
+        result = t.CallToolResult(
+            content=[
+                t.ImageContent(type="image", data="aGk=", mime_type="image/png"),
+            ],
+        )
+
+        converted = _call_tool_result_to_dict(result)
+        assert converted["content"][0]["mimeType"] == "image/png"
+        assert "mime_type" not in converted["content"][0]
