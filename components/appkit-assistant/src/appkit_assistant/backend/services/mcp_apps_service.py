@@ -45,6 +45,24 @@ _SUPPORTED_MIME_TYPE = "text/html;profile=mcp-app"
 _CLIENT_INFO = Implementation(name="appkit", version="1.0.0")
 
 
+class _McpAppsClientSession(ClientSession):
+    """ClientSession with MCP Apps capability advertised.
+
+    Passes the ``io.modelcontextprotocol/ui`` extension to the base session
+    so ``initialize()`` advertises it in ``ClientCapabilities.extensions``.
+    This signals to the MCP server that this host supports MCP Apps,
+    so the server can register UI-enabled tools (spec §Capability Negotiation).
+    """
+
+    def __init__(self, read_stream: Any = None, write_stream: Any = None) -> None:
+        super().__init__(
+            read_stream,
+            write_stream,
+            client_info=_CLIENT_INFO,
+            extensions={_EXTENSION_ID: {"mimeTypes": [_SUPPORTED_MIME_TYPE]}},
+        )
+
+
 class McpAppsService:
     """Service for direct MCP client communication with App support.
 

@@ -129,10 +129,6 @@ class DrawerCloseButton(MantineComponentBase):
     aria_label: rx.Var[str]
     """Accessibility label."""
 
-    _rename_props = {
-        "aria_label": "aria-label",
-    }
-
 
 class DrawerBody(MantineComponentBase):
     """Drawer.Body - Main content area for compound drawer."""
