@@ -206,6 +206,71 @@ def layout_examples() -> rx.Component:
                         p="md",
                     ),
                 ),
+                example_box(
+                    "FloatingWindow (resizable)",
+                    mn.stack(
+                        mn.box(
+                            mn.floating_window(
+                                mn.paper(
+                                    mn.stack(
+                                        mn.text("Drag handle", fw="bold"),
+                                        mn.text(
+                                            "Resize via the corner grip",
+                                            size="sm",
+                                            c="dimmed",
+                                        ),
+                                        gap="xs",
+                                    ),
+                                    p="sm",
+                                    h="100%",
+                                ),
+                                mn.floating_window.resize_handle(
+                                    mn.text("⇲", size="sm", c="dimmed"),
+                                    custom_attrs={
+                                        "aria-label": "Resize floating window"
+                                    },
+                                    style={
+                                        "position": "absolute",
+                                        "right": 0,
+                                        "bottom": 0,
+                                        "width": "20px",
+                                        "height": "20px",
+                                        "display": "flex",
+                                        "alignItems": "center",
+                                        "justifyContent": "center",
+                                        "cursor": "nwse-resize",
+                                    },
+                                ),
+                                enabled=True,
+                                within_portal=False,
+                                initial_position={"x": 24, "y": 24},
+                                dimensions={
+                                    "initialWidth": 220,
+                                    "minWidth": 160,
+                                    "maxWidth": 340,
+                                    "initialHeight": 120,
+                                    "minHeight": 96,
+                                    "maxHeight": 220,
+                                },
+                                shadow="md",
+                                radius="md",
+                                with_border=True,
+                            ),
+                            pos="relative",
+                            h=260,
+                            bg="gray.0",
+                            p="md",
+                        ),
+                        mn.text(
+                            "Keyboard: focus the grip, then Arrow keys resize "
+                            "width/height in 10px steps; Home/End jump to the "
+                            "min/max size.",
+                            size="xs",
+                            c="dimmed",
+                        ),
+                        gap="xs",
+                    ),
+                ),
                 cols=2,
                 spacing="md",
                 w="100%",

@@ -289,7 +289,7 @@ class Collapse(MantineLayoutComponentBase):
 
 
 class FloatingWindow(MantineLayoutComponentBase):
-    """Mantine FloatingWindow — draggable floating element.
+    """Mantine FloatingWindow — draggable, resizable floating element.
 
     https://mantine.dev/core/floating-window/
     """
@@ -305,6 +305,9 @@ class FloatingWindow(MantineLayoutComponentBase):
         "on_drag_end": "onDragEnd",
         "on_drag_start": "onDragStart",
         "on_position_change": "onPositionChange",
+        "on_resize_end": "onResizeEnd",
+        "on_resize_start": "onResizeStart",
+        "on_size_change": "onSizeChange",
         "portal_props": "portalProps",
         "with_border": "withBorder",
         "within_portal": "withinPortal",
@@ -315,6 +318,9 @@ class FloatingWindow(MantineLayoutComponentBase):
     axis: Var[Literal["x", "y"]] = None
     constrain_to_viewport: Var[bool] = None
     constrain_offset: Var[int] = None
+    dimensions: Var[dict] = None
+    """Resize constraints (Mantine 9.5): optional px numbers initialWidth,
+    minWidth, maxWidth, initialHeight, minHeight, maxHeight."""
     drag_handle_selector: Var[str] = None
     exclude_drag_handle_selector: Var[str] = None
     initial_position: Var[dict] = None
@@ -328,6 +334,37 @@ class FloatingWindow(MantineLayoutComponentBase):
     on_drag_start: EventHandler[rx.event.no_args_event_spec] = None
     on_drag_end: EventHandler[rx.event.no_args_event_spec] = None
     on_position_change: EventHandler[lambda pos: [pos]] = None
+    on_resize_start: EventHandler[rx.event.no_args_event_spec] = None
+    """Called without payload when pointer resize starts (Mantine 9.5)."""
+    on_resize_end: EventHandler[rx.event.no_args_event_spec] = None
+    """Called without payload when pointer resize ends (Mantine 9.5)."""
+    on_size_change: EventHandler[lambda size: [size]] = None
+    """Called with the applied ``{width, height}`` on resize (Mantine 9.5)."""
+
+
+class FloatingWindowResizeHandle(MantineLayoutComponentBase):
+    """Mantine FloatingWindow.ResizeHandle — resize grip for FloatingWindow.
+
+    Renders with ``role="separator"``. Keyboard support: Arrow Left/Right
+    resize width, Arrow Up/Down resize height in 10px steps; Home/End jump
+    to the minimum/maximum size. Respects constrain_to_viewport and
+    constrain_offset of the parent FloatingWindow.
+
+    https://mantine.dev/core/floating-window/
+    """
+
+    tag = "FloatingWindow.ResizeHandle"
+
+    _rename_props = {"aria_label": "aria-label"}
+
+    aria_label: Var[str] = None
+
+
+class FloatingWindowNamespace(rx.ComponentNamespace):
+    """Namespace for FloatingWindow components."""
+
+    __call__ = staticmethod(FloatingWindow.create)
+    resize_handle = staticmethod(FloatingWindowResizeHandle.create)
 
 
 class Marquee(MantineLayoutComponentBase):
@@ -510,7 +547,7 @@ center = Center.create
 collapse = Collapse.create
 container = Container.create
 flex = Flex.create
-floating_window = FloatingWindow.create
+floating_window = FloatingWindowNamespace()
 group = Group.create
 marquee = Marquee.create
 overflow_list = OverflowList.create

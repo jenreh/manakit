@@ -462,6 +462,155 @@ class TreeSelect(MantineLayoutComponentBase):
     on_expanded_change: EventHandler[lambda values: [values]] = None
 
 
+class Cascader(MantineComboboxBase):
+    """Reflex wrapper for Mantine Cascader (Mantine 9.5).
+
+    Cascader allows selecting a value from hierarchical data by drilling
+    down through cascading columns.
+
+    ``data`` is a list of nested option dicts with keys ``value`` (required,
+    must be unique across the entire tree), ``label`` (optional, falls back
+    to ``value``), ``children`` (optional list of the same shape) and
+    ``disabled`` (optional). ``value``/``default_value`` hold the ordered
+    path from root to the selected node as ``list[str]``.
+
+    https://mantine.dev/core/cascader/
+
+    Example:
+        ```python
+        mn.cascader(
+            label="Location",
+            placeholder="Pick location",
+            data=[
+                {
+                    "value": "europe",
+                    "label": "Europe",
+                    "children": [
+                        {"value": "berlin", "label": "Berlin"},
+                    ],
+                },
+            ],
+            value=state.location_path,
+            on_change=state.set_location_path,
+            searchable=True,
+            clearable=True,
+        )
+        ```
+    """
+
+    tag = "Cascader"
+
+    _rename_props = {
+        **MantineInputComponentBase._rename_props,  # noqa: SLF001
+        "allow_deselect": "allowDeselect",
+        "change_on_select": "changeOnSelect",
+        "check_icon_position": "checkIconPosition",
+        "chevron_color": "chevronColor",
+        "close_on_select": "closeOnSelect",
+        "column_width": "columnWidth",
+        "combobox_props": "comboboxProps",
+        "default_search_value": "defaultSearchValue",
+        "expand_trigger": "expandTrigger",
+        "format_value": "formatValue",
+        "max_displayed_levels": "maxDisplayedLevels",
+        "next_levels_control_label": "nextLevelsControlLabel",
+        "nothing_found_message": "nothingFoundMessage",
+        "on_clear": "onClear",
+        "on_search_change": "onSearchChange",
+        "open_on_focus": "openOnFocus",
+        "previous_levels_control_label": "previousLevelsControlLabel",
+        "render_option": "renderOption",
+        "render_search_option": "renderSearchOption",
+        "safe_area_polygon": "safeAreaPolygon",
+        "scroll_area_props": "scrollAreaProps",
+        "search_value": "searchValue",
+        "with_check_icon": "withCheckIcon",
+        "with_columns": "withColumns",
+    }
+
+    # Selection behavior
+    allow_deselect: Var[bool] = None
+    """Clicking the selected option deselects it (default True)."""
+
+    change_on_select: Var[bool] = None
+    """Allow selecting non-leaf options (parents with children)."""
+
+    close_on_select: Var[bool] = None
+    """Close dropdown after selection (defaults to opposite of
+    allow_deselect)."""
+
+    # Expansion behavior
+    expand_trigger: Var[Literal["click", "hover"]] = None
+    """How child columns are expanded (default "click")."""
+
+    safe_area_polygon: Var[bool | dict[str, Any]] = None
+    """Keep the next column open while the cursor moves diagonally toward it.
+    Only applies with ``expand_trigger="hover"`` (Mantine 9.5)."""
+
+    # Layout
+    with_columns: Var[bool] = None
+    """Cascading columns layout (default True); False renders a flat list,
+    useful on mobile."""
+
+    column_width: Var[str | int] = None
+    """Fixed width of each column."""
+
+    max_displayed_levels: Var[int] = None
+    """Maximum number of columns visible at the same time (default 3)."""
+
+    # Search
+    searchable: Var[bool] = None
+    search_value: Var[str] = None
+    default_search_value: Var[str] = None
+    nothing_found_message: Var[Any] = None
+    render_search_option: Var[Any] = None
+    """JS function ``(query, options) => ReactNode`` for search results."""
+
+    # Display
+    separator: Var[str] = None
+    """Separator between path labels in the input (default "/")."""
+
+    format_value: Var[Any] = None
+    """JS function ``({ options }) => string`` customizing the input label."""
+
+    render_option: Var[Any] = None
+    """JS function ``(option, level) => ReactNode`` for column options."""
+
+    with_check_icon: Var[bool] = None
+    check_icon_position: Var[Literal["left", "right"]] = None
+    chevron_color: Var[str] = None
+    open_on_focus: Var[bool] = None
+    next_levels_control_label: Var[str] = None
+    previous_levels_control_label: Var[str] = None
+    scroll_area_props: Var[dict[str, Any]] = None
+    combobox_props: Var[dict[str, Any]] = None
+
+    # Event handlers
+    on_clear: EventHandler[rx.event.no_args_event_spec] = None
+    """Called when the clear button is clicked."""
+
+    on_search_change: EventHandler[lambda value: [value]] = None
+    """Called when search value changes (receives str)."""
+
+    @classmethod
+    def get_event_triggers(cls) -> dict[str, Any]:
+        """Transform events to work with Reflex state system.
+
+        ``on_change`` receives the selected path as ``list[str]`` — the
+        ordered ``value`` chain from root to the selected node — or ``None``
+        when the value is cleared.
+        """
+
+        def _on_change(value: Var) -> list[Var]:
+            # Mantine sends (path: string[] | null, options); forward the path
+            return [value]
+
+        return {
+            **super().get_event_triggers(),
+            "on_change": _on_change,
+        }
+
+
 class ComboboxPopoverTarget(MantineLayoutComponentBase):
     """Mantine ComboboxPopover.Target — wraps the trigger element (e.g. a Button)."""
 
@@ -543,3 +692,4 @@ select = Select.create
 multi_select = MultiSelect.create
 autocomplete = Autocomplete.create
 tree_select = TreeSelect.create
+cascader = Cascader.create

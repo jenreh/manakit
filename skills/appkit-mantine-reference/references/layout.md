@@ -402,23 +402,68 @@ Draggable / resizable floating panel.
 
 ```python
 mn.floating_window(
-    mn.text("Drag my title bar"),
-    title="Properties",
-    opened=State.fw_opened,
-    on_close=State.close_fw,
+    mn.paper(mn.text("Drag me"), p="sm"),
+    enabled=True,
+    within_portal=False,
     initial_position={"x": 100, "y": 100},
-    initial_size={"width": 320, "height": 240},
-    resizable=True,
-    draggable=True,
-    z_index=200,
+    shadow="md",
+    radius="md",
+    with_border=True,
 )
 ```
 
-Props: `opened`, `on_close`, `title`, `initial_position`, `initial_size`,
-`resizable`, `draggable`, `min_width`, `min_height`, `max_width`, `max_height`,
-`z_index`, `with_close_button`, `header_props`.
+Props: `enabled`, `axis` (`"x"|"y"`), `constrain_to_viewport`,
+`constrain_offset`, `drag_handle_selector`, `exclude_drag_handle_selector`,
+`initial_position` (`{"x": int, "y": int}`), `radius`, `shadow`,
+`with_border`, `within_portal`, `z_index`, `portal_props`.
+Drag events: `on_drag_start`, `on_drag_end` (no payload),
+`on_position_change` (payload: position object).
 
-> Mantine extension — see component source for full prop list.
+### Resizing (Mantine 9.5)
+
+Set the `dimensions` prop and place a `mn.floating_window.resize_handle`
+compound component inside the window:
+
+```python
+mn.floating_window(
+    mn.paper(mn.text("Content"), p="sm", h="100%"),
+    mn.floating_window.resize_handle(
+        aria_label="Resize floating window",
+        style={
+            "position": "absolute",
+            "right": 0,
+            "bottom": 0,
+            "width": "20px",
+            "height": "20px",
+            "cursor": "nwse-resize",
+        },
+    ),
+    dimensions={
+        "initialWidth": 260,
+        "minWidth": 180,
+        "maxWidth": 500,
+        "initialHeight": 260,
+        "minHeight": 220,
+        "maxHeight": 400,
+    },
+    on_size_change=State.handle_size,      # payload: {"width": .., "height": ..}
+    on_resize_start=State.resize_started,  # no payload
+    on_resize_end=State.resize_ended,      # no payload
+)
+```
+
+- `dimensions` keys (all optional, px numbers, **camelCase** — the dict is
+  passed to JS verbatim): `initialWidth`, `minWidth`, `maxWidth`,
+  `initialHeight`, `minHeight`, `maxHeight`.
+- `on_size_change` receives the `{width, height}` object measured **after**
+  the new size has been applied; `on_resize_start` / `on_resize_end` fire
+  without payload when a pointer resize begins/ends.
+- The resize handle renders with `role="separator"` and accepts `aria_label`.
+  Keyboard support: Arrow Left/Right resize width, Arrow Up/Down resize
+  height in 10px steps; Home/End jump to the minimum/maximum size.
+- Resizing respects `constrain_to_viewport` and `constrain_offset`.
+
+> [Mantine docs — FloatingWindow](https://mantine.dev/core/floating-window/)
 
 ## OverflowList
 

@@ -41,6 +41,8 @@ mn.accordion(
 
 Props: `multiple`, `value`, `default_value`, `transition_duration`,
 `chevron_position`, `variant` (`"default"`, `"contained"`, `"filled"`, `"separated"`),
+`disable_collapse` (Mantine 9.5 — single mode only: the open item cannot be
+collapsed by clicking its control again; no effect when `multiple` is set),
 `on_change`.
 
 > [Mantine docs — Accordion](https://mantine.dev/core/accordion/)
@@ -184,7 +186,38 @@ mn.timeline(
 ```
 
 Timeline props: `active`, `reverse_active`, `line_width`, `bullet_size`, `color`, `align`.
-Timeline.Item props: `title`, `bullet`, `bullet_size`, `color`, `line_variant`.
+Timeline.Item props: `title`, `bullet`, `bullet_size`, `color`, `line_variant`,
+`opposite` (Mantine 9.5 — content on the opposite side of the line; any item
+setting it switches the timeline to a centered two-sided layout),
+`alternate` (Mantine 9.5 — swaps content and `opposite` for this item).
+
+```python
+# Centered layout with timestamps on the opposite side (Mantine 9.5)
+mn.timeline(
+    mn.timeline.item(
+        rx.text("Repository initialized"),
+        title="Kickoff",
+        opposite=mn.text("09:00", size="xs", c="dimmed"),
+    ),
+    mn.timeline.item(
+        rx.text("Released to production"),
+        title="Release",
+        opposite=mn.text("16:45", size="xs", c="dimmed"),
+    ),
+    active=1,
+    maw="320px",  # see note below
+)
+```
+
+`alternate=True` on a single item swaps that item's content and `opposite`
+(useful for a zig-zag timeline). It is a per-item prop, never set on the root.
+
+**Width gotcha:** the centered layout is a grid of
+`minmax(0,1fr) auto minmax(0,1fr)`, so both sides always claim half the
+container. In a wide card the opposite column stretches and its right-aligned
+content ends up far from the line, which looks broken but is Mantine's intended
+behaviour. Cap the timeline with `maw` (e.g. `maw="320px"`) instead of trying to
+style the columns.
 
 > [Mantine docs — Timeline](https://mantine.dev/core/timeline/)
 
@@ -399,7 +432,10 @@ mn.tooltip(
 ```
 
 Props: `label`, `position`, `offset`, `open_delay`, `close_delay`, `color`,
-`radius`, `with_arrow`, `multiline`, `opened` (controlled).
+`radius`, `with_arrow`, `multiline`, `opened` (controlled),
+`interactive` (Mantine 9.5 — keeps the tooltip open while the pointer moves
+from the target onto the tooltip content; use when the label contains links
+or other interactive elements).
 
 Floating tooltip: `mn.tooltip.floating(child, label="Follows cursor")`.
 

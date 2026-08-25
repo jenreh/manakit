@@ -74,7 +74,8 @@ mn.date_picker_input(
 ```
 
 Props: `type` (`"default"` | `"range"` | `"multiple"`), `number_of_columns`,
-`hide_outside_dates`, `first_day_of_week`, `weekend_days`, `presets`, `value_formatter`.
+`hide_outside_dates`, `first_day_of_week`, `weekend_days`, `presets`, `value_formatter`,
+`with_native_level_select` (Mantine 9.5, see below).
 
 > [Mantine docs — DatePickerInput](https://mantine.dev/dates/date-picker-input/)
 
@@ -207,3 +208,21 @@ mn.center(
 
 Available inline components: `mn.calendar()`, `mn.date_picker()`, `mn.month_picker()`,
 `mn.year_picker()`, `mn.mini_calendar()`, `mn.time_grid()`.
+
+## Native level select (Mantine 9.5)
+
+Set `with_native_level_select=True` on `mn.date_picker`, `mn.date_picker_input`,
+`mn.month_picker`, `mn.year_picker`, or `mn.date_time_picker` to replace the
+calendar header level button with native `<select>` elements — at month level two
+selects (month + year), at year level a single year select. Useful for quickly
+jumping to a distant month or year.
+
+```python
+mn.date_picker_input(
+    label="Date",
+    placeholder="Pick date",
+    with_native_level_select=True,
+)
+
+mn.date_picker(with_native_level_select=True)
+```

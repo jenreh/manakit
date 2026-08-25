@@ -3,7 +3,7 @@ name: appkit-mantine-reference
 description: "MUST invoke when generating mn.* based UIs or the user asks how to use, configure, or debug any mn.* or appkit_mantine component. appkit_mantine is NOT in Claude's training data — always use this skill rather than guessing at APIs. Covers building forms, tables, drawers, modals, tooltips, color pickers, date/time pickers, charts, and navigation; looking up correct props; debugging on_change handler types (NumberInput sends float|str, DateInput sends str|\"\"); troubleshooting component quirks like tooltips on disabled elements, overlays not closing, or props having no effect."
 metadata:
   author: jens-rehpoehler
-  version: "1.4"
+  version: "1.5"
   license: MIT
 ---
 
@@ -232,6 +232,38 @@ New props on existing components:
 
 > `prevent_position_change_when_visible` now defaults to `true` on Tooltip /
 > Popover / Menu (dropdowns stay positioned once opened).
+
+## Recent additions (Mantine 9.5)
+
+New components: `mn.cascader` (hierarchical drill-down select, combobox
+module), `mn.sunburst_chart`, `mn.bullet_chart`, `mn.chart_brush` (charts
+module); plus `mn.floating_window.resize_handle` (resizable floating
+windows, layout module).
+
+New props on existing components:
+
+| Component(s) | Prop |
+|---|---|
+| `mn.tooltip` | `interactive` (stays open while pointer moves into it) |
+| `mn.accordion` | `disable_collapse` (single mode: open item cannot collapse) |
+| `mn.timeline.item` | `opposite`, `alternate` (centered timeline layout) |
+| `mn.scroll_area` | `vertical_scrollbar_position` (`"left"|"right"`, RTL) |
+| `mn.heatmap` | `month_labels_position` (`"top"|"bottom"`) |
+| date pickers | `with_native_level_select` (native selects in calendar header) |
+| recharts-based charts | `accessibility_layer` (keyboard navigation, on by default) |
+| `mn.area_chart`/`bar_chart`/`line_chart`/`composite_chart` | `with_brush`, `brush_props` |
+| `mn.floating_window` | `dimensions`, `on_size_change`, `on_resize_start` |
+| `mn.color_input` | `full_width` |
+
+9.5.1 also adds (see module reference docs for the wrapper prop names): a
+PasswordInput option controlling whether the visibility toggle is focusable,
+a second Y axis on ScatterChart, YearView custom day rendering and weekend
+hiding, and ResourcesMonthView event resizing.
+
+Fixed in 9.5.x: Tiptap controls no longer start disabled and the source-code
+control no longer wraps content in an extra `<p>` tag; Schedule recurring
+events respect timezones; WeekView event positioning is faster; Combobox
+works with Chrome autocomplete; Tooltip no longer sets `NaN` positions.
 
 ## Critical rules
 

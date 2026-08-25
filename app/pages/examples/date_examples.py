@@ -89,6 +89,15 @@ def date_examples_page() -> rx.Component:
                     ),
                 ),
                 example_box(
+                    "DatePickerInput (Native Level Select)",
+                    mn.date_picker_input(
+                        label="Date Picker",
+                        placeholder="Pick date",
+                        with_native_level_select=True,
+                        clearable=True,
+                    ),
+                ),
+                example_box(
                     "DateTimePicker",
                     mn.date_time_picker(
                         label="Date & Time",
@@ -152,6 +161,14 @@ def date_examples_page() -> rx.Component:
                         mn.date_picker(
                             number_of_columns=1,
                             type="range",
+                        )
+                    ),
+                ),
+                example_box(
+                    "DatePicker (Native Level Select)",
+                    mn.center(
+                        mn.date_picker(
+                            with_native_level_select=True,
                         )
                     ),
                 ),

@@ -130,7 +130,7 @@ Args:
     *children: The children of the component.
     start_time: Earliest visible time slot, e.g. ``"08:00:00"``.
     end_time: Latest visible time slot, e.g. ``"18:00:00"``.
-    interval_minutes: Granularity of time slots in minutes.
+    interval_minutes: Granularity of time slots in minutes.  Since Mantine 9.5 values over 60 are supported — any whole number of hours (e.g. ``120`` or ``240``) renders multi-hour time slots.
     start_scroll_time: Initial scroll position time string.
     slot_width: Width of each time-slot column.
     row_height: Height of each resource row.
@@ -251,7 +251,7 @@ Args:
     *children: The children of the component.
     start_time: Earliest visible time slot, e.g. ``"08:00:00"``.
     end_time: Latest visible time slot, e.g. ``"18:00:00"``.
-    interval_minutes: Granularity of time slots in minutes.
+    interval_minutes: Granularity of time slots in minutes.  Since Mantine 9.5 values over 60 are supported — any whole number of hours (e.g. ``120`` or ``240``) renders multi-hour time slots.
     start_scroll_time: Initial scroll position time string.
     slot_width: Width of each time-slot column.
     row_height: Height of each resource row.
@@ -372,7 +372,7 @@ Args:
     *children: The children of the component.
     start_time: Earliest visible time slot, e.g. ``"08:00:00"``.
     end_time: Latest visible time slot, e.g. ``"18:00:00"``.
-    interval_minutes: Granularity of time slots in minutes.
+    interval_minutes: Granularity of time slots in minutes.  Since Mantine 9.5 values over 60 are supported — any whole number of hours (e.g. ``120`` or ``240``) renders multi-hour time slots.
     start_scroll_time: Initial scroll position time string.
     slot_width: Width of each time-slot column.
     row_height: Height of each resource row.
@@ -614,7 +614,7 @@ Args:
     month_view_props: no description
     start_time: Earliest visible time slot, e.g. ``"08:00:00"``.
     end_time: Latest visible time slot, e.g. ``"18:00:00"``.
-    interval_minutes: Granularity of time slots in minutes.
+    interval_minutes: Granularity of time slots in minutes.  Since Mantine 9.5 values over 60 are supported — any whole number of hours (e.g. ``120`` or ``240``) renders multi-hour time slots.
     start_scroll_time: Initial scroll position time string.
     slot_width: Width of each time-slot column.
     row_height: Height of each resource row.

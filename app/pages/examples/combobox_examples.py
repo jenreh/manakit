@@ -35,6 +35,9 @@ class ComboboxExamplesState(rx.State):
     # ComboboxPopover
     combobox_popover_value: str = ""
 
+    # Cascader
+    cascader_value: list[str] = []
+
     def set_value(self, field: str, value: str | list[str]) -> None:
         """Generic setter for state values."""
         setattr(self, field, value)
@@ -43,6 +46,11 @@ class ComboboxExamplesState(rx.State):
     def set_combobox_popover(self, value: str) -> None:
         """Set the ComboboxPopover selected value."""
         self.combobox_popover_value = value
+
+    @rx.event
+    def set_cascader(self, value: list[str] | None) -> None:
+        """Set the Cascader path (None when the value is cleared)."""
+        self.cascader_value = value or []
 
     def handle_pill_key(self, key: str) -> None:
         """Add a pill when Enter is pressed."""
@@ -74,6 +82,53 @@ TREE_SELECT_DATA = [
         "children": [
             {"label": "FastAPI", "value": "fastapi"},
             {"label": "Django", "value": "django"},
+        ],
+    },
+]
+
+
+CASCADER_DATA = [
+    {
+        "value": "europe",
+        "label": "Europe",
+        "children": [
+            {
+                "value": "germany",
+                "label": "Germany",
+                "children": [
+                    {"value": "berlin", "label": "Berlin"},
+                    {"value": "hamburg", "label": "Hamburg"},
+                ],
+            },
+            {
+                "value": "france",
+                "label": "France",
+                "children": [
+                    {"value": "paris", "label": "Paris"},
+                    {"value": "lyon", "label": "Lyon"},
+                ],
+            },
+        ],
+    },
+    {
+        "value": "north-america",
+        "label": "North America",
+        "children": [
+            {
+                "value": "usa",
+                "label": "USA",
+                "children": [
+                    {"value": "new-york", "label": "New York"},
+                    {"value": "san-francisco", "label": "San Francisco"},
+                ],
+            },
+            {
+                "value": "canada",
+                "label": "Canada",
+                "children": [
+                    {"value": "toronto", "label": "Toronto"},
+                ],
+            },
         ],
     },
 ]
@@ -435,6 +490,48 @@ def _render_combobox_popover_section() -> rx.Component:
     )
 
 
+def _render_cascader_section() -> rx.Component:
+    """Cascader — drilldown selection from hierarchical data (Mantine 9.5)."""
+    return mn.stack(
+        mn.title("Cascader", order=2, mt="xl"),
+        mn.text(
+            "Select a value from hierarchical data by drilling down "
+            "through cascading columns.",
+            size="sm",
+            c="dimmed",
+        ),
+        mn.simple_grid(
+            example_box(
+                "Drilldown with columns",
+                mn.cascader(
+                    label="Location",
+                    placeholder="Pick location",
+                    data=CASCADER_DATA,
+                    value=ComboboxExamplesState.cascader_value,
+                    on_change=ComboboxExamplesState.set_cascader,
+                    searchable=True,
+                    clearable=True,
+                ),
+                ComboboxExamplesState.cascader_value,
+            ),
+            example_box(
+                "Hover expand, select any level",
+                mn.cascader(
+                    label="Location",
+                    placeholder="Pick any level",
+                    data=CASCADER_DATA,
+                    expand_trigger="hover",
+                    change_on_select=True,
+                    clearable=True,
+                ),
+            ),
+            cols=2,
+            width="100%",
+        ),
+        width="100%",
+    )
+
+
 @navbar_layout(
     route="/comboboxes",
     title="Combobox Examples",
@@ -463,6 +560,7 @@ def combobox_examples() -> rx.Component:
             _render_rich_select_section(),
             _render_tree_and_pills_section(),
             _render_combobox_popover_section(),
+            _render_cascader_section(),
             w="100%",
             p="9px",
         ),
