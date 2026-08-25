@@ -1,5 +1,9 @@
-import MapLibreGL from "maplibre-gl";
+import * as MapLibreGL from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+// maplibre-gl v6 is ESM-only: no default export, and bundler builds must be
+// told where the worker chunk lives (its import.meta.url fallback resolves
+// against Vite's dep-cache directory, where the worker file does not exist).
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import {
   createContext,
   forwardRef,
@@ -13,6 +17,8 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+
+MapLibreGL.setWorkerUrl(maplibreWorkerUrl);
 
 // ---------------------------------------------------------------------------
 // Ported from https://mapcn.dev (src/registry/map.tsx) for Reflex.

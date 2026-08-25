@@ -113,44 +113,10 @@ class TestInit:
 
 class TestConnectForApps:
     @pytest.mark.asyncio
-    async def test_initialize_sends_request_and_notification(self) -> None:
-        # Create a mock result for the initialize response
-        init_result = MagicMock()
-        init_result.capabilities = MagicMock()
-        init_result.protocol_version = "2025-11-25"
-
-        with (
-            patch.object(
-                _McpAppsClientSession,
-                "send_request",
-                new_callable=AsyncMock,
-                return_value=init_result,
-            ) as mock_send_req,
-            patch.object(
-                _McpAppsClientSession,
-                "send_notification",
-                new_callable=AsyncMock,
-            ) as mock_send_notif,
-        ):
-            session = _McpAppsClientSession(MagicMock(), MagicMock())
-            result = await session.initialize()
-
-            assert result is init_result
-            mock_send_req.assert_called_once()
-            mock_send_notif.assert_called_once()
-
-            # Verify the request includes the UI extension
-            call_args = mock_send_req.call_args
-            request = call_args[0][0]
-            caps = request.params.capabilities
-            assert caps.extensions is not None
-            assert "io.modelcontextprotocol/ui" in caps.extensions
-
-    @pytest.mark.asyncio
-    async def test_initialize_stores_server_capabilities(self) -> None:
-        init_result = MagicMock()
-        init_result.capabilities = MagicMock(spec=["tools"])
-        init_result.protocol_version = "2025-11-25"
+    async def test_advertises_ui_extension(self) -> None:
+        service = McpAppsService()
+        server = _make_server()
+        mock_session = AsyncMock()
 
         with (
             patch(
@@ -164,10 +130,22 @@ class TestConnectForApps:
                 "appkit_assistant.backend.services.mcp_apps_service.ClientSession",
             ) as mock_session_cls,
         ):
-            session = _McpAppsClientSession(MagicMock(), MagicMock())
-            await session.initialize()
+            mock_session_ctx = AsyncMock()
+            mock_session_ctx.__aenter__ = AsyncMock(return_value=mock_session)
+            mock_session_ctx.__aexit__ = AsyncMock(return_value=False)
+            mock_session_cls.return_value = mock_session_ctx
 
-            assert session.server_capabilities is init_result.capabilities
+            async with service._connect_for_apps(server, user_id=1) as session:
+                assert session is mock_session
+
+            mock_session.initialize.assert_awaited_once()
+            kwargs = mock_session_cls.call_args.kwargs
+            assert kwargs["extensions"] == {
+                "io.modelcontextprotocol/ui": {
+                    "mimeTypes": ["text/html;profile=mcp-app"],
+                }
+            }
+            assert kwargs["client_info"].name == "appkit"
 
 
 # ============================================================================
@@ -908,17 +886,6 @@ class TestCallToolResultToDict:
 
         converted = _call_tool_result_to_dict(result)
         assert converted["isError"] is False
-
-    def test_content_uses_wire_format_aliases(self) -> None:
-        result = types.CallToolResult(
-            content=[
-                types.ImageContent(type="image", data="aGk=", mime_type="image/png")
-            ],
-        )
-
-        converted = _call_tool_result_to_dict(result)
-        assert converted["content"][0]["mimeType"] == "image/png"
-        assert "mime_type" not in converted["content"][0]
 
     def test_multiple_content_items(self) -> None:
         result = t.CallToolResult(

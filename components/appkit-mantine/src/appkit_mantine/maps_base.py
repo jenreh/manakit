@@ -28,7 +28,7 @@ _MAPS_JSX = rx.asset("maps.jsx", shared=True)
 MAPS_LIBRARY = _MAPS_JSX.importable_path
 """Local asset path for the ported MapCN React components."""
 
-MAPLIBRE_GL_DEPENDENCY = "maplibre-gl@^5.8.0"
+MAPLIBRE_GL_DEPENDENCY = "maplibre-gl@^6.6.0"
 
 MapControlPosition = Literal["top-left", "top-right", "bottom-left", "bottom-right"]
 """Shared corner-position type for map overlays (controls, directions panel)."""
