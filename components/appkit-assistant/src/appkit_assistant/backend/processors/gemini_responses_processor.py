@@ -549,7 +549,7 @@ class GeminiResponsesProcessor(StreamingProcessorBase, MCPCapabilities):
             for wrapper in session_wrappers:
                 try:
                     logger.debug(
-                        "Connecting to MCP server %s via streamablehttp_client",
+                        "Connecting to MCP server %s via streamable_http_client",
                         wrapper.name,
                     )
                     # Create httpx client with headers and timeout
@@ -560,7 +560,7 @@ class GeminiResponsesProcessor(StreamingProcessorBase, MCPCapabilities):
                     # Register client for cleanup
                     await stack.enter_async_context(http_client)
 
-                    read, write, _ = await stack.enter_async_context(
+                    read, write = await stack.enter_async_context(
                         streamable_http_client(
                             url=wrapper.url,
                             http_client=http_client,
@@ -578,9 +578,7 @@ class GeminiResponsesProcessor(StreamingProcessorBase, MCPCapabilities):
                     for tool in tools_result.tools:
                         tools_dict[tool.name] = {
                             "description": tool.description or "",
-                            "inputSchema": (
-                                tool.inputSchema if hasattr(tool, "inputSchema") else {}
-                            ),
+                            "inputSchema": tool.input_schema,
                         }
 
                     ctx = MCPToolContext(

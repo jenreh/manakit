@@ -14,6 +14,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from google.genai import types
+from mcp.types import ListToolsResult, Tool
 
 from appkit_assistant.backend.processors.gemini_responses_processor import (
     GEMINI_FORBIDDEN_SCHEMA_FIELDS,
@@ -981,6 +982,45 @@ class TestMcpContextManager:
             async with proc._mcp_context_manager([wrapper]) as contexts:
                 # Should continue with empty contexts
                 assert len(contexts) == 0
+
+    @pytest.mark.asyncio
+    async def test_fetches_tools_via_mcp2_api(self) -> None:
+        """Real mcp.types objects so attribute-name drift fails this test."""
+        proc = _make_processor()
+        wrapper = MCPSessionWrapper("https://mcp.test", {"h": "v"}, "TestServer")
+        schema = {"type": "object", "properties": {"q": {"type": "string"}}}
+
+        session = MagicMock()
+        session.initialize = AsyncMock()
+        session.list_tools = AsyncMock(
+            return_value=ListToolsResult(
+                tools=[Tool(name="search", description="Search", input_schema=schema)]
+            )
+        )
+
+        @asynccontextmanager
+        async def _fake_transport(url, *, http_client=None, **kwargs):
+            assert url == "https://mcp.test"
+            # mcp 2.0 yields a 2-tuple (read_stream, write_stream)
+            yield (MagicMock(), MagicMock())
+
+        @asynccontextmanager
+        async def _fake_session(read, write):
+            yield session
+
+        with (
+            patch(f"{_PATCH}.httpx.AsyncClient", return_value=MagicMock()),
+            patch(f"{_PATCH}.streamable_http_client", _fake_transport),
+            patch(f"{_PATCH}.ClientSession", _fake_session),
+        ):
+            async with proc._mcp_context_manager([wrapper]) as contexts:
+                assert len(contexts) == 1
+                ctx = contexts[0]
+                assert ctx.server_name == "TestServer"
+                assert ctx.tools["search"]["description"] == "Search"
+                assert ctx.tools["search"]["inputSchema"] == schema
+
+        session.initialize.assert_awaited_once()
 
 
 # ============================================================================
