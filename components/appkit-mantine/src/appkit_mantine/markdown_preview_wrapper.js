@@ -17,7 +17,7 @@ import mermaidModule from 'mermaid';
 import katex from 'katex';
 import 'katex/dist/katex.css';
 import { getCodeString } from 'rehype-rewrite';
-import rehypeSanitize from 'rehype-sanitize';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import { ColorModeContext } from '$/utils/context';
 
 const mermaid = mermaidModule?.default ?? mermaidModule;
@@ -25,6 +25,11 @@ if (mermaid && typeof mermaid.initialize === 'function') {
     mermaid.initialize({
         startOnLoad: false,
         suppressErrorRendering: true,
+        // Rendered SVG is injected with dangerouslySetInnerHTML, bypassing
+        // rehypeSanitize entirely, so pin Mermaid's own DOMPurify pass rather
+        // than relying on the library default staying 'strict'.
+        securityLevel: 'strict',
+        htmlLabels: false,
     });
 
     const assignParseHandler = (handler) => {
@@ -96,7 +101,6 @@ const MermaidCode = memo(function MermaidCode({ children = [], className, node }
                     }
                 }
 
-                console.log('[MarkdownPreview] Rendering Mermaid diagram:', demoId.current);
                 const { svg: renderedSvg } = await mermaid.render(demoId.current, normalizedCode);
                 if (!cancelled) {
                     const renderedString =
@@ -261,6 +265,24 @@ function buildCustomCodeRenderer(renderMermaid, renderKatex, baseRenderer) {
     };
 }
 
+// hast-util-sanitize replaces — never merges — any top-level key the caller
+// supplies, so `attributes` must be built on top of `defaultSchema.attributes`.
+// Passing a bare object here would drop GitHub's whole attribute allow-list.
+//
+// `style` is deliberately NOT allowed: inline styles on untrusted markdown
+// enable clickjacking overlays (position:fixed over the page) and render-time
+// beacons (background:url(https://attacker/?leak)). `className` is allowed
+// because syntax highlighting depends on it.
+const STANDARD_SCHEMA = {
+    ...defaultSchema,
+    attributes: {
+        ...defaultSchema.attributes,
+        '*': [...(defaultSchema.attributes?.['*'] ?? []), 'className'],
+        a: [...(defaultSchema.attributes?.a ?? []), 'target', 'rel'],
+        img: [...(defaultSchema.attributes?.img ?? []), 'alt', 'width', 'height'],
+    },
+};
+
 const SECURITY_PRESETS = {
     strict: {
         skipHtml: true,
@@ -268,15 +290,7 @@ const SECURITY_PRESETS = {
     },
     standard: {
         skipHtml: true,
-        rehypePlugins: [
-            [rehypeSanitize, {
-                attributes: {
-                    '*': ['className', 'style'],
-                    a: ['href', 'target', 'rel'],
-                    img: ['src', 'alt', 'width', 'height'],
-                },
-            }],
-        ],
+        rehypePlugins: [[rehypeSanitize, STANDARD_SCHEMA]],
     },
     none: {
         skipHtml: false,

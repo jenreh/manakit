@@ -76,6 +76,7 @@ Create a configuration class extending `BaseConfig`:
 ```python
 from appkit_commons.configuration import BaseConfig
 
+
 class MyConfig(BaseConfig):
     app_name: str = "MyApp"
     debug: bool = False
@@ -104,7 +105,7 @@ db_config = DatabaseConfig(
     port=5432,
     name="myapp",
     username="user",
-    password="secret:db_password"
+    password="secret:db_password",
 )
 
 session_manager = create_session_manager(db_config)
@@ -141,6 +142,7 @@ All configuration classes should inherit from `BaseConfig`:
 
 ```python
 from appkit_commons.configuration import BaseConfig
+
 
 class AppConfig(BaseConfig):
     model_config = {"env_prefix": "MYAPP_"}
@@ -201,6 +203,7 @@ Extend from `BaseEntity` for common database fields:
 ```python
 from appkit_commons.database import BaseEntity
 from sqlalchemy import Column, String
+
 
 class User(BaseEntity):
     __tablename__ = "users"
@@ -270,7 +273,7 @@ from appkit_commons.configuration import configure_azure_key_vault
 
 configure_azure_key_vault(
     vault_url="https://myvault.vault.azure.net/",
-    credential=None  # Uses DefaultAzureCredential
+    credential=None,  # Uses DefaultAzureCredential
 )
 ```
 
@@ -286,7 +289,7 @@ setup_logging(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     file="app.log",
     max_file_size="10 MB",
-    backup_count=5
+    backup_count=5,
 )
 ```
 

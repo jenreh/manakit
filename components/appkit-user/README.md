@@ -70,7 +70,7 @@ from appkit_user.configuration import GithubOAuthConfig, AzureOAuthConfig
 github_config = GithubOAuthConfig(
     client_id="your-github-client-id",
     client_secret="secret:github-client-secret",
-    redirect_url="http://localhost:3000/auth/github/callback"
+    redirect_url="http://localhost:3000/auth/github/callback",
 )
 
 # Azure OAuth
@@ -78,7 +78,7 @@ azure_config = AzureOAuthConfig(
     client_id="your-azure-client-id",
     client_secret="secret:azure-client-secret",
     tenant_id="your-tenant-id",
-    redirect_url="http://localhost:3000/auth/azure/callback"
+    redirect_url="http://localhost:3000/auth/azure/callback",
 )
 ```
 
@@ -90,15 +90,18 @@ Use authentication decorators to protect your pages:
 import reflex as rx
 from appkit_user.authentication.components import requires_authenticated, requires_role
 
+
 # Require authentication
 @requires_authenticated
 def protected_page():
     return rx.text("This page requires login")
 
+
 # Require specific role
 @requires_role("admin")
 def admin_page():
     return rx.text("Admin only content")
+
 
 # Require admin privileges
 @requires_admin
@@ -113,11 +116,10 @@ Add login functionality to your app:
 ```python
 from appkit_user.authentication.components import login_form
 
+
 def login_page():
     return login_form(
-        header="My App",
-        logo="/img/logo.svg",
-        logo_dark="/img/logo_dark.svg"
+        header="My App", logo="/img/logo.svg", logo_dark="/img/logo_dark.svg"
     )
 ```
 
@@ -138,7 +140,7 @@ config = GithubOAuthConfig(
     client_id="gh_oauth_client_id",
     client_secret="secret:github_oauth_secret",
     redirect_url="https://myapp.com/auth/github/callback",
-    scopes=["user", "user:email", "read:org"]  # Optional custom scopes
+    scopes=["user", "user:email", "read:org"],  # Optional custom scopes
 )
 ```
 
@@ -155,7 +157,7 @@ config = AzureOAuthConfig(
     tenant_id="tenant-id",  # or "common" for multi-tenant
     redirect_url="https://myapp.com/auth/azure/callback",
     is_public_client=False,  # Set to True for PKCE-only apps
-    scopes=["openid", "profile", "email", "User.Read"]
+    scopes=["openid", "profile", "email", "User.Read"],
 )
 ```
 
@@ -165,6 +167,7 @@ config = AzureOAuthConfig(
 
 ```python
 from appkit_user.authentication.components import requires_authenticated
+
 
 @requires_authenticated
 def dashboard():
@@ -176,9 +179,11 @@ def dashboard():
 ```python
 from appkit_user.authentication.components import requires_role
 
+
 @requires_role("editor")
 def content_editor():
     return rx.text("Content editor interface")
+
 
 @requires_role("viewer", fallback=rx.text("Access denied"))
 def reports():
@@ -189,6 +194,7 @@ def reports():
 
 ```python
 from appkit_user.authentication.components import requires_admin
+
 
 @requires_admin
 def admin_panel():
@@ -204,12 +210,9 @@ Display and manage users:
 ```python
 from appkit_user.user_management.components import users_table
 
+
 def user_management_page():
-    return rx.vstack(
-        rx.heading("User Management"),
-        users_table(),
-        spacing="4"
-    )
+    return rx.vstack(rx.heading("User Management"), users_table(), spacing="4")
 ```
 
 #### User Profile
@@ -219,12 +222,9 @@ Manage user profiles and roles:
 ```python
 from appkit_user.user_management.components import profile_roles, profile_state
 
+
 def user_profile_page():
-    return rx.vstack(
-        rx.heading("User Profile"),
-        profile_roles(),
-        spacing="4"
-    )
+    return rx.vstack(rx.heading("User Profile"), profile_roles(), spacing="4")
 ```
 
 ### Session Management
@@ -234,12 +234,13 @@ Access current user session:
 ```python
 from appkit_user.authentication.states import UserSession
 
+
 def current_user_info():
     return rx.vstack(
         rx.text(f"User: {UserSession.user.email}"),
         rx.text(f"Roles: {UserSession.user.roles}"),
         rx.text(f"Tenant: {UserSession.user.tenant_id}"),
-        rx.text(f"Authenticated: {UserSession.is_authenticated}")
+        rx.text(f"Authenticated: {UserSession.is_authenticated}"),
     )
 ```
 
@@ -253,17 +254,9 @@ Configure OAuth callback URLs in your Reflex app:
 
 ```python
 # In rxconfig.py or main app file
-app.add_page(
-    oauth_login_splash,
-    route="/auth/github/callback",
-    title="GitHub Login"
-)
+app.add_page(oauth_login_splash, route="/auth/github/callback", title="GitHub Login")
 
-app.add_page(
-    oauth_login_splash,
-    route="/auth/azure/callback",
-    title="Azure Login"
-)
+app.add_page(oauth_login_splash, route="/auth/azure/callback", title="Azure Login")
 ```
 
 ### Custom OAuth Providers
@@ -272,6 +265,7 @@ Extend OAuth support for custom providers:
 
 ```python
 from appkit_user.configuration import OAuthConfig, OAuthProvider
+
 
 class CustomOAuthConfig(OAuthConfig):
     provider: OAuthProvider = "custom"
@@ -356,35 +350,33 @@ import reflex as rx
 from appkit_user.authentication.components import (
     login_form,
     requires_authenticated,
-    oauth_login_splash
+    oauth_login_splash,
 )
 from appkit_user.configuration import GithubOAuthConfig
 
 # Configure OAuth
 oauth_config = GithubOAuthConfig(
-    client_id="your-client-id",
-    client_secret="secret:your-client-secret"
+    client_id="your-client-id", client_secret="secret:your-client-secret"
 )
+
 
 # Public login page
 def login():
     return login_form(
-        header="My App",
-        logo="/img/logo.svg",
-        logo_dark="/img/logo_dark.svg"
+        header="My App", logo="/img/logo.svg", logo_dark="/img/logo_dark.svg"
     )
+
 
 # Protected dashboard
 @requires_authenticated
 def dashboard():
     return rx.text(f"Welcome {UserSession.user.email}!")
 
+
 # OAuth callback
 def github_callback():
-    return oauth_login_splash(
-        provider="github",
-        message="Signing in with GitHub..."
-    )
+    return oauth_login_splash(provider="github", message="Signing in with GitHub...")
+
 
 # Add to app
 app = rx.App()
@@ -401,18 +393,14 @@ Create an admin user management interface:
 from appkit_user.user_management.components import users_table
 from appkit_user.authentication.components import requires_admin
 
+
 @requires_admin
 def admin_users():
     return rx.vstack(
         rx.heading("User Management", size="5"),
-        rx.flex(
-            users_table(),
-            direction="column",
-            gap="4",
-            width="100%"
-        ),
+        rx.flex(users_table(), direction="column", gap="4", width="100%"),
         padding="6",
-        spacing="4"
+        spacing="4",
     )
 ```
 
@@ -431,12 +419,12 @@ def navigation():
                 rx.cond(
                     UserSession.user.roles.contains("admin"),
                     rx.link("Admin", href="/admin"),
-                    rx.text("")  # Empty for non-admins
+                    rx.text(""),  # Empty for non-admins
                 ),
-                rx.button("Logout", on_click=UserSession.logout)
+                rx.button("Logout", on_click=UserSession.logout),
             ),
-            rx.link("Login", href="/login")
-        )
+            rx.link("Login", href="/login"),
+        ),
     )
 ```
 

@@ -375,17 +375,32 @@ class TestOAuthService:
     def test_get_user_info_github(
         self, mock_oauth_session: Mock, oauth_service: OAuthService
     ) -> None:
-        """get_user_info fetches GitHub user data."""
+        """get_user_info fetches GitHub user data.
+
+        The primary address always comes from /user/emails: /user exposes only
+        the public profile email and never says whether it was confirmed.
+        """
         mock_session_instance = MagicMock()
-        mock_response = MagicMock()
-        mock_response.json.return_value = {
-            "id": 123,
-            "email": "user@GITHUB.com",
-            "name": "Test User",
-            "login": "testuser",
-            "avatar_url": "https://avatar.url",
-        }
-        mock_session_instance.get.return_value = mock_response
+        mock_session_instance.get.side_effect = [
+            MagicMock(
+                json=lambda: {
+                    "id": 123,
+                    "email": "public@github.com",
+                    "name": "Test User",
+                    "login": "testuser",
+                    "avatar_url": "https://avatar.url",
+                }
+            ),
+            MagicMock(
+                json=lambda: [
+                    {
+                        "email": "user@GITHUB.com",
+                        "primary": True,
+                        "verified": True,
+                    }
+                ]
+            ),
+        ]
         mock_oauth_session.return_value = mock_session_instance
         token = {"access_token": "github_token"}
 
@@ -393,6 +408,7 @@ class TestOAuthService:
 
         assert user_info["id"] == "123"
         assert user_info["email"] == "user@github.com"
+        assert user_info["email_verified"] is True
         assert user_info["username"] == "testuser"
 
     @patch("appkit_user.authentication.backend.services.oauth_service.OAuth2Session")
@@ -412,8 +428,16 @@ class TestOAuthService:
             ),
             MagicMock(
                 json=lambda: [
-                    {"email": "secondary@example.com", "primary": False},
-                    {"email": "Primary@EXAMPLE.com", "primary": True},
+                    {
+                        "email": "secondary@example.com",
+                        "primary": False,
+                        "verified": True,
+                    },
+                    {
+                        "email": "Primary@EXAMPLE.com",
+                        "primary": True,
+                        "verified": True,
+                    },
                 ]
             ),
         ]
@@ -423,6 +447,45 @@ class TestOAuthService:
         user_info = oauth_service.get_user_info("github", token)
 
         assert user_info["email"] == "primary@example.com"
+        assert user_info["email_verified"] is True
+
+    @patch("appkit_user.authentication.backend.services.oauth_service.OAuth2Session")
+    def test_get_user_info_github_unverified_primary_email(
+        self, mock_oauth_session: Mock, oauth_service: OAuthService
+    ) -> None:
+        """An unconfirmed GitHub primary address is reported as unverified."""
+        mock_session_instance = MagicMock()
+        mock_session_instance.get.side_effect = [
+            MagicMock(json=lambda: {"id": 123, "login": "attacker"}),
+            MagicMock(
+                json=lambda: [
+                    {"email": "victim@corp.com", "primary": True, "verified": False}
+                ]
+            ),
+        ]
+        mock_oauth_session.return_value = mock_session_instance
+
+        user_info = oauth_service.get_user_info("github", {"access_token": "t"})
+
+        assert user_info["email"] == "victim@corp.com"
+        assert user_info["email_verified"] is False
+
+    @patch("appkit_user.authentication.backend.services.oauth_service.OAuth2Session")
+    def test_get_user_info_github_no_primary_email(
+        self, mock_oauth_session: Mock, oauth_service: OAuthService
+    ) -> None:
+        """No primary address at all yields an empty, unverified email."""
+        mock_session_instance = MagicMock()
+        mock_session_instance.get.side_effect = [
+            MagicMock(json=lambda: {"id": 123, "login": "testuser"}),
+            MagicMock(json=list),
+        ]
+        mock_oauth_session.return_value = mock_session_instance
+
+        user_info = oauth_service.get_user_info("github", {"access_token": "t"})
+
+        assert user_info["email"] == ""
+        assert user_info["email_verified"] is False
 
     @patch("appkit_user.authentication.backend.services.oauth_service.OAuth2Session")
     def test_get_user_info_azure_with_upn_conversion(

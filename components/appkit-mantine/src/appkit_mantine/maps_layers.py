@@ -30,13 +30,6 @@ class MapRoute(MapComponentBase):
 
     tag = "MapRoute"
 
-    _rename_props = {
-        "dash_array": "dashArray",
-        "on_click": "onClick",
-        "on_mouse_enter": "onMouseEnter",
-        "on_mouse_leave": "onMouseLeave",
-    }
-
     id: Var[str] = None
     """Optional unique identifier for the route layer. Auto-generated if omitted."""
 
@@ -67,13 +60,6 @@ class MapArc(MapComponentBase):
     """Curved connection arcs between coordinate pairs (quadratic Bézier)."""
 
     tag = "MapArc"
-
-    _rename_props = {
-        "hover_paint": "hoverPaint",
-        "before_id": "beforeId",
-        "on_click": "onClick",
-        "on_hover": "onHover",
-    }
 
     data: Var[list[dict[str, Any]]]
     """Arcs to render.
@@ -118,16 +104,6 @@ class MapGeoJSON(MapComponentBase):
 
     tag = "MapGeoJSON"
 
-    _rename_props = {
-        "promote_id": "promoteId",
-        "fill_paint": "fillPaint",
-        "line_paint": "linePaint",
-        "fill_hover_paint": "fillHoverPaint",
-        "before_id": "beforeId",
-        "on_click": "onClick",
-        "on_hover": "onHover",
-    }
-
     data: Var[dict[str, Any] | str]
     """GeoJSON data (FeatureCollection, Feature, Geometry) or a URL to fetch it from."""
 
@@ -167,16 +143,6 @@ class MapClusterLayer(MapComponentBase):
     """Clustered point data using MapLibre GL's native clustering."""
 
     tag = "MapClusterLayer"
-
-    _rename_props = {
-        "cluster_max_zoom": "clusterMaxZoom",
-        "cluster_radius": "clusterRadius",
-        "cluster_colors": "clusterColors",
-        "cluster_thresholds": "clusterThresholds",
-        "point_color": "pointColor",
-        "on_point_click": "onPointClick",
-        "on_cluster_click": "onClusterClick",
-    }
 
     data: Var[dict[str, Any] | str]
     """GeoJSON FeatureCollection data or a URL to fetch GeoJSON from."""

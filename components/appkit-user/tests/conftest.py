@@ -385,11 +385,16 @@ async def password_reset_request_repository() -> PasswordResetRequestRepository:
 
 @pytest.fixture
 def mock_github_user_response() -> dict[str, Any]:
-    """Mock GitHub user API response."""
+    """Mock GitHub user info as OAuthService._normalize_user_data returns it.
+
+    ``email_verified`` is part of the normalized contract: the repository
+    refuses to link or create an account from an unconfirmed provider address.
+    """
     return {
         "id": 12345678,
         "login": "testuser",
         "email": "test@example.com",
+        "email_verified": True,
         "name": "Test User",
         "avatar_url": "https://avatars.githubusercontent.com/u/12345678",
         "bio": "Test bio",

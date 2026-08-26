@@ -231,10 +231,6 @@ class ColorSwatch(MantineLayoutComponentBase):
 
     tag = "ColorSwatch"
 
-    _rename_props = {
-        "with_shadow": "withShadow",
-    }
-
     color: Var[str] = None
     radius: Var[str | int] = None
     size: Var[str | int] = None
@@ -248,10 +244,6 @@ class ThemeIcon(MantineLayoutComponentBase):
     """
 
     tag = "ThemeIcon"
-
-    _rename_props = {
-        "auto_contrast": "autoContrast",
-    }
 
     color: Var[str] = None
     gradient: Var[dict] = None
@@ -268,16 +260,6 @@ class Spoiler(MantineLayoutComponentBase):
     """
 
     tag = "Spoiler"
-
-    _rename_props = {
-        "default_expanded": "defaultExpanded",
-        "hide_label": "hideLabel",
-        "hide_aria_label": "hideAriaLabel",
-        "max_height": "maxHeight",
-        "show_label": "showLabel",
-        "show_aria_label": "showAriaLabel",
-        "transition_duration": "transitionDuration",
-    }
 
     show_label: Var[Any] = None
     """Label for the show more button (required)."""

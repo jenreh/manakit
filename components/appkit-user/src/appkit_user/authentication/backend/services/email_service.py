@@ -1,5 +1,6 @@
 """Email service for sending password reset emails."""
 
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 from datetime import UTC, datetime
@@ -163,8 +164,14 @@ class AzureEmailProvider(EmailProviderBase):
                 "content": {"subject": subject, "html": html_body},
             }
 
-            poller = client.begin_send(message)
-            result = poller.result()
+            # The ACS SDK is synchronous and `poller.result()` polls the
+            # operation to completion, so running it inline would block the
+            # event loop for the whole send. Push it onto a worker thread.
+            def _send() -> object:
+                poller = client.begin_send(message)
+                return poller.result()
+
+            result = await asyncio.to_thread(_send)
 
             if result:
                 logger.info("Email sent successfully via Azure to %s", to_email)

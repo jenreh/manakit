@@ -77,19 +77,6 @@ _HYPHENATED_PROP_NAMES: Final[dict[str, str]] = {
 }
 
 
-_PROVIDER_RENAME_PROPS: Final[dict[str, str]] = {
-    "default_color_scheme": "defaultColorScheme",
-    "force_color_scheme": "forceColorScheme",
-    "css_variables_selector": "cssVariablesSelector",
-    "with_css_variables": "withCssVariables",
-    "deduplicate_css_variables": "deduplicateCssVariables",
-    "deduplicate_inline_styles": "deduplicateInlineStyles",
-    "class_names_prefix": "classNamesPrefix",
-    "with_static_classes": "withStaticClasses",
-    "with_global_classes": "withGlobalClasses",
-}
-
-
 def _reflex_color_scheme() -> Var:
     """Mirror Reflex's resolved color mode, falling back to light.
 
@@ -129,8 +116,6 @@ class MemoizedMantineProvider(rx.Component):
     class_names_prefix: Var[str] = None
     with_static_classes: Var[bool] = None
     with_global_classes: Var[bool] = None
-
-    _rename_props = _PROVIDER_RENAME_PROPS
 
     @classmethod
     def create(cls, *children: Any, **props: Any) -> rx.Component:
@@ -281,8 +266,6 @@ class MantineProvider(MantineComponentBase):
     class_names_prefix: Var[str] = None
     with_static_classes: Var[bool] = None
     with_global_classes: Var[bool] = None
-
-    _rename_props = _PROVIDER_RENAME_PROPS
 
     @classmethod
     def create(cls, *children: Any, **props: Any) -> rx.Component:
@@ -480,28 +463,6 @@ class MantineOverlayComponentBase(MantineLayoutComponentBase):
     on_exit_transition_end: EventHandler[rx.event.no_args_event_spec] = None
     """Called when exit transition finishes."""
 
-    _rename_props = {
-        "close_on_click_outside": "closeOnClickOutside",
-        "close_on_escape": "closeOnEscape",
-        "keep_mounted": "keepMounted",
-        "lock_scroll": "lockScroll",
-        "trap_focus": "trapFocus",
-        "return_focus": "returnFocus",
-        "within_portal": "withinPortal",
-        "with_overlay": "withOverlay",
-        "with_close_button": "withCloseButton",
-        "overlay_props": "overlayProps",
-        "transition_props": "transitionProps",
-        "close_button_props": "closeButtonProps",
-        "portal_props": "portalProps",
-        "remove_scroll_props": "removeScrollProps",
-        "scroll_area_component": "scrollAreaComponent",
-        "on_close": "onClose",
-        "on_enter_transition_end": "onEnterTransitionEnd",
-        "on_exit_transition_end": "onExitTransitionEnd",
-        "z_index": "zIndex",
-    }
-
 
 class MantineInputComponentBase(MantineLayoutComponentBase):
     """Comprehensive base class for all Mantine input-like components.
@@ -552,21 +513,6 @@ class MantineInputComponentBase(MantineLayoutComponentBase):
     """
 
     # Prop aliasing for camelCase React props
-    _rename_props = {
-        "default_value": "defaultValue",
-        "with_asterisk": "withAsterisk",
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "left_section_width": "leftSectionWidth",
-        "right_section_width": "rightSectionWidth",
-        "left_section_pointer_events": "leftSectionPointerEvents",
-        "right_section_pointer_events": "rightSectionPointerEvents",
-        "max_length": "maxLength",
-        "min_length": "minLength",
-        "auto_complete": "autoComplete",
-        "loading_position": "loadingPosition",
-        "clear_section_mode": "clearSectionMode",
-    }
 
     # ========================================================================
     # Input.Wrapper Props - Label, description, error handling

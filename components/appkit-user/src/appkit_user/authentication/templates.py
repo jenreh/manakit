@@ -151,13 +151,15 @@ def navbar_layout(
     script_tags: list[rx.Component] | None = None,
     on_load: rx.EventHandler | list[rx.EventHandler] | None = None,
 ) -> Callable[[Callable[[], rx.Component]], rx.Component]:
-    """The template for each page of the app that requires authentication."""
-    if on_load is None:
-        on_load = [LoadingState.set_is_loading(False)]
-    elif isinstance(on_load, list):
-        on_load = [*on_load, LoadingState.set_is_loading(False)]
-    elif isinstance(on_load, rx.EventHandler):
-        on_load = [on_load, LoadingState.set_is_loading(False)]
+    """The template for each page of the app that requires authentication.
+
+    ``on_load`` always runs behind :meth:`LoginState.check_auth`, so an
+    unauthenticated visitor is redirected to the login route before any page
+    handler executes. ``admin_only`` additionally gates rendering, but that is
+    a render-layer check only — enforce admin-only *events* with the
+    :func:`appkit_user.authentication.decorators.requires_admin` decorator.
+    """
+    handlers = _build_auth_handlers(on_load)
 
     def decorator(page_content: Callable[[], rx.Component]) -> rx.Component:
         all_meta = [*default_meta, *(meta or [])]
@@ -175,23 +177,31 @@ def navbar_layout(
             description=description,
             meta=all_meta,
             script_tags=script_tags,
-            on_load=on_load,
+            on_load=handlers,
         )
         def theme_wrap() -> rx.Component:
             # Create navbar component if provided
             navbar_component = navbar if navbar else rx.fragment()
-            default_page = theme_wrapper(templated_page(page_content, navbar_component))
+            default_page = theme_wrapper(
+                rx.fragment(
+                    session_monitor(),
+                    templated_page(page_content, navbar_component),
+                )
+            )
             no_permission_page = theme_wrapper(
-                templated_page(
-                    lambda: rx.center(
-                        rx.heading(
-                            "Sie haben nicht die notwendigen Berechtigungen um auf diese Seite zuzugreifen.",  # noqa
-                            size="4",
+                rx.fragment(
+                    session_monitor(),
+                    templated_page(
+                        lambda: rx.center(
+                            rx.heading(
+                                "Sie haben nicht die notwendigen Berechtigungen um auf diese Seite zuzugreifen.",  # noqa
+                                size="4",
+                            ),
+                            width="100%",
+                            margin_top="10em",
                         ),
-                        width="100%",
-                        margin_top="10em",
+                        navbar_component,
                     ),
-                    navbar_component,
                 )
             )
 

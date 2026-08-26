@@ -160,15 +160,6 @@ class FileInput(MantineInputComponentBase):
 
     tag = "FileInput"
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "accept": "accept",
-        "capture": "capture",
-        "clearable": "clearable",
-        "multiple": "multiple",
-        "value_component": "valueComponent",
-    }
-
     accept: Var[str] = None
     capture: Var[str | bool] = None
     multiple: Var[bool] = None
@@ -208,11 +199,6 @@ class Chip(MantineLayoutComponentBase):
 
     tag = "Chip"
 
-    _rename_props = {
-        "auto_contrast": "autoContrast",
-        "default_checked": "defaultChecked",
-    }
-
     auto_contrast: Var[bool] = None
     checked: Var[bool] = None
     color: Var[str] = None
@@ -236,10 +222,6 @@ class ChipGroup(MantineLayoutComponentBase):
     """
 
     tag = "Chip.Group"
-
-    _rename_props = {
-        "default_value": "defaultValue",
-    }
 
     value: Var[str | list[str]] = None
     default_value: Var[str | list[str]] = None

@@ -8,17 +8,11 @@ from reflex.vars.base import Var
 
 from appkit_mantine.base import MantineLayoutComponentBase
 
-_COMMON_RENAME_PROPS = {
-    "loader_props": "loaderProps",
-    "auto_contrast": "autoContrast",
-}
-
 
 class MantineButtonBase(MantineLayoutComponentBase):
     """Base class for Button and ActionIcon components."""
 
     # Prop aliasing for camelCase/HTML attributes
-    _rename_props = _COMMON_RENAME_PROPS
 
     # Appearance
     size: Var[str | int] = None
@@ -122,13 +116,6 @@ class Button(MantineButtonBase):
 
     tag = "Button"
 
-    _rename_props = {
-        **_COMMON_RENAME_PROPS,
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "full_width": "fullWidth",
-    }
-
     # Appearance
     variant: Var[
         Literal[
@@ -160,11 +147,6 @@ class CloseButton(MantineButtonBase):
     """
 
     tag = "CloseButton"
-
-    _rename_props = {
-        **_COMMON_RENAME_PROPS,
-        "icon_size": "iconSize",
-    }
 
     icon: Var[Any] = None
     icon_size: Var[str | int] = None

@@ -31,3 +31,21 @@ def github_oauth_callback_page() -> rx.Component:
 )
 def azure_oauth_callback_page() -> rx.Component:
     return page(OAuthProvider.AZURE)
+
+
+@rx.page(
+    route="/oauth/google/callback",
+    title="Anmeldung mit Google",
+    on_load=LoginState.handle_oauth_callback(OAuthProvider.GOOGLE),
+)
+def google_oauth_callback_page() -> rx.Component:
+    return page(OAuthProvider.GOOGLE)
+
+
+@rx.page(
+    route="/oauth/apple/callback",
+    title="Anmeldung mit Apple",
+    on_load=LoginState.handle_oauth_callback(OAuthProvider.APPLE),
+)
+def apple_oauth_callback_page() -> rx.Component:
+    return page(OAuthProvider.APPLE)

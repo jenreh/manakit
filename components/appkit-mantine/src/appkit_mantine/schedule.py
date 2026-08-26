@@ -96,99 +96,6 @@ class MantineScheduleBase(MantineLayoutComponentBase):
 
 
 # ---------------------------------------------------------------------------
-# _rename_props mapping for common schedule props.
-# ---------------------------------------------------------------------------
-
-_SCHEDULE_COMMON_RENAME: dict[str, str] = {
-    "render_event_body": "renderEventBody",
-    "render_event": "renderEvent",
-    "with_events_drag_and_drop": "withEventsDragAndDrop",
-    "on_event_drop": "onEventDrop",
-    "can_drag_event": "canDragEvent",
-    "with_event_resize": "withEventResize",
-    "on_event_resize": "onEventResize",
-    "can_resize_event": "canResizeEvent",
-    "on_event_click": "onEventClick",
-    "recurrence_expansion_limit": "recurrenceExpansionLimit",
-}
-
-
-# ---------------------------------------------------------------------------
-# Shared rename-props for view-specific props that appear in multiple views.
-# ---------------------------------------------------------------------------
-
-_VIEW_SLOT_RENAME: dict[str, str] = {
-    "with_drag_slot_select": "withDragSlotSelect",
-    "on_slot_drag_end": "onSlotDragEnd",
-    "on_time_slot_click": "onTimeSlotClick",
-    "on_all_day_slot_click": "onAllDaySlotClick",
-    "on_day_click": "onDayClick",
-    "on_external_event_drop": "onExternalEventDrop",
-    "scroll_area_props": "scrollAreaProps",
-    "get_time_slot_props": "getTimeSlotProps",
-}
-
-_VIEW_TIME_RENAME: dict[str, str] = {
-    "start_time": "startTime",
-    "end_time": "endTime",
-    "interval_minutes": "intervalMinutes",
-    "start_scroll_time": "startScrollTime",
-    "slot_height": "slotHeight",
-    "all_day_slot_height": "allDaySlotHeight",
-    "with_header": "withHeader",
-    "header_format": "headerFormat",
-    "slot_label_format": "slotLabelFormat",
-    "highlight_business_hours": "highlightBusinessHours",
-    "business_hours": "businessHours",
-    "with_current_time_indicator": "withCurrentTimeIndicator",
-    "with_current_time_bubble": "withCurrentTimeBubble",
-    "with_all_day_slot": "withAllDaySlot",
-    "with_sub_hour_grid_lines": "withSubHourGridLines",
-    "with_agenda": "withAgenda",
-    "get_current_time": "getCurrentTime",
-    "on_date_change": "onDateChange",
-    "on_view_change": "onViewChange",
-}
-
-_VIEW_WEEK_RENAME: dict[str, str] = {
-    "first_day_of_week": "firstDayOfWeek",
-    "weekend_days": "weekendDays",
-    "weekday_format": "weekdayFormat",
-    "highlight_today": "highlightToday",
-    "with_week_number": "withWeekNumber",
-    "force_current_time_indicator": "forceCurrentTimeIndicator",
-    "with_all_day_slots": "withAllDaySlots",
-    "week_label_format": "weekLabelFormat",
-    "render_week_label": "renderWeekLabel",
-}
-
-_VIEW_MONTH_RENAME: dict[str, str] = {
-    "first_day_of_week": "firstDayOfWeek",
-    "with_week_numbers": "withWeekNumbers",
-    "with_week_days": "withWeekDays",
-    "with_weekend_days": "withWeekendDays",
-    "with_agenda": "withAgenda",
-    "consistent_weeks": "consistentWeeks",
-    "highlight_today": "highlightToday",
-    "with_outside_days": "withOutsideDays",
-    "max_events_per_day": "maxEventsPerDay",
-    "weekday_format": "weekdayFormat",
-    "weekend_days": "weekendDays",
-    "with_header": "withHeader",
-    "with_drag_slot_select": "withDragSlotSelect",
-    "on_slot_drag_end": "onSlotDragEnd",
-    "on_external_event_drop": "onExternalEventDrop",
-    "get_day_props": "getDayProps",
-    "get_week_number_props": "getWeekNumberProps",
-    "on_week_number_click": "onWeekNumberClick",
-    "scroll_area_props": "scrollAreaProps",
-    "on_day_click": "onDayClick",
-    "on_date_change": "onDateChange",
-    "on_view_change": "onViewChange",
-}
-
-
-# ---------------------------------------------------------------------------
 # DayView
 # ---------------------------------------------------------------------------
 
@@ -200,12 +107,6 @@ class DayView(MantineScheduleBase):
     """
 
     tag = "DayView"
-
-    _rename_props = {
-        **_SCHEDULE_COMMON_RENAME,
-        **_VIEW_SLOT_RENAME,
-        **_VIEW_TIME_RENAME,
-    }
 
     date: Var[str] = None
     """Controlled current date (ISO string)."""
@@ -300,13 +201,6 @@ class WeekView(MantineScheduleBase):
 
     tag = "WeekView"
 
-    _rename_props = {
-        **_SCHEDULE_COMMON_RENAME,
-        **_VIEW_SLOT_RENAME,
-        **_VIEW_TIME_RENAME,
-        **_VIEW_WEEK_RENAME,
-    }
-
     date: Var[str] = None
     """Controlled current week (ISO string for any day in the week)."""
 
@@ -380,11 +274,6 @@ class MonthView(MantineScheduleBase):
 
     tag = "MonthView"
 
-    _rename_props = {
-        **_SCHEDULE_COMMON_RENAME,
-        **_VIEW_MONTH_RENAME,
-    }
-
     date: Var[str] = None
     """Controlled current month (ISO string)."""
 
@@ -439,27 +328,6 @@ class MonthView(MantineScheduleBase):
 # YearView
 # ---------------------------------------------------------------------------
 
-_VIEW_YEAR_RENAME: dict[str, str] = {
-    "first_day_of_week": "firstDayOfWeek",
-    "with_week_numbers": "withWeekNumbers",
-    "with_week_days": "withWeekDays",
-    "with_weekend_days": "withWeekendDays",
-    "render_day": "renderDay",
-    "with_outside_days": "withOutsideDays",
-    "highlight_today": "highlightToday",
-    "weekday_format": "weekdayFormat",
-    "weekend_days": "weekendDays",
-    "with_header": "withHeader",
-    "month_label_format": "monthLabelFormat",
-    "on_day_click": "onDayClick",
-    "on_month_click": "onMonthClick",
-    "on_week_number_click": "onWeekNumberClick",
-    "get_day_props": "getDayProps",
-    "get_week_number_props": "getWeekNumberProps",
-    "on_date_change": "onDateChange",
-    "on_view_change": "onViewChange",
-}
-
 
 class YearView(MantineScheduleBase):
     """Mantine Schedule.YearView — twelve-month overview.
@@ -468,11 +336,6 @@ class YearView(MantineScheduleBase):
     """
 
     tag = "YearView"
-
-    _rename_props = {
-        **_SCHEDULE_COMMON_RENAME,
-        **_VIEW_YEAR_RENAME,
-    }
 
     date: Var[str] = None
     on_date_change: EventHandler[lambda date: [date]] = None
@@ -513,30 +376,6 @@ class YearView(MantineScheduleBase):
 # MobileMonthView
 # ---------------------------------------------------------------------------
 
-_VIEW_MOBILE_RENAME: dict[str, str] = {
-    "selected_date": "selectedDate",
-    "on_selected_date_change": "onSelectedDateChange",
-    "default_selected_date": "defaultSelectedDate",
-    "events_header_format": "eventsHeaderFormat",
-    "render_header": "renderHeader",
-    "first_day_of_week": "firstDayOfWeek",
-    "with_week_numbers": "withWeekNumbers",
-    "with_outside_days": "withOutsideDays",
-    "consistent_weeks": "consistentWeeks",
-    "weekday_format": "weekdayFormat",
-    "with_week_days": "withWeekDays",
-    "highlight_today": "highlightToday",
-    "weekend_days": "weekendDays",
-    "on_day_click": "onDayClick",
-    "on_week_number_click": "onWeekNumberClick",
-    "on_year_click": "onYearClick",
-    "get_day_props": "getDayProps",
-    "get_week_number_props": "getWeekNumberProps",
-    "recurrence_expansion_limit": "recurrenceExpansionLimit",
-    "on_date_change": "onDateChange",
-    "on_event_click": "onEventClick",
-}
-
 
 class MobileMonthView(MantineScheduleBase):
     """Mantine Schedule.MobileMonthView — compact month + events list for mobile.
@@ -545,11 +384,6 @@ class MobileMonthView(MantineScheduleBase):
     """
 
     tag = "MobileMonthView"
-
-    _rename_props = {
-        **_SCHEDULE_COMMON_RENAME,
-        **_VIEW_MOBILE_RENAME,
-    }
 
     date: Var[str] = None
     on_date_change: EventHandler[lambda date: [date]] = None
@@ -591,26 +425,6 @@ class MobileMonthView(MantineScheduleBase):
 # Schedule (unified all-in-one component)
 # ---------------------------------------------------------------------------
 
-_SCHEDULE_MAIN_RENAME: dict[str, str] = {
-    **_SCHEDULE_COMMON_RENAME,
-    "default_date": "defaultDate",
-    "on_date_change": "onDateChange",
-    "default_view": "defaultView",
-    "on_view_change": "onViewChange",
-    "with_agenda": "withAgenda",
-    "day_view_props": "dayViewProps",
-    "week_view_props": "weekViewProps",
-    "month_view_props": "monthViewProps",
-    "year_view_props": "yearViewProps",
-    "mobile_month_view_props": "mobileMonthViewProps",
-    "with_drag_slot_select": "withDragSlotSelect",
-    "on_slot_drag_end": "onSlotDragEnd",
-    "on_time_slot_click": "onTimeSlotClick",
-    "on_all_day_slot_click": "onAllDaySlotClick",
-    "on_day_click": "onDayClick",
-    "on_external_event_drop": "onExternalEventDrop",
-}
-
 
 class Schedule(MantineScheduleBase):
     """Mantine Schedule — unified scheduling calendar.
@@ -623,8 +437,6 @@ class Schedule(MantineScheduleBase):
     """
 
     tag = "Schedule"
-
-    _rename_props = _SCHEDULE_MAIN_RENAME
 
     date: Var[str] = None
     """Controlled current date (ISO string)."""

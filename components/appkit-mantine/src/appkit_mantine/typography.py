@@ -27,11 +27,6 @@ class Text(MantineLayoutComponentBase):
     text_wrap: Var[Literal["wrap", "nowrap", "balance", "pretty", "stable"]] = None
     """Controls the ``text-wrap`` CSS property (Mantine 9.3)."""
 
-    _rename_props = {
-        "line_clamp": "lineClamp",
-        "text_wrap": "textWrap",
-    }
-
 
 class Title(MantineLayoutComponentBase):
     """Mantine Title component.
@@ -47,11 +42,6 @@ class Title(MantineLayoutComponentBase):
     size: Var[MantineNumberSize] = None
     text_wrap: Var[Literal["wrap", "nowrap", "balance", "pretty", "stable"]] = None
     line_clamp: Var[int] = None
-
-    _rename_props = {
-        "text_wrap": "textWrap",
-        "line_clamp": "lineClamp",
-    }
 
 
 class Code(MantineLayoutComponentBase):
@@ -101,11 +91,6 @@ class List(MantineLayoutComponentBase):
     icon: Var[any] = None
     list_style_type: Var[str] = None
     with_padding: Var[bool] = None
-
-    _rename_props = {
-        "list_style_type": "listStyleType",
-        "with_padding": "withPadding",
-    }
 
 
 class ListItem(MantineLayoutComponentBase):
@@ -159,11 +144,6 @@ class Blockquote(MantineLayoutComponentBase):
 
     tag = "Blockquote"
 
-    _rename_props = {
-        "icon_size": "iconSize",
-        "text_wrap": "textWrap",
-    }
-
     cite: Var[Any] = None
     color: Var[str] = None
     icon: Var[Any] = None
@@ -180,14 +160,6 @@ class Highlight(MantineLayoutComponentBase):
     """
 
     tag = "Highlight"
-
-    _rename_props = {
-        "accent_insensitive": "accentInsensitive",
-        "case_insensitive": "caseInsensitive",
-        "highlight_styles": "highlightStyles",
-        "line_clamp": "lineClamp",
-        "whole_word": "wholeWord",
-    }
 
     highlight: Var[str | list[str]] = None
     """Substring or list of substrings to highlight (required)."""

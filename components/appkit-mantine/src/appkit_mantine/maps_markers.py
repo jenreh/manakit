@@ -40,15 +40,6 @@ class MapMarker(MapComponentBase):
 
     tag = "MapMarker"
 
-    _rename_props = {
-        "on_click": "onClick",
-        "on_mouse_enter": "onMouseEnter",
-        "on_mouse_leave": "onMouseLeave",
-        "on_drag_start": "onDragStart",
-        "on_drag": "onDrag",
-        "on_drag_end": "onDragEnd",
-    }
-
     longitude: Var[int | float]
     """Longitude coordinate for marker position."""
 
@@ -83,8 +74,6 @@ class MarkerContent(MapComponentBase):
 
     tag = "MarkerContent"
 
-    _rename_props = {"class_name": "className"}
-
     class_name: Var[str] = None
     """Additional CSS class for the marker container."""
 
@@ -97,8 +86,6 @@ class MarkerPopup(MapComponentBase):
     """
 
     tag = "MarkerPopup"
-
-    _rename_props = {"class_name": "className"}
 
     class_name: Var[str] = None
     """Additional CSS class for the popup container."""
@@ -115,8 +102,6 @@ class MarkerTooltip(MapComponentBase):
 
     tag = "MarkerTooltip"
 
-    _rename_props = {"class_name": "className"}
-
     class_name: Var[str] = None
     """Additional CSS class for the tooltip container."""
 
@@ -128,8 +113,6 @@ class MarkerLabel(MapComponentBase):
     """Text label above or below a marker. Must be used inside ``MarkerContent``."""
 
     tag = "MarkerLabel"
-
-    _rename_props = {"class_name": "className"}
 
     class_name: Var[str] = None
     """Additional CSS class for the label."""

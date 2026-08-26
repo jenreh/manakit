@@ -85,11 +85,6 @@ class AlertDialogRoot(AlertDialogBase):
     size: Var[str] = "sm"
     """Mantine modal size (xs, sm, md, lg, xl or CSS value)."""
 
-    _rename_props = {
-        "default_open": "defaultOpen",
-        "on_open_change": "onOpenChange",
-    }
-
     on_open_change: EventHandler[lambda value: [value]] = None
     """Fired when the open state changes."""
 
@@ -162,8 +157,6 @@ class AlertDialogCancel(AlertDialogBase):
     variant: Var[str] = "default"
     """Mantine button variant."""
 
-    _rename_props = {"on_cancel": "onCancel"}
-
     on_cancel: EventHandler[rx.event.no_args_event_spec] = None
     """Optional extra callback fired before the dialog closes."""
 
@@ -192,11 +185,6 @@ class AlertDialogAction(AlertDialogBase):
     close_on_action: Var[bool] = True
     """Close the dialog after ``on_action`` fires (default ``True``)."""
 
-    _rename_props = {
-        "on_action": "onAction",
-        "close_on_action": "closeOnAction",
-    }
-
     on_action: EventHandler[rx.event.no_args_event_spec] = None
     """Callback fired when the action button is clicked."""
 
@@ -224,16 +212,6 @@ class AlertDialogFooter(AlertDialogBase):
     action_loading: Var[bool] = None
     cancel_props: Var[dict] = None
     action_props: Var[dict] = None
-
-    _rename_props = {
-        "cancel_label": "cancelLabel",
-        "action_label": "actionLabel",
-        "on_cancel": "onCancel",
-        "on_action": "onAction",
-        "action_loading": "actionLoading",
-        "cancel_props": "cancelProps",
-        "action_props": "actionProps",
-    }
 
     on_cancel: EventHandler[rx.event.no_args_event_spec] = None
     on_action: EventHandler[rx.event.no_args_event_spec] = None

@@ -37,17 +37,25 @@ def is_authenticated[F: Callable[..., Any]](func: F) -> F:
             return await login_state.redir()
         return await func(self, *args, **kwargs)
 
-    @wraps(func)
-    def sync_wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
-        return func(self, *args, **kwargs)
-
     # Return appropriate wrapper based on function type
     logger.debug("Check valid authentication for: '%s'", func.__name__)
 
     if inspect.isasyncgenfunction(func):
         return async_gen_wrapper  # type: ignore[return-value]
 
-    return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper  # type: ignore[return-value]
+    if not asyncio.iscoroutinefunction(func):
+        # A synchronous handler cannot await `login_state.is_authenticated`, so
+        # there is no way to enforce the check. Refuse loudly at import time
+        # rather than silently wrapping it in a pass-through, which would leave
+        # the handler decorated but completely unguarded.
+        msg = (
+            f"@is_authenticated cannot guard the synchronous handler "
+            f"'{func.__name__}'. Declare it as 'async def' so the session can "
+            f"be validated before the body runs."
+        )
+        raise TypeError(msg)
+
+    return async_wrapper  # type: ignore[return-value]
 
 
 def requires_admin[F: Callable[..., Any]](func: F) -> F:

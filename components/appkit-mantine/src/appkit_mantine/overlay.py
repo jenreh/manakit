@@ -191,22 +191,6 @@ class PopoverRoot(MantineLayoutComponentBase):
 
     tag = "Popover"
 
-    _rename_props = {
-        "arrow_offset": "arrowOffset",
-        "arrow_position": "arrowPosition",
-        "arrow_radius": "arrowRadius",
-        "arrow_size": "arrowSize",
-        "close_on_click_outside": "closeOnClickOutside",
-        "close_on_escape": "closeOnEscape",
-        "default_opened": "defaultOpened",
-        "keep_mounted": "keepMounted",
-        "return_focus": "returnFocus",
-        "trap_focus": "trapFocus",
-        "with_arrow": "withArrow",
-        "with_overlay": "withOverlay",
-        "within_portal": "withinPortal",
-    }
-
     opened: Var[bool] = None
     default_opened: Var[bool] = None
     position: Var[str] = None
@@ -275,17 +259,6 @@ class Dialog(MantineLayoutComponentBase):
     """
 
     tag = "Dialog"
-
-    _rename_props = {
-        "keep_mounted": "keepMounted",
-        "on_close": "onClose",
-        "portal_props": "portalProps",
-        "transition_props": "transitionProps",
-        "with_border": "withBorder",
-        "with_close_button": "withCloseButton",
-        "within_portal": "withinPortal",
-        "z_index": "zIndex",
-    }
 
     opened: Var[bool] = None
     position: Var[dict] = None

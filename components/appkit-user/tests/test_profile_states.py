@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from appkit_user.authentication.backend.services import ChangePasswordOutcome
 from appkit_user.user_management.states.profile_states import (
     MIN_PASSWORD_LENGTH,
     PASSWORD_REGEX,
@@ -209,38 +210,49 @@ class TestHandlePasswordUpdate:
         state.confirm_password = "NewStr0ng!Pass"
         state.current_password = "OldPassword"
 
-        mock_session = AsyncMock()
-        mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-        mock_session.__aexit__ = AsyncMock(return_value=False)
+        service = MagicMock()
+        service.change_password = AsyncMock(return_value=ChangePasswordOutcome.SUCCESS)
 
-        with (
-            patch(f"{_PATCH}.get_asyncdb_session", return_value=mock_session),
-            patch(f"{_PATCH}.user_repo") as mock_repo,
-        ):
-            mock_repo.update_password = AsyncMock()
+        with patch(f"{_PATCH}.get_password_reset_service", return_value=service):
             await state.handle_password_update()
 
+        # Delegated to the service so the reuse/history/session-revocation
+        # policy is enforced, rather than writing the password directly.
+        service.change_password.assert_awaited_once()
         assert state.new_password == ""
         assert state.confirm_password == ""
         assert state.current_password == ""
         assert state.strength_value == 0
 
     @pytest.mark.asyncio
-    async def test_incorrect_current_password(self) -> None:
+    @pytest.mark.parametrize(
+        "outcome",
+        [
+            ChangePasswordOutcome.INCORRECT_CURRENT_PASSWORD,
+            ChangePasswordOutcome.PASSWORD_REUSED,
+            ChangePasswordOutcome.USER_NOT_FOUND,
+            ChangePasswordOutcome.ERROR,
+        ],
+    )
+    async def test_failed_update_reports_error_and_keeps_fields(
+        self, outcome: ChangePasswordOutcome
+    ) -> None:
+        """Any non-success outcome must surface an error, not a success toast.
+
+        Regression guard: the old code ignored the repository's ``None``
+        return and reported success even when nothing had changed.
+        """
         state = _make_state()
         state.new_password = "NewStr0ng!Pass"
         state.confirm_password = "NewStr0ng!Pass"
         state.current_password = "WrongOld"
 
-        mock_session = AsyncMock()
-        mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-        mock_session.__aexit__ = AsyncMock(return_value=False)
+        service = MagicMock()
+        service.change_password = AsyncMock(return_value=outcome)
 
-        with (
-            patch(f"{_PATCH}.get_asyncdb_session", return_value=mock_session),
-            patch(f"{_PATCH}.user_repo") as mock_repo,
-        ):
-            mock_repo.update_password = AsyncMock(side_effect=ValueError("bad"))
+        with patch(f"{_PATCH}.get_password_reset_service", return_value=service):
             result = await state.handle_password_update()
 
         assert result is not None  # error toast
+        # Fields are not cleared, so the user can correct and retry.
+        assert state.current_password == "WrongOld"

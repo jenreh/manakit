@@ -18,7 +18,9 @@ class OAuthProvider(StrEnum):
 class OAuthConfig(BaseConfig):
     provider: OAuthProvider
     client_id: str
-    client_secret: str
+    # SecretStr so the value is masked in repr()/model_dump() and cannot leak
+    # into logs or tracebacks alongside the rest of the config object.
+    client_secret: SecretStr
     scopes: list[str] = []
     auth_url: str = ""
     token_url: str = ""
@@ -64,7 +66,9 @@ class AppleOAuthConfig(OAuthConfig):
     scopes: list[str] = ["name", "email"]
     auth_url: str = "https://appleid.apple.com/auth/authorize"
     token_url: str = "https://appleid.apple.com/auth/token"  # noqa: S105
-    user_url: str = "https://appleid.apple.com/auth/userinfo"
+    # Apple serves no userinfo endpoint; identity claims come from the
+    # `id_token` in the token response (see OAuthService._apple_user_info).
+    user_url: str = ""
     redirect_url: str | None = None
 
 

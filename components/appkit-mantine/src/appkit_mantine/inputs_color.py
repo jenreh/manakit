@@ -19,22 +19,6 @@ class ColorInput(MantineInputComponentBase):
 
     tag = "ColorInput"
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "close_on_color_swatch_click": "closeOnColorSwatchClick",
-        "disallow_input": "disallowInput",
-        "eye_dropper_button_props": "eyeDropperButtonProps",
-        "eye_dropper_icon": "eyeDropperIcon",
-        "fix_on_blur": "fixOnBlur",
-        "full_width": "fullWidth",
-        "on_change_end": "onChangeEnd",
-        "popover_props": "popoverProps",
-        "swatches_per_row": "swatchesPerRow",
-        "with_eye_dropper": "withEyeDropper",
-        "with_picker": "withPicker",
-        "with_preview": "withPreview",
-    }
-
     format: Var[Literal["hex", "hexa", "rgba", "rgb", "hsl", "hsla"]] = None
     swatches: Var[list[str]] = None
     swatches_per_row: Var[int] = None
@@ -69,19 +53,6 @@ class ColorPicker(MantineLayoutComponentBase):
 
     tag = "ColorPicker"
 
-    _rename_props = {
-        "alpha_label": "alphaLabel",
-        "default_value": "defaultValue",
-        "full_width": "fullWidth",
-        "hidden_input_props": "hiddenInputProps",
-        "hue_label": "hueLabel",
-        "on_change_end": "onChangeEnd",
-        "on_color_swatch_click": "onColorSwatchClick",
-        "saturation_label": "saturationLabel",
-        "swatches_per_row": "swatchesPerRow",
-        "with_picker": "withPicker",
-    }
-
     value: Var[str] = None
     default_value: Var[str] = None
     format: Var[Literal["hex", "hexa", "rgba", "rgb", "hsl", "hsla"]] = None
@@ -109,12 +80,6 @@ class AlphaSlider(MantineLayoutComponentBase):
 
     tag = "AlphaSlider"
 
-    _rename_props = {
-        "on_change_end": "onChangeEnd",
-        "on_scrub_end": "onScrubEnd",
-        "on_scrub_start": "onScrubStart",
-    }
-
     value: Var[int | float] = None
     color: Var[str] = None
     size: Var[str | int] = None
@@ -133,12 +98,6 @@ class HueSlider(MantineLayoutComponentBase):
     """
 
     tag = "HueSlider"
-
-    _rename_props = {
-        "on_change_end": "onChangeEnd",
-        "on_scrub_end": "onScrubEnd",
-        "on_scrub_start": "onScrubStart",
-    }
 
     value: Var[int | float] = None
     size: Var[str | int] = None

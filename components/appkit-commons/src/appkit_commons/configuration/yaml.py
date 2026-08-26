@@ -1,4 +1,5 @@
 import logging
+from copy import deepcopy
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -64,8 +65,15 @@ class YamlConfigReader:
             return {}
 
     def read_and_merge_files(self, profiles: list[str] | None) -> dict[str, Any]:
-        base_config: dict = self.read_file(
-            self.yaml_file_path / self.yaml_file, self.yaml_file_encoding
+        # `read_file` is lru_cached and hands back the *same* dict every time,
+        # while `__merge` mutates its `master` in place. Merging straight into
+        # it would permanently overwrite the cached parse of config.yaml with
+        # profile overlays, so every later reader — and every other settings
+        # class — would see polluted values. Work on a copy.
+        base_config: dict = deepcopy(
+            self.read_file(
+                self.yaml_file_path / self.yaml_file, self.yaml_file_encoding
+            )
         )
 
         if profiles is None:
@@ -78,7 +86,9 @@ class YamlConfigReader:
                 self.yaml_file_path
                 / f"{self.yaml_file_prefix}.{environment}{self.yaml_file_suffix}"
             )
-            updates: dict = self.read_file(merge_config, self.yaml_file_encoding)
+            updates: dict = deepcopy(
+                self.read_file(merge_config, self.yaml_file_encoding)
+            )
             merged_config = self.__merge(master=merged_config, updates=updates)
 
         return merged_config

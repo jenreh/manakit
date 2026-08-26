@@ -105,19 +105,6 @@ class MantineDateInputBase(MantineInputComponentBase):
     locale: Var[str] = None
     """Locale used for labels formatting."""
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "value_format": "valueFormat",
-        "fix_on_blur": "fixOnBlur",
-        "dropdown_type": "dropdownType",
-        "modal_props": "modalProps",
-        "popover_props": "popoverProps",
-        "min_date": "minDate",
-        "max_date": "maxDate",
-        "default_date": "defaultDate",
-        "allow_deselect": "allowDeselect",
-    }
-
 
 class DateInput(MantineDateInputBase):
     """DateInput component."""
@@ -144,11 +131,6 @@ class DateInput(MantineDateInputBase):
             **super().get_event_triggers(),
             "on_change": _date_handler,
         }
-
-    _rename_props = {
-        **MantineDateInputBase._rename_props,  # noqa: SLF001
-        "date_parser": "dateParser",
-    }
 
 
 class DatePickerInput(MantineDateInputBase):
@@ -195,16 +177,6 @@ class DatePickerInput(MantineDateInputBase):
             "on_change": _date_handler,
         }
 
-    _rename_props = {
-        **MantineDateInputBase._rename_props,  # noqa: SLF001
-        "number_of_columns": "numberOfColumns",
-        "hide_outside_dates": "hideOutsideDates",
-        "weekend_days": "weekendDays",
-        "first_day_of_week": "firstDayOfWeek",
-        "on_date_change": "onDateChange",
-        "with_native_level_select": "withNativeLevelSelect",
-    }
-
 
 class DateTimePicker(MantineDateInputBase):
     """DateTimePicker component."""
@@ -233,12 +205,6 @@ class DateTimePicker(MantineDateInputBase):
             **super().get_event_triggers(),
             "on_change": _date_handler,
         }
-
-    _rename_props = {
-        **MantineDateInputBase._rename_props,  # noqa: SLF001
-        "with_seconds": "withSeconds",
-        "with_native_level_select": "withNativeLevelSelect",
-    }
 
 
 class MonthPickerInput(MantineDateInputBase):
@@ -307,12 +273,6 @@ class TimeInput(MantineInputComponentBase):
     with_asterisk: Var[bool] = None
     """Add asterisk to label."""
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "with_seconds": "withSeconds",
-        "with_asterisk": "withAsterisk",
-    }
-
 
 # --------------------------
 # Inline Pickers
@@ -335,15 +295,6 @@ class Calendar(MantineDateComponentBase):
 
     render_day: Var[Any] = None
     """Render day function."""
-
-    _rename_props = {
-        "on_date_change": "onDateChange",
-        "render_day": "renderDay",
-        "min_date": "minDate",
-        "max_date": "maxDate",
-        "default_date": "defaultDate",
-        "allow_deselect": "allowDeselect",
-    }
 
 
 class MiniCalendar(Calendar):
@@ -388,18 +339,6 @@ class DatePicker(MantineDateComponentBase):
             "on_change": _date_handler,
         }
 
-    _rename_props = {
-        "number_of_columns": "numberOfColumns",
-        "hide_outside_dates": "hideOutsideDates",
-        "weekend_days": "weekendDays",
-        "min_date": "minDate",
-        "max_date": "maxDate",
-        "default_date": "defaultDate",
-        "allow_deselect": "allowDeselect",
-        "default_value": "defaultValue",
-        "with_native_level_select": "withNativeLevelSelect",
-    }
-
 
 class MonthPicker(MantineDateComponentBase):
     """MonthPicker component."""
@@ -425,15 +364,6 @@ class MonthPicker(MantineDateComponentBase):
     """Replace the calendar header level button with native select elements
     (Mantine 9.5)."""
 
-    _rename_props = {
-        "on_date_change": "onDateChange",
-        "min_date": "minDate",
-        "max_date": "maxDate",
-        "default_date": "defaultDate",
-        "allow_deselect": "allowDeselect",
-        "with_native_level_select": "withNativeLevelSelect",
-    }
-
 
 class YearPicker(MantineDateComponentBase):
     """YearPicker component."""
@@ -456,15 +386,6 @@ class YearPicker(MantineDateComponentBase):
     """Replace the calendar header level button with native select elements
     (Mantine 9.5)."""
 
-    _rename_props = {
-        "on_date_change": "onDateChange",
-        "min_date": "minDate",
-        "max_date": "maxDate",
-        "default_date": "defaultDate",
-        "allow_deselect": "allowDeselect",
-        "with_native_level_select": "withNativeLevelSelect",
-    }
-
 
 class TimePicker(MantineDateInputBase):
     """TimePicker component.
@@ -483,12 +404,6 @@ class TimePicker(MantineDateInputBase):
 
     close_dropdown_on_preset_select: Var[bool] = None
     """Close the dropdown after a preset is selected (Mantine 9.4)."""
-
-    _rename_props = {
-        **MantineDateInputBase._rename_props,  # noqa: SLF001
-        "with_seconds": "withSeconds",
-        "close_dropdown_on_preset_select": "closeDropdownOnPresetSelect",
-    }
 
 
 class TimeGrid(MantineComponentBase):
@@ -523,38 +438,6 @@ class InlineDateTimePicker(MantineDateComponentBase):
     """
 
     tag = "InlineDateTimePicker"
-
-    _rename_props = {
-        "allow_deselect": "allowDeselect",
-        "allow_single_date_in_range": "allowSingleDateInRange",
-        "columns_to_scroll": "columnsToScroll",
-        "default_level": "defaultLevel",
-        "default_time_value": "defaultTimeValue",
-        "default_value": "defaultValue",
-        "enable_keyboard_navigation": "enableKeyboardNavigation",
-        "end_time_picker_props": "endTimePickerProps",
-        "exclude_date": "excludeDate",
-        "first_day_of_week": "firstDayOfWeek",
-        "full_width": "fullWidth",
-        "header_controls_order": "headerControlsOrder",
-        "hide_outside_dates": "hideOutsideDates",
-        "hide_weekdays": "hideWeekdays",
-        "highlight_today": "highlightToday",
-        "label_separator": "labelSeparator",
-        "max_date": "maxDate",
-        "max_level": "maxLevel",
-        "min_date": "minDate",
-        "number_of_columns": "numberOfColumns",
-        "on_date_change": "onDateChange",
-        "on_level_change": "onLevelChange",
-        "on_submit": "onSubmit",
-        "submit_button_props": "submitButtonProps",
-        "time_picker_props": "timePickerProps",
-        "value_format": "valueFormat",
-        "with_cell_spacing": "withCellSpacing",
-        "with_seconds": "withSeconds",
-        "with_week_numbers": "withWeekNumbers",
-    }
 
     type: Var[Literal["default", "multiple", "range"]] = None
     value: Var[Any] = None

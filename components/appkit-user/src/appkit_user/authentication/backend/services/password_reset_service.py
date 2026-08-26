@@ -8,10 +8,12 @@ email exists — it returns a coarse outcome and the state always shows the
 generic success message.
 """
 
+import asyncio
 import logging
 import re
 from dataclasses import dataclass
 from enum import Enum, auto
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -59,6 +61,18 @@ class ConfirmResetOutcome(Enum):
     INVALID_PASSWORD = auto()
     PASSWORD_MISMATCH = auto()
     INVALID_TOKEN = auto()
+    PASSWORD_REUSED = auto()
+    USER_NOT_FOUND = auto()
+    SUCCESS = auto()
+    ERROR = auto()
+
+
+class ChangePasswordOutcome(Enum):
+    """Result of :meth:`PasswordResetService.change_password`."""
+
+    INVALID_PASSWORD = auto()
+    PASSWORD_MISMATCH = auto()
+    INCORRECT_CURRENT_PASSWORD = auto()
     PASSWORD_REUSED = auto()
     USER_NOT_FOUND = auto()
     SUCCESS = auto()
@@ -165,7 +179,13 @@ class PasswordResetService:
             logger.error("Email service not configured")
             return
 
-        reset_url = f"{config.server_url}/password-reset/confirm?token={raw_token}"
+        # Must carry the port: on any non-default port a bare server_url yields
+        # a dead link (the OAuth redirect URLs and the email logo_url are built
+        # the same way).
+        base_url = config.server_url
+        if config.server_port:
+            base_url = f"{config.server_url}:{config.server_port}"
+        reset_url = f"{base_url}/password-reset/confirm?token={raw_token}"
 
         # If the configured email service is a MockService (e.g. in tests/dev),
         # log the reset URL for debugging purposes.
@@ -247,32 +267,20 @@ class PasswordResetService:
         if not user_entity:
             return ConfirmResetOutcome.USER_NOT_FOUND
 
-        # 6. Hash new password EXACTLY ONCE and thread the same hash into
-        # both the user entity and the password-history record.
-        new_password_hash = generate_password_hash(new_password)
-
-        # 7. Update password, log history, mark token, clear flag
-        user_entity._password = new_password_hash  # noqa: SLF001
-
-        await password_history_repo.save_password_to_history(
-            db,
-            user_id=token_user_id,
-            password_hash=new_password_hash,
-            change_reason=token_reset_type,
-        )
-
+        # 6. Burn the token first (flush only) so the *same* commit that writes
+        # the new password also retires the token — a crash in between must not
+        # leave a used token replayable.
         await password_reset_token_repo.mark_as_used(db, token_id)
 
-        # Clear needs_password_reset flag if it was admin-forced
-        if token_reset_type == PasswordResetType.ADMIN_FORCED:
-            user_entity.needs_password_reset = False
-
-        # Commit all changes: user password, history, and token
-        await db.commit()
-
-        # 8. Clear all existing sessions for user (force re-login)
-        await session_repo.delete_all_by_user_id(db, token_user_id)
-        await db.commit()
+        # 7. Apply the password, record history and revoke sessions. This also
+        # clears needs_password_reset, which covers the admin-forced case.
+        await self._persist_new_password(
+            db,
+            user_entity,
+            new_password,
+            change_reason=token_reset_type,
+            user_id=token_user_id,
+        )
 
         logger.info(
             "Password reset completed for user_id=%d, type=%s",
@@ -281,6 +289,116 @@ class PasswordResetService:
         )
 
         return ConfirmResetOutcome.SUCCESS
+
+    async def _persist_new_password(
+        self,
+        db: AsyncSession,
+        user_entity: Any,
+        new_password: str,
+        change_reason: str,
+        user_id: int | None = None,
+    ) -> None:
+        """Write a new password, append it to history and revoke sessions.
+
+        Single place where a password actually changes, so every entry point
+        (emailed reset *and* profile change) enforces the same policy: the hash
+        is computed once and reused for the history row, and all existing
+        sessions are dropped so a stolen session cannot outlive the change.
+        """
+        # Hash EXACTLY ONCE and thread the same hash into both the user entity
+        # and the password-history record. scrypt is deliberately CPU-heavy, so
+        # keep it off the event loop.
+        new_password_hash = await asyncio.to_thread(
+            generate_password_hash, new_password
+        )
+
+        user_entity._password = new_password_hash  # noqa: SLF001
+        user_entity.needs_password_reset = False
+
+        target_user_id = user_id if user_id is not None else user_entity.id
+
+        await password_history_repo.save_password_to_history(
+            db,
+            user_id=target_user_id,
+            password_hash=new_password_hash,
+            change_reason=change_reason,
+        )
+
+        await db.commit()
+
+        # Force re-login everywhere (the caller's own session included).
+        await session_repo.delete_all_by_user_id(db, target_user_id)
+        await db.commit()
+
+    async def change_password(
+        self, user_id: int, current_password: str, new_password: str
+    ) -> ChangePasswordOutcome:
+        """Change a signed-in user's password from the profile page.
+
+        Enforces the same policy as the emailed-reset flow — complexity rules,
+        the last-``_PASSWORD_HISTORY_DEPTH`` reuse check, a history entry and
+        session revocation — so the policy cannot be sidestepped by choosing a
+        different entry point.
+
+        Args:
+            user_id: The authenticated user changing their own password.
+            current_password: The user's existing password, re-entered.
+            new_password: The candidate new password.
+
+        Returns:
+            The outcome the caller maps to a toast.
+        """
+        if not PASSWORD_REGEX.match(new_password):
+            return ChangePasswordOutcome.INVALID_PASSWORD
+
+        if user_id <= 0:
+            return ChangePasswordOutcome.USER_NOT_FOUND
+
+        try:
+            async with get_asyncdb_session() as db:
+                outcome = await self._apply_password_change(
+                    db, user_id, current_password, new_password
+                )
+        except Exception:
+            logger.exception("Error during password change for user_id=%d", user_id)
+            return ChangePasswordOutcome.ERROR
+
+        if outcome is ChangePasswordOutcome.SUCCESS:
+            logger.info("Password changed for user_id=%d", user_id)
+        return outcome
+
+    async def _apply_password_change(
+        self,
+        db: AsyncSession,
+        user_id: int,
+        current_password: str,
+        new_password: str,
+    ) -> ChangePasswordOutcome:
+        """Verify the current password and apply the new one.
+
+        ``check_password`` runs scrypt, which is deliberately CPU-heavy, so it
+        is pushed onto a worker thread rather than stalling the event loop.
+        """
+        user_entity = await user_repo.find_by_id(db, user_id)
+        if not user_entity:
+            return ChangePasswordOutcome.USER_NOT_FOUND
+
+        if not await asyncio.to_thread(user_entity.check_password, current_password):
+            return ChangePasswordOutcome.INCORRECT_CURRENT_PASSWORD
+
+        if await password_history_repo.check_password_reuse(
+            db, user_id, new_password, n=_PASSWORD_HISTORY_DEPTH
+        ):
+            return ChangePasswordOutcome.PASSWORD_REUSED
+
+        await self._persist_new_password(
+            db,
+            user_entity,
+            new_password,
+            change_reason=PasswordResetType.USER_INITIATED,
+            user_id=user_id,
+        )
+        return ChangePasswordOutcome.SUCCESS
 
 
 # Stateless service — a single shared instance is safe to reuse.

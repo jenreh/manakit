@@ -163,10 +163,6 @@ class Autocomplete(MantineComboboxBase):
     # Event handlers
     on_option_submit: rx.EventHandler[lambda value, option: [value, option]] = None
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-    }
-
     @classmethod
     def get_event_triggers(cls) -> dict[str, Any]:
         return {
@@ -183,19 +179,6 @@ class ComboboxRoot(MantineLayoutComponentBase):
     """
 
     tag = "Combobox"
-
-    _rename_props = {
-        "arrow_offset": "arrowOffset",
-        "close_on_option_select": "closeOnOptionSelect",
-        "dropdown_padding": "dropdownPadding",
-        "on_close": "onClose",
-        "on_open": "onOpen",
-        "on_option_submit": "onOptionSubmit",
-        "position_dependencies": "positionDependencies",
-        "reset_selection_on_option_hover": "resetSelectionOnOptionHover",
-        "with_arrow": "withArrow",
-        "within_portal": "withinPortal",
-    }
 
     opened: Var[bool] = None
     position: Var[str] = None
@@ -314,11 +297,6 @@ class Pill(MantineLayoutComponentBase):
 
     tag = "Pill"
 
-    _rename_props = {
-        "remove_button_props": "removeButtonProps",
-        "with_remove_button": "withRemoveButton",
-    }
-
     disabled: Var[bool] = None
     radius: Var[str | int] = None
     size: Var[str | int] = None
@@ -343,17 +321,6 @@ class PillsInput(MantineLayoutComponentBase):
     """
 
     tag = "PillsInput"
-
-    _rename_props = {
-        "left_section": "leftSection",
-        "left_section_pointer_events": "leftSectionPointerEvents",
-        "left_section_width": "leftSectionWidth",
-        "right_section": "rightSection",
-        "right_section_pointer_events": "rightSectionPointerEvents",
-        "right_section_width": "rightSectionWidth",
-        "with_asterisk": "withAsterisk",
-        "with_error_styles": "withErrorStyles",
-    }
 
     label: Var[str | Any] = None
     description: Var[str | Any] = None
@@ -395,39 +362,6 @@ class TreeSelect(MantineLayoutComponentBase):
     """
 
     tag = "TreeSelect"
-
-    _rename_props = {
-        "allow_deselect": "allowDeselect",
-        "check_strictly": "checkStrictly",
-        "checked_strategy": "checkedStrategy",
-        "chevron_aria_labels": "chevronAriaLabels",
-        "chevron_color": "chevronColor",
-        "clear_search_on_change": "clearSearchOnChange",
-        "default_dropdown_opened": "defaultDropdownOpened",
-        "default_expand_all": "defaultExpandAll",
-        "default_expanded_values": "defaultExpandedValues",
-        "default_search_value": "defaultSearchValue",
-        "default_value": "defaultValue",
-        "dropdown_opened": "dropdownOpened",
-        "expand_on_click": "expandOnClick",
-        "expanded_values": "expandedValues",
-        "max_displayed_values": "maxDisplayedValues",
-        "max_dropdown_height": "maxDropdownHeight",
-        "max_values": "maxValues",
-        "nothing_found_message": "nothingFoundMessage",
-        "on_clear": "onClear",
-        "on_dropdown_close": "onDropdownClose",
-        "on_dropdown_open": "onDropdownOpen",
-        "on_expanded_change": "onExpandedChange",
-        "on_remove": "onRemove",
-        "on_search_change": "onSearchChange",
-        "open_on_focus": "openOnFocus",
-        "render_node": "renderNode",
-        "search_value": "searchValue",
-        "with_lines": "withLines",
-        "with_asterisk": "withAsterisk",
-        "with_error_styles": "withErrorStyles",
-    }
 
     data: Var[list[dict[str, Any]]] = None
     value: Var[str | list[str]] = None
@@ -499,34 +433,6 @@ class Cascader(MantineComboboxBase):
     """
 
     tag = "Cascader"
-
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "allow_deselect": "allowDeselect",
-        "change_on_select": "changeOnSelect",
-        "check_icon_position": "checkIconPosition",
-        "chevron_color": "chevronColor",
-        "close_on_select": "closeOnSelect",
-        "column_width": "columnWidth",
-        "combobox_props": "comboboxProps",
-        "default_search_value": "defaultSearchValue",
-        "expand_trigger": "expandTrigger",
-        "format_value": "formatValue",
-        "max_displayed_levels": "maxDisplayedLevels",
-        "next_levels_control_label": "nextLevelsControlLabel",
-        "nothing_found_message": "nothingFoundMessage",
-        "on_clear": "onClear",
-        "on_search_change": "onSearchChange",
-        "open_on_focus": "openOnFocus",
-        "previous_levels_control_label": "previousLevelsControlLabel",
-        "render_option": "renderOption",
-        "render_search_option": "renderSearchOption",
-        "safe_area_polygon": "safeAreaPolygon",
-        "scroll_area_props": "scrollAreaProps",
-        "search_value": "searchValue",
-        "with_check_icon": "withCheckIcon",
-        "with_columns": "withColumns",
-    }
 
     # Selection behavior
     allow_deselect: Var[bool] = None
@@ -627,18 +533,6 @@ class ComboboxPopover(MantineLayoutComponentBase):
     """
 
     tag = "ComboboxPopover"
-
-    _rename_props = {
-        "search_value": "searchValue",
-        "dropdown_opened": "dropdownOpened",
-        "max_dropdown_height": "maxDropdownHeight",
-        "render_option": "renderOption",
-        "nothing_found_message": "nothingFoundMessage",
-        "with_check_icon": "withCheckIcon",
-        "check_icon_position": "checkIconPosition",
-        "allow_deselect": "allowDeselect",
-        "combobox_props": "comboboxProps",
-    }
 
     data: Var[list[Any]] = None
     value: Var[str | list[str] | None] = None

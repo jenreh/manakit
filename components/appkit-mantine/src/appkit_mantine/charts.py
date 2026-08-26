@@ -106,8 +106,6 @@ class AreaChart(CategoricalChartBase):
     chart_type: Var[Literal["default", "stacked", "percent", "split"]] = None  # type: ignore
     _rename_props = {
         "chartType": "type",
-        "with_brush": "withBrush",
-        "brush_props": "brushProps",
     }
 
     curve_type: Var[MantineCurveType]
@@ -137,8 +135,6 @@ class BarChart(CategoricalChartBase):
     chart_type: Var[Literal["default", "stacked", "percent", "waterfall"]] = None  # type: ignore
     _rename_props = {
         "chartType": "type",
-        "with_brush": "withBrush",
-        "brush_props": "brushProps",
     }
 
     cursor_fill: Var[str]
@@ -398,12 +394,6 @@ class Heatmap(MantineChartComponentBase):
 
     tag = "Heatmap"
 
-    _rename_props = {
-        "with_legend": "withLegend",
-        "legend_labels": "legendLabels",
-        "month_labels_position": "monthLabelsPosition",
-    }
-
     data: Var[list[dict[str, Any]] | dict[str, Any]]
 
     with_legend: Var[bool] = None
@@ -449,23 +439,6 @@ class RadialBarChart(MantineChartComponentBase):
 
     tag = "RadialBarChart"
 
-    _rename_props = {
-        "accessibility_layer": "accessibilityLayer",
-        "bar_size": "barSize",
-        "data_key": "dataKey",
-        "empty_background_color": "emptyBackgroundColor",
-        "end_angle": "endAngle",
-        "legend_props": "legendProps",
-        "radial_bar_chart_props": "radialBarChartProps",
-        "radial_bar_props": "radialBarProps",
-        "start_angle": "startAngle",
-        "tooltip_props": "tooltipProps",
-        "with_background": "withBackground",
-        "with_labels": "withLabels",
-        "with_legend": "withLegend",
-        "with_tooltip": "withTooltip",
-    }
-
     data: Var[list[dict[str, Any]]] = None
     data_key: Var[str] = None
     bar_size: Var[int] = None
@@ -495,20 +468,6 @@ class BarsList(MantineChartComponentBase):
 
     tag = "BarsList"
 
-    _rename_props = {
-        "auto_contrast": "autoContrast",
-        "bar_color": "barColor",
-        "bar_gap": "barGap",
-        "bar_height": "barHeight",
-        "bar_text_color": "barTextColor",
-        "bars_label": "barsLabel",
-        "get_bar_props": "getBarProps",
-        "min_bar_size": "minBarSize",
-        "render_bar": "renderBar",
-        "value_formatter": "valueFormatter",
-        "value_label": "valueLabel",
-    }
-
     data: Var[list[dict[str, Any]]] = None
     bar_color: Var[str] = None
     bar_gap: Var[str | int] = None
@@ -527,21 +486,6 @@ class SankeyChart(MantineChartComponentBase):
     """
 
     tag = "SankeyChart"
-
-    _rename_props = {
-        "link_color": "linkColor",
-        "link_curvature": "linkCurvature",
-        "link_opacity": "linkOpacity",
-        "node_color": "nodeColor",
-        "node_padding": "nodePadding",
-        "node_width": "nodeWidth",
-        "sankey_props": "sankeyProps",
-        "text_color": "textColor",
-        "tooltip_animation_duration": "tooltipAnimationDuration",
-        "tooltip_props": "tooltipProps",
-        "value_formatter": "valueFormatter",
-        "with_tooltip": "withTooltip",
-    }
 
     data: Var[dict[str, Any]] = None
     """SankeyChartData: {nodes: [{name: str}],
@@ -576,20 +520,6 @@ class SunburstChart(MantineChartComponentBase):
 
     tag = "SunburstChart"
 
-    _rename_props = {
-        "data_key": "dataKey",
-        "end_angle": "endAngle",
-        "inner_radius": "innerRadius",
-        "start_angle": "startAngle",
-        "stroke_color": "strokeColor",
-        "sunburst_chart_props": "sunburstChartProps",
-        "tooltip_animation_duration": "tooltipAnimationDuration",
-        "tooltip_props": "tooltipProps",
-        "value_formatter": "valueFormatter",
-        "with_labels": "withLabels",
-        "with_tooltip": "withTooltip",
-    }
-
     data: Var[list[dict[str, Any]]] = None
     """Hierarchical data: [{name, color, value | children: [...]}].
     Leaf nodes need `value`; parent nodes have a `children` list."""
@@ -621,17 +551,6 @@ class BulletChart(MantineChartComponentBase):
     """
 
     tag = "BulletChart"
-
-    _rename_props = {
-        "bar_color": "barColor",
-        "bar_size": "barSize",
-        "get_tooltip_label": "getTooltipLabel",
-        "target_color": "targetColor",
-        "target_ratio": "targetRatio",
-        "target_size": "targetSize",
-        "value_formatter": "valueFormatter",
-        "with_tooltip": "withTooltip",
-    }
 
     value: Var[int | float] = None
     """Current value displayed as the main bar (required)."""
@@ -666,12 +585,6 @@ class ChartBrush(MantineChartComponentBase):
     """
 
     tag = "ChartBrush"
-
-    _rename_props = {
-        "data_key": "dataKey",
-        "end_index": "endIndex",
-        "start_index": "startIndex",
-    }
 
     data_key: Var[str] = None
     start_index: Var[int] = None
