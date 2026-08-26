@@ -7,11 +7,14 @@ OAuth callback handling, redirect logic, and error paths.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+import reflex as rx
 
 from appkit_user.authentication.backend.models import User
 from appkit_user.authentication.states import LoginState, UserSession
@@ -1073,3 +1076,122 @@ class TestCheckAuth:
             await state.check_auth()
 
         assert state.auth_token == ""
+
+
+# ============================================================================
+# Session invalidation on logout (real Reflex state tree)
+# ============================================================================
+
+
+async def _real_states() -> tuple[UserSession, LoginState]:
+    """Build a real Reflex state tree and return (UserSession, LoginState).
+
+    The stubs above hand-roll ``reset()`` so that it clears the session vars.
+    Reflex does not behave that way for a substate: ``user``/``user_id``/
+    ``auth_token`` are *inherited* vars owned by ``UserSession``, and
+    ``State.reset()`` only walks ``base_vars``, which excludes them. These
+    tests therefore drive the genuine state tree.
+    """
+    root = rx.State(_reflex_internal_init=True)
+    session = await root.get_state(UserSession)
+    login = await root.get_state(LoginState)
+    return session, login
+
+
+@contextmanager
+def _live_session_repo() -> Iterator[MagicMock]:
+    """Patch the DB so any lookup would return a valid, unexpired session.
+
+    A gate that still holds the old token would authenticate against this,
+    so the assertions below cannot pass vacuously.
+    """
+    user_session = MagicMock()
+    user_session.is_expired.return_value = False
+    user_session.user = _user_entity(1, "alice")
+
+    with (
+        patch(f"{_PATCH}.get_asyncdb_session") as mock_ctx,
+        patch(f"{_PATCH}.session_repo") as mock_repo,
+    ):
+        db = AsyncMock()
+        mock_ctx.return_value.__aenter__ = AsyncMock(return_value=db)
+        mock_ctx.return_value.__aexit__ = AsyncMock(return_value=False)
+        mock_repo.save = AsyncMock()
+        mock_repo.delete_by_user_and_session_id = AsyncMock()
+        mock_repo.find_by_user_and_session_id = AsyncMock(return_value=user_session)
+        mock_repo.find_by_session_id = AsyncMock(return_value=user_session)
+        yield mock_repo
+
+
+class TestLogoutInvalidatesInheritedSession:
+    """Logout must invalidate the session vars owned by ``UserSession``.
+
+    These run against the real state tree rather than the stubs above, which
+    hand-roll a ``reset()`` that clears everything and so cannot detect a
+    regression here. The invariant relies on Reflex resolving an inherited
+    event handler against the state that *defines* it (``BaseState`` delegates
+    to ``parent_state``), so ``self`` inside ``terminate_session`` is the
+    ``UserSession`` instance and ``reset()`` does cover these vars. If that
+    dispatch ever changes, or ``terminate_session`` is redefined on a substate,
+    these tests fail instead of the app silently keeping the old user.
+    """
+
+    @pytest.mark.asyncio
+    async def test_logout_clears_session_vars_on_parent_state(self) -> None:
+        session, login = await _real_states()
+
+        with _live_session_repo():
+            await login._create_session(AsyncMock(), _user_entity(1, "alice"))
+            assert session.user is not None  # signed in
+
+            await login.logout()
+
+        assert session.user is None
+        assert session.user_id == 0
+        assert session.auth_token == ""
+
+    @pytest.mark.asyncio
+    async def test_gate_refuses_after_logout(self) -> None:
+        """The authorization gate must answer False once logged out."""
+        _, login = await _real_states()
+
+        with _live_session_repo():
+            await login._create_session(AsyncMock(), _user_entity(1, "alice"))
+            assert await login.authenticated_user is not None
+
+            await login.logout()
+
+            assert await login.authenticated_user is None
+            assert await login.is_authenticated is False
+
+    @pytest.mark.asyncio
+    async def test_logout_clears_session_storage_and_redirects(self) -> None:
+        _, login = await _real_states()
+
+        with _live_session_repo():
+            await login._create_session(AsyncMock(), _user_entity(1, "alice"))
+            result = await login.logout()
+
+        events = result if isinstance(result, list) else [result]
+        handlers = {event.handler.fn.__qualname__ for event in events}
+        assert any("clear_session_storage" in name for name in handlers)
+        assert any("redirect" in name for name in handlers)
+
+    @pytest.mark.asyncio
+    async def test_expired_session_clears_parent_state(self) -> None:
+        """The check_auth expiry branch must invalidate the session too."""
+        session, login = await _real_states()
+
+        expired = MagicMock()
+        expired.is_expired.return_value = True
+
+        with _live_session_repo() as mock_repo:
+            await login._create_session(AsyncMock(), _user_entity(1, "alice"))
+            mock_repo.find_by_user_and_session_id = AsyncMock(return_value=expired)
+            mock_repo.find_by_session_id = AsyncMock(return_value=expired)
+
+            await login.check_auth()
+
+        assert session.user is None
+        assert session.user_id == 0
+        assert session.auth_token == ""

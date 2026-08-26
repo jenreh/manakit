@@ -295,6 +295,10 @@ class LoginState(UserSession):
     async def _prepare_login(self) -> str:
         """Prepare for login: save redirect, terminate old session. Returns redirect."""
         redirect_target = self.redirect_to
+        # The clear-session-storage spec is dropped on purpose here: Reflex
+        # keeps its client token in session storage, and wiping it mid-flow
+        # would break the OAuth state lookup on the callback. A fresh session
+        # is created moments later anyway.
         await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
         if redirect_target and redirect_target != "/":
             self.redirect_to = redirect_target
@@ -450,11 +454,15 @@ class LoginState(UserSession):
         return await user_repo.get_or_create_oauth_user(db, user_info, provider, token)
 
     @rx.event
-    async def logout(self) -> EventSpec:
+    async def logout(self) -> list[EventSpec]:
         """Logout user and terminate session."""
-        await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
+        clear_storage = await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
 
-        return rx.redirect(LOGOUT_ROUTE)
+        # terminate_session() clears the browser's session storage; forward it
+        # instead of dropping it, so the tab starts from a clean slate.
+        events = [clear_storage] if clear_storage is not None else []
+        events.append(rx.redirect(LOGOUT_ROUTE))
+        return events
 
     @rx.event
     async def redir(self) -> EventSpec | None:
@@ -491,7 +499,7 @@ class LoginState(UserSession):
         return normalized.startswith("/oauth/") and normalized.endswith("/callback")
 
     @rx.event
-    async def check_auth(self) -> EventSpec | None:
+    async def check_auth(self) -> list[EventSpec] | None:
         """Page guard: redirect to login if session is invalid or expired."""
         if self._should_skip_auth_check():
             return None
@@ -523,8 +531,9 @@ class LoginState(UserSession):
             else:
                 logger.debug("Session expired for user_id=%s", self.user_id)
                 self._last_auth_check = None
-                await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
-                return await self.redir()  # type: ignore[operator, no-any-return]
+                clear_storage = await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
+                redirect = await self.redir()  # type: ignore[operator]
+                return [e for e in (clear_storage, redirect) if e is not None]
 
         except Exception as e:
             logger.error("Auth check failed: %s", e)
