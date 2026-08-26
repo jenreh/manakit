@@ -576,7 +576,7 @@ class LoginState(UserSession):
             # bypass. The session itself is left intact so a retry can succeed.
             logger.error("Auth check failed, denying access: %s", e)
             self._last_auth_check = None
-            return rx.redirect(self.login_route)
+            return [rx.redirect(self.login_route)]
 
         return None
 
