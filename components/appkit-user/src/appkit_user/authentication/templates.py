@@ -10,7 +10,7 @@ import reflex as rx
 import appkit_mantine as mn
 from appkit_ui.global_states import LoadingState
 from appkit_user.authentication.components import default_fallback, session_monitor
-from appkit_user.authentication.states import LoginState, UserSession
+from appkit_user.authentication.states import UserSession
 
 logger = logging.getLogger(__name__)
 
@@ -128,8 +128,12 @@ def _render_layout(
 def _build_auth_handlers(
     on_load: rx.EventHandler | list[rx.EventHandler] | None,
 ) -> list[rx.EventHandler]:
-    """Build on_load handlers: auth check first, loading state last."""
-    handlers: list[rx.EventHandler] = [LoginState.check_auth]
+    """Build on_load handlers: page handlers first, loading state last.
+
+    No auth check is prepended: the ``SessionFilter`` middleware rejects an
+    invalid session before any on_load handler is dispatched.
+    """
+    handlers: list[rx.EventHandler] = []
     if on_load is None:
         handlers.append(LoadingState.set_is_loading(False))
     elif isinstance(on_load, list):
@@ -153,10 +157,12 @@ def navbar_layout(
 ) -> Callable[[Callable[[], rx.Component]], rx.Component]:
     """The template for each page of the app that requires authentication.
 
-    ``on_load`` always runs behind :meth:`LoginState.check_auth`, so an
-    unauthenticated visitor is redirected to the login route before any page
-    handler executes. ``admin_only`` additionally gates rendering, but that is
-    a render-layer check only — enforce admin-only *events* with the
+    Authentication is enforced by the
+    :class:`appkit_user.authentication.session_filter.SessionFilter`
+    middleware, which gates the route before any ``on_load`` handler is
+    dispatched — an unauthenticated visitor never reaches the page handlers.
+    ``admin_only`` additionally gates rendering, but that is a render-layer
+    check only — enforce admin-only *events* with the
     :func:`appkit_user.authentication.decorators.requires_admin` decorator.
     """
     handlers = _build_auth_handlers(on_load)
@@ -338,7 +344,8 @@ def authenticated_page(
         admin_only: Restrict access to admin users only.
         meta: Additional meta tags to add to the page.
         script_tags: Script components to inject into the page.
-        on_load: Additional handlers called on page load. Auth check always runs first.
+        on_load: Additional handlers called on page load. The ``SessionFilter``
+            middleware gates the route before any of them are dispatched.
     """
     resolved_template = template if template is not None else _default_template
     handlers = _build_auth_handlers(on_load)

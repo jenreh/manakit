@@ -41,7 +41,7 @@ class ButtonExState(rx.State):
 
 
 @navbar_layout(
-    route="/buttons",
+    route="/examples/buttons",
     title="Buttons & Icons",
     navbar=app_navbar(),
     with_header=False,

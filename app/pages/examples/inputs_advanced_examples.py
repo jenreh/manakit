@@ -62,7 +62,7 @@ class InputsAdvancedState(rx.State):
 
 
 @navbar_layout(
-    route="/inputs-advanced",
+    route="/examples/inputs-advanced",
     title="Advanced Inputs",
     navbar=app_navbar(),
     with_header=False,

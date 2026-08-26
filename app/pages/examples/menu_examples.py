@@ -52,7 +52,7 @@ def _section(heading: str, description: str, *content: rx.Component) -> rx.Compo
 
 
 @navbar_layout(
-    route="/menu",
+    route="/examples/menu",
     title="Menu Examples",
     navbar=app_navbar(),
     with_header=False,

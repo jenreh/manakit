@@ -371,7 +371,7 @@ def clusters_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/maps",
+    route="/examples/maps",
     title="Maps",
     navbar=app_navbar(),
     with_header=False,

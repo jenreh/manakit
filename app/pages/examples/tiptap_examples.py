@@ -94,7 +94,7 @@ synced with Reflex state.</p>
 
 
 @navbar_layout(
-    route="/tiptap",
+    route="/examples/tiptap",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

@@ -136,6 +136,22 @@ class AuthenticationConfiguration(BaseSettings):
     server_url: str
     server_port: int
 
+    # Session filter (servlet-filter style guard) settings
+    session_cookie_name: str = "reflex_session"  # mirrors the auth token
+    # Secure by default: the cookie carries the session token, so it must not
+    # be transmittable (or settable) over plaintext HTTP. Browsers exempt
+    # localhost, so local HTTP dev still works; set False only for a non-TLS
+    # deployment reached by hostname.
+    session_cookie_secure: bool = True
+    session_filter_enabled: bool = True  # kill switch for the guard
+    # fnmatch glob allowlist; everything not matched here is default-deny.
+    public_routes: list[str] = [
+        "/login",
+        "/password-reset",
+        "/password-reset/confirm",
+        "/oauth/*/callback",
+    ]
+
     oauth_providers: list[AnyOAuthSetting] = []
 
     # Email provider configuration

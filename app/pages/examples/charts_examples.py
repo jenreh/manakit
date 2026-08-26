@@ -174,7 +174,7 @@ BULLET_RANGES = [
 
 
 @navbar_layout(
-    route="/charts",
+    route="/examples/charts",
     title="Charts Examples",
     navbar=app_navbar(),
     with_header=False,

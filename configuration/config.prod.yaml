@@ -14,6 +14,9 @@ app:
   authentication:
     server_url: https://oriole-guiding-miserably.ngrok-free.app
     server_port: 80
+    # Deployment is TLS-terminated: never let the session cookie travel or be
+    # set over plaintext http.
+    session_cookie_secure: true
 
     oauth_providers:
       - provider: "github"

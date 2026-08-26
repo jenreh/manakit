@@ -106,7 +106,7 @@ class ScrollAreaState(rx.State):
 
 
 @navbar_layout(
-    route="/scroll-area",
+    route="/examples/scroll-area",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

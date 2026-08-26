@@ -12,7 +12,7 @@ from app.components.navbar import app_navbar
 
 
 @navbar_layout(
-    route="/typography",
+    route="/examples/typography",
     title="Typography Components",
     navbar=app_navbar(),
     with_header=False,

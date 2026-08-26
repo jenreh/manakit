@@ -6,6 +6,7 @@ Covers GET /api/images/{image_id} — found and not-found paths.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -13,11 +14,28 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
 from appkit_imagecreator.backend.image_api import router
+from appkit_user.authentication.backend.models import User
+from appkit_user.authentication.http_guard import require_session
 
 _PATCH = "appkit_imagecreator.backend.image_api"
 
 _app = FastAPI()
 _app.include_router(router)
+
+
+@pytest.fixture(autouse=True)
+def _authenticated() -> Iterator[None]:
+    """Stand in for a valid session cookie.
+
+    The route is gated by ``require_session``; overriding the dependency
+    exercises the handler without a database-backed session. The
+    unauthenticated path is pinned separately by ``TestGetImageRequiresSession``.
+    """
+    _app.dependency_overrides[require_session] = lambda: User(
+        id=1, name="Tester", email="tester@example.com"
+    )
+    yield
+    _app.dependency_overrides.clear()
 
 
 def _db_context(session: AsyncMock | None = None):
@@ -59,7 +77,14 @@ class TestGetImage:
         assert resp.status_code == 200
         assert resp.content == image_bytes
         assert resp.headers["content-type"] == "image/png"
-        assert "max-age=31536000" in resp.headers.get("cache-control", "")
+        cache_control = resp.headers.get("cache-control", "")
+        # Session-authenticated: never in a shared cache, and short-lived so a
+        # later user of the same browser profile cannot be served it from cache
+        # without the session check running.
+        assert "private" in cache_control
+        assert "public" not in cache_control
+        assert "must-revalidate" in cache_control
+        assert "max-age=31536000" not in cache_control
 
     @pytest.mark.asyncio
     async def test_not_found(self) -> None:
@@ -130,3 +155,30 @@ class TestGetImage:
         assert resp.headers.get("content-disposition", "") == (
             'attachment; filename="image_42.png"'
         )
+
+
+class TestGetImageRequiresSession:
+    @pytest.mark.asyncio
+    async def test_without_session_returns_401(self) -> None:
+        """No valid session -> 401, and the repository is never consulted."""
+        _app.dependency_overrides.clear()
+
+        with (
+            patch(
+                f"{_PATCH}.get_asyncdb_session",
+                return_value=_db_context(),
+            ),
+            patch(f"{_PATCH}.image_repo") as repo,
+        ):
+            repo.find_image_data = AsyncMock(return_value=(b"data", "image/png"))
+
+            transport = ASGITransport(app=_app)
+            async with AsyncClient(
+                transport=transport,
+                base_url="http://test",
+            ) as client:
+                resp = await client.get("/api/images/1")
+
+            assert resp.status_code == 401
+            assert resp.json()["detail"] == "Missing or invalid session."
+            repo.find_image_data.assert_not_awaited()

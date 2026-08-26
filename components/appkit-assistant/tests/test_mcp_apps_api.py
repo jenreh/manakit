@@ -4,6 +4,7 @@ Covers resource fetching, tool call proxying, UI tool listing,
 lazy service initialization, server lookup, and schema validation.
 """
 
+import inspect
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -11,7 +12,6 @@ import pytest
 import appkit_assistant.backend.api.mcp_apps_api as api_module
 from appkit_assistant.backend.api.mcp_apps_api import (
     ToolCallRequest,
-    _extract_user_id,
     _get_mcp_apps_service,
     _get_server,
     call_tool,
@@ -23,10 +23,17 @@ from appkit_assistant.backend.schemas import (
     McpAppToolInfo,
     McpAppViewData,
 )
+from appkit_user.authentication.backend.models import User
+from appkit_user.authentication.http_guard import RequiredSession
 
 # ============================================================================
 # Helpers
 # ============================================================================
+
+
+def _make_user(user_id: int = 7) -> User:
+    """Build the session-resolved user the endpoints receive from FastAPI."""
+    return User(id=user_id, name="Tester", email="tester@example.com")
 
 
 def _make_server_mock(
@@ -66,19 +73,51 @@ class TestToolCallRequest:
 
 
 # ============================================================================
-# User ID extraction
+# Session-derived user identity
 # ============================================================================
 
 
-class TestExtractUserId:
-    def test_no_session_returns_default(self) -> None:
-        assert _extract_user_id(None, None) == 0
+class TestSessionDerivedIdentity:
+    """The caller can no longer supply its own user id.
 
-    def test_empty_session_returns_default(self) -> None:
-        assert _extract_user_id(None, "") == 0
+    Replaces the former ``_extract_user_id`` tests, which pinned the old
+    ``x-user-id`` header path. Identity is now resolved server-side by
+    ``require_session`` and handed to the endpoints as ``user``.
+    """
 
-    def test_with_session_returns_default(self) -> None:
-        assert _extract_user_id(None, "some-session-token") == 0
+    @pytest.mark.parametrize(
+        "endpoint",
+        [get_resource, call_tool, list_ui_tools],
+    )
+    def test_endpoint_requires_a_session(self, endpoint: object) -> None:
+        params = inspect.signature(endpoint).parameters
+        assert "user" in params, "endpoint must take the session-resolved user"
+        assert params["user"].annotation is RequiredSession
+        assert "x_user_id" not in params
+        assert "reflex_session" not in params
+
+    def test_module_exposes_no_header_based_extractor(self) -> None:
+        assert not hasattr(api_module, "_extract_user_id")
+        assert not hasattr(api_module, "_DEFAULT_USER_ID")
+
+    @pytest.mark.asyncio
+    async def test_service_receives_the_session_user_id(self) -> None:
+        mock_service = AsyncMock()
+        mock_service.discover_ui_tools = AsyncMock(return_value=[])
+
+        with (
+            patch.object(
+                api_module, "_get_mcp_apps_service", return_value=mock_service
+            ),
+            patch(
+                "appkit_assistant.backend.api.mcp_apps_api._get_server",
+                new_callable=AsyncMock,
+                return_value=_make_server_mock(),
+            ),
+        ):
+            await list_ui_tools(server_id=1, user=_make_user(user_id=42))
+
+        assert mock_service.discover_ui_tools.await_args.args[1] == 42
 
 
 # ============================================================================
@@ -133,7 +172,9 @@ class TestGetResourceEndpoint:
                 return_value=_make_server_mock(),
             ),
         ):
-            response = await get_resource(server_id=1, uri="ui://test/view")
+            response = await get_resource(
+                server_id=1, uri="ui://test/view", user=_make_user()
+            )
             assert response.status_code == 200
             assert response.body == b"<h1>Hello</h1>"
 
@@ -159,7 +200,9 @@ class TestGetResourceEndpoint:
                 return_value=_make_server_mock(),
             ),
         ):
-            response = await get_resource(server_id=1, uri="ui://test/view")
+            response = await get_resource(
+                server_id=1, uri="ui://test/view", user=_make_user()
+            )
             assert response.headers["x-mcp-resource-uri"] == "ui://test/view"
             assert "x-mcp-csp" in response.headers
             assert "x-mcp-permissions" in response.headers
@@ -181,7 +224,7 @@ class TestGetResourceEndpoint:
             ),
             pytest.raises(Exception) as exc_info,
         ):
-            await get_resource(server_id=1, uri="ui://broken")
+            await get_resource(server_id=1, uri="ui://broken", user=_make_user())
         assert exc_info.value.status_code == 502
 
     @pytest.mark.asyncio
@@ -203,7 +246,9 @@ class TestGetResourceEndpoint:
                 return_value=_make_server_mock(),
             ),
         ):
-            response = await get_resource(server_id=1, uri="ui://test/view")
+            response = await get_resource(
+                server_id=1, uri="ui://test/view", user=_make_user()
+            )
             assert "x-mcp-csp" not in response.headers
             assert "x-mcp-permissions" not in response.headers
             assert "x-mcp-prefers-border" not in response.headers
@@ -233,7 +278,7 @@ class TestCallToolEndpoint:
             ),
         ):
             request = ToolCallRequest(tool_name="gen", arguments={"text": "hi"})
-            result = await call_tool(server_id=1, request=request)
+            result = await call_tool(server_id=1, request=request, user=_make_user())
             assert result["isError"] is False
             mock_service.proxy_tool_call.assert_called_once()
 
@@ -265,7 +310,7 @@ class TestListUiToolsEndpoint:
                 return_value=_make_server_mock(),
             ),
         ):
-            result = await list_ui_tools(server_id=1)
+            result = await list_ui_tools(server_id=1, user=_make_user())
             assert len(result) == 1
             assert result[0]["tool_name"] == "qr_code"
 
@@ -284,7 +329,7 @@ class TestListUiToolsEndpoint:
                 return_value=_make_server_mock(),
             ),
         ):
-            result = await list_ui_tools(server_id=1)
+            result = await list_ui_tools(server_id=1, user=_make_user())
             assert result == []
 
 

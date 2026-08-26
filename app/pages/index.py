@@ -38,18 +38,28 @@ def index() -> rx.Component:
                     ),
                     mn.text("Inputs:", fw="bold", size="md"),
                     mn.list_(
-                        mn.list_.item(rx.link("Buttons & Icons", href="/buttons")),
-                        mn.list_.item(rx.link("Input Components", href="/inputs")),
-                        mn.list_.item(rx.link("Comboboxes", href="/comboboxes")),
                         mn.list_.item(
-                            rx.link("Rich Text Editor (Tiptap)", href="/tiptap")
+                            rx.link("Buttons & Icons", href="/examples/buttons")
+                        ),
+                        mn.list_.item(
+                            rx.link("Input Components", href="/examples/inputs")
+                        ),
+                        mn.list_.item(
+                            rx.link("Comboboxes", href="/examples/comboboxes")
+                        ),
+                        mn.list_.item(
+                            rx.link(
+                                "Rich Text Editor (Tiptap)", href="/examples/tiptap"
+                            )
                         ),
                         list_style_type="disc",
                         type="unordered",
                     ),
                     mn.text("Data Display:", fw="bold", size="md"),
                     mn.list_(
-                        mn.list_.item(rx.link("Data Display", href="/data-display")),
+                        mn.list_.item(
+                            rx.link("Data Display", href="/examples/data-display")
+                        ),
                         type="unordered",
                         list_style_type="disc",
                     ),
@@ -58,37 +68,47 @@ def index() -> rx.Component:
                 mn.stack(
                     mn.text("Navigation:", fw="bold", size="md"),
                     mn.list_(
-                        mn.list_.item(rx.link("Navigation", href="/navigation")),
                         mn.list_.item(
-                            rx.link("Navigation Progress", href="/nprogress")
+                            rx.link("Navigation", href="/examples/navigation")
                         ),
-                        mn.list_.item(rx.link("Nav Link", href="/nav-link")),
+                        mn.list_.item(
+                            rx.link("Navigation Progress", href="/examples/nprogress")
+                        ),
+                        mn.list_.item(rx.link("Nav Link", href="/examples/nav-link")),
                         type="unordered",
                         list_style_type="disc",
                     ),
                     mn.text("Overlay:", fw="bold", size="md"),
                     mn.list_(
-                        mn.list_.item(rx.link("HoverCard", href="/hover-card")),
-                        mn.list_.item(rx.link("Tooltip", href="/tooltip")),
+                        mn.list_.item(rx.link("HoverCard", href="/examples/overlay")),
+                        mn.list_.item(rx.link("Tooltip", href="/examples/overlay")),
                         type="unordered",
                         list_style_type="disc",
                     ),
                     mn.text("Others:", fw="bold", size="md"),
                     mn.list_(
-                        mn.list_.item(rx.link("Feedback Components", href="/feedback")),
                         mn.list_.item(
-                            rx.link("Markdown Preview", href="/markdown-preview")
+                            rx.link("Feedback Components", href="/examples/feedback")
                         ),
-                        mn.list_.item(rx.link("Modal", href="/modal")),
                         mn.list_.item(
-                            rx.link("Navigation Progress", href="/nprogress")
+                            rx.link(
+                                "Markdown Preview", href="/examples/markdown-preview"
+                            )
                         ),
-                        mn.list_.item(rx.link("Nav Link", href="/nav-link")),
+                        mn.list_.item(rx.link("Modal", href="/examples/modal")),
                         mn.list_.item(
-                            rx.link("Number Formatter", href="/number-formatter")
+                            rx.link("Navigation Progress", href="/examples/nprogress")
                         ),
-                        mn.list_.item(rx.link("ScrollArea", href="/scroll-area")),
-                        mn.list_.item(rx.link("Table", href="/table")),
+                        mn.list_.item(rx.link("Nav Link", href="/examples/nav-link")),
+                        mn.list_.item(
+                            rx.link(
+                                "Number Formatter", href="/examples/number-formatter"
+                            )
+                        ),
+                        mn.list_.item(
+                            rx.link("ScrollArea", href="/examples/scroll-area")
+                        ),
+                        mn.list_.item(rx.link("Table", href="/examples/table")),
                         type="unordered",
                         list_style_type="disc",
                     ),

@@ -70,7 +70,7 @@ def table_rows() -> rx.Component:
 
 
 @navbar_layout(
-    route="/table",
+    route="/examples/table",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

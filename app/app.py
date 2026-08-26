@@ -28,6 +28,7 @@ from appkit_mcp_image.auth import get_verifier
 from appkit_mcp_image.configuration import MCPImageGeneratorConfig
 from appkit_mcp_image.server import create_image_mcp_server
 from appkit_mcp_user.server import create_user_mcp_server
+from appkit_user.authentication import add_session_guard, install_session_filter
 from appkit_user.authentication.backend.services import (
     SessionCleanupService,
 )
@@ -220,6 +221,10 @@ def add_https_middleware(asgi_app: ASGIApp) -> ASGIApp:
 app = rx.App(
     stylesheets=base_stylesheets,
     style=base_style,
-    api_transformer=[api_app, add_https_middleware],
+    # The session guard sits inside the HTTPS scheme correction, so it already
+    # sees the corrected scheme when it issues a redirect or sets a cookie.
+    api_transformer=[api_app, add_session_guard, add_https_middleware],
 )
+# Single wiring point for the WebSocket session filter; consumer apps do the same.
+install_session_filter(app)
 app.register_lifespan_task(lifespan)

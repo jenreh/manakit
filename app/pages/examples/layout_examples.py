@@ -37,7 +37,7 @@ OVERFLOW_ITEMS = [
 
 
 @navbar_layout(
-    route="/layout",
+    route="/examples/layout",
     title="Layout Components",
     navbar=app_navbar(),
     with_header=False,

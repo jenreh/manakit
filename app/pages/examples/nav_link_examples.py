@@ -14,7 +14,7 @@ from app.components.navbar import app_navbar
 
 
 @navbar_layout(
-    route="/nav-link",
+    route="/examples/nav-link",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

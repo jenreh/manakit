@@ -1054,7 +1054,7 @@ def segmented_control_content() -> rx.Component:
 
 
 @navbar_layout(
-    route="/inputs",
+    route="/examples/inputs",
     title="Input Examples",
     navbar=app_navbar(),
     with_header=False,
