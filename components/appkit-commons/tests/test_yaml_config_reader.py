@@ -15,6 +15,53 @@ from appkit_commons.configuration.yaml import (
 class TestYamlConfigReader:
     """Test suite for YamlConfigReader."""
 
+    def test_merge_does_not_mutate_cached_base_config(self, tmp_path: Path) -> None:
+        """Profile overlays must not leak into the lru_cached base parse.
+
+        Regression guard: `read_file` is lru_cached and returns the same dict
+        object every call, while `__merge` mutates its master in place. Merging
+        straight into it permanently rewrote the cached config.yaml, so any
+        later reader saw the profile's values as if they were the defaults.
+        """
+        # Arrange
+        base_file = tmp_path / "config.yaml"
+        with base_file.open("w") as f:
+            yaml.dump({"env": "base", "nested": {"a": 1, "b": 2}}, f)
+
+        prod_file = tmp_path / "config.prod.yaml"
+        with prod_file.open("w") as f:
+            yaml.dump({"env": "prod", "nested": {"b": 99}}, f)
+
+        reader = YamlConfigReader(yaml_file_path=tmp_path)
+
+        # Act
+        merged = reader.read_and_merge_files(profiles=["prod"])
+        base_again = reader.read_and_merge_files(profiles=None)
+
+        # Assert
+        assert merged["env"] == "prod"
+        assert merged["nested"]["b"] == 99
+        # The un-profiled read still sees the file's own values
+        assert base_again["env"] == "base"
+        assert base_again["nested"]["b"] == 2
+
+    def test_merge_result_is_independent_of_cache(self, tmp_path: Path) -> None:
+        """Mutating a returned config must not corrupt later reads."""
+        # Arrange
+        base_file = tmp_path / "config.yaml"
+        with base_file.open("w") as f:
+            yaml.dump({"nested": {"a": 1}}, f)
+
+        reader = YamlConfigReader(yaml_file_path=tmp_path)
+
+        # Act
+        first = reader.read_and_merge_files(profiles=None)
+        first["nested"]["a"] = "clobbered"
+        second = reader.read_and_merge_files(profiles=None)
+
+        # Assert
+        assert second["nested"]["a"] == 1
+
     def test_read_file_success(self, tmp_path: Path) -> None:
         """Reading a valid YAML file returns parsed data."""
         # Arrange

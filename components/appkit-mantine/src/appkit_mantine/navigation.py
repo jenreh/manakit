@@ -86,11 +86,6 @@ class Tabs(MantineLayoutComponentBase):
 
     tag = "Tabs"
 
-    _rename_props = {
-        "default_value": "defaultValue",
-        "keep_mounted_mode": "keepMountedMode",
-    }
-
     keep_mounted_mode: Var[Literal["display-none", "activity"]] = None
 
     value: Var[str]
@@ -238,12 +233,6 @@ class NavLink(MantineComponentBase):
     tag = "NavLink"
 
     # Prop renames from snake_case to camelCase / React names
-    _rename_props = {
-        "right_section": "rightSection",
-        "default_opened": "defaultOpened",
-        "initially_opened": "initiallyOpened",
-        "chevron_position": "chevronPosition",
-    }
 
     # Basic content
     label: Var[str] = None
@@ -287,10 +276,6 @@ class Anchor(MantineLayoutComponentBase):
 
     tag = "Anchor"
 
-    _rename_props = {
-        "line_clamp": "lineClamp",
-    }
-
     href: Var[str] = None
     target: Var[str] = None
     underline: Var[Literal["always", "hover", "not-hover", "never"]] = None
@@ -311,12 +296,6 @@ class Burger(MantineLayoutComponentBase):
 
     tag = "Burger"
 
-    _rename_props = {
-        "line_size": "lineSize",
-        "transition_duration": "transitionDuration",
-        "transition_timing_function": "transitionTimingFunction",
-    }
-
     opened: Var[bool] = None
     color: Var[str] = None
     size: Var[str | int] = None
@@ -334,16 +313,6 @@ class TableOfContents(MantineLayoutComponentBase):
     """
 
     tag = "TableOfContents"
-
-    _rename_props = {
-        "auto_contrast": "autoContrast",
-        "depth_offset": "depthOffset",
-        "get_control_props": "getControlProps",
-        "initial_data": "initialData",
-        "min_depth_to_offset": "minDepthToOffset",
-        "reinitialize_ref": "reinitializeRef",
-        "scroll_spy_options": "scrollSpyOptions",
-    }
 
     color: Var[str] = None
     size: Var[str | int] = None

@@ -70,11 +70,6 @@ class Map(MapComponentBase):
 
     tag = "Map"
 
-    _rename_props = {
-        "class_name": "className",
-        "on_viewport_change": "onViewportChange",
-    }
-
     class_name: Var[str] = None
     """Additional CSS class for the map container."""
 
@@ -129,15 +124,6 @@ class MapControls(MapComponentBase):
     """
 
     tag = "MapControls"
-
-    _rename_props = {
-        "class_name": "className",
-        "show_zoom": "showZoom",
-        "show_compass": "showCompass",
-        "show_locate": "showLocate",
-        "show_fullscreen": "showFullscreen",
-        "on_locate": "onLocate",
-    }
 
     position: Var[MapControlPosition] = None
     """Position of the controls on the map (default: ``"bottom-right"``)."""

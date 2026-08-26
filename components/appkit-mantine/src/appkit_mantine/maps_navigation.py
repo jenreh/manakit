@@ -45,29 +45,6 @@ class MapNavigation(MapConfigNode):
 
     tag = "VoyagerMapLibreNavigation"
 
-    _rename_props = {
-        "start_lat": "startLat",
-        "start_long": "startLong",
-        "end_lat": "endLat",
-        "end_long": "endLong",
-        "routing_url": "routingUrl",
-        "line_color": "lineColor",
-        "line_width": "lineWidth",
-        "line_opacity": "lineOpacity",
-        "line_dasharray": "lineDasharray",
-        "fit_bounds": "fitBounds",
-        "fit_bounds_padding": "fitBoundsPadding",
-        "fit_bounds_max_zoom": "fitBoundsMaxZoom",
-        "fit_bounds_duration_ms": "fitBoundsDurationMs",
-        "continue_straight": "continueStraight",
-        "include_steps": "includeSteps",
-        "include_geometry": "includeGeometry",
-        "show_end_markers": "showEndMarkers",
-        "start_marker_color": "startMarkerColor",
-        "end_marker_color": "endMarkerColor",
-        "marker_radius": "markerRadius",
-    }
-
     start_lat: Var[float | int]
     """Latitude of the route start point."""
 
@@ -188,19 +165,6 @@ class MapDirectionsPanel(MapConfigNode):
     """
 
     tag = "VoyagerMapLibreDirectionsPanel"
-
-    _rename_props = {
-        "empty_text": "emptyText",
-        "show_summary": "showSummary",
-        "show_steps": "showSteps",
-        "max_height": "maxHeight",
-        "offset_top": "offsetTop",
-        "offset_left": "offsetLeft",
-        "dock_below_zoom_controls": "dockBelowZoomControls",
-        "zoom_controls_gap_rem": "zoomControlsGapRem",
-        "initially_collapsed": "initiallyCollapsed",
-        "collapse_direction": "collapseDirection",
-    }
 
     title: Var[str | None] = Var.create(None)
     """Panel header title (default: ``"Directions"``)."""

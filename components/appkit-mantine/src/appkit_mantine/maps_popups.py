@@ -18,13 +18,6 @@ class MapPopup(MapComponentBase):
 
     tag = "MapPopup"
 
-    _rename_props = {
-        "class_name": "className",
-        "close_button": "closeButton",
-        "max_width": "maxWidth",
-        "on_close": "onClose",
-    }
-
     longitude: Var[int | float]
     """Longitude coordinate for popup position."""
 

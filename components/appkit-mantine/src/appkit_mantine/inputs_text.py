@@ -110,10 +110,6 @@ class MaskInput(MantineInputComponentBase):
     alias = "MantineMaskInput"
 
     # Extend base _rename_props with MaskInput-specific camelCase conversions
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "slot_char": "slotChar",
-    }
 
     # ========================================================================
     # MaskInput Props
@@ -203,11 +199,6 @@ class Textarea(MantineInputComponentBase):
 
     tag = "Textarea"
 
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "bottom_section": "bottomSection",
-    }
-
     # HTML textarea attributes
     rows: Var[int] = None
     """Number of visible text lines (when not using autosize)."""
@@ -250,16 +241,6 @@ class PinInput(MantineInputComponentBase):
     """
 
     tag = "PinInput"
-
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "auto_focus": "autoFocus",
-        "input_mode": "inputMode",
-        "input_type": "inputType",
-        "manage_focus": "manageFocus",
-        "one_time_code": "oneTimeCode",
-        "restrict_to_marks": "restrictToMarks",
-    }
 
     length: Var[int] = None
     """Number of input fields (default: 4)."""

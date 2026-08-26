@@ -85,11 +85,6 @@ class DrawerOverlay(MantineComponentBase):
     z_index: rx.Var[int | str]
     """CSS z-index."""
 
-    _rename_props = {
-        "background_opacity": "backgroundOpacity",
-        "z_index": "zIndex",
-    }
-
 
 class DrawerContent(MantineComponentBase):
     """Drawer.Content - Main drawer element for compound drawer."""

@@ -153,8 +153,6 @@ class AppShellHeader(MantineLayoutComponentBase):
 
     tag = "AppShell.Header"
 
-    _rename_props = {"with_border": "withBorder", "z_index": "zIndex"}
-
     with_border: Var[bool] = None
     z_index: Var[str | int] = None
 
@@ -163,8 +161,6 @@ class AppShellNavbar(MantineLayoutComponentBase):
     """Mantine AppShell.Navbar."""
 
     tag = "AppShell.Navbar"
-
-    _rename_props = {"with_border": "withBorder", "z_index": "zIndex"}
 
     with_border: Var[bool] = None
     z_index: Var[str | int] = None
@@ -175,8 +171,6 @@ class AppShellAside(MantineLayoutComponentBase):
 
     tag = "AppShell.Aside"
 
-    _rename_props = {"with_border": "withBorder", "z_index": "zIndex"}
-
     with_border: Var[bool] = None
     z_index: Var[str | int] = None
 
@@ -185,8 +179,6 @@ class AppShellFooter(MantineLayoutComponentBase):
     """Mantine AppShell.Footer."""
 
     tag = "AppShell.Footer"
-
-    _rename_props = {"with_border": "withBorder", "z_index": "zIndex"}
 
     with_border: Var[bool] = None
     z_index: Var[str | int] = None
@@ -213,14 +205,6 @@ class AppShellRoot(MantineLayoutComponentBase):
     """
 
     tag = "AppShell"
-
-    _rename_props = {
-        "offset_scrollbars": "offsetScrollbars",
-        "transition_duration": "transitionDuration",
-        "transition_timing_function": "transitionTimingFunction",
-        "with_border": "withBorder",
-        "z_index": "zIndex",
-    }
 
     layout: Var[Literal["default", "alt"]] = None
     mode: Var[Literal["fixed", "static"]] = None
@@ -268,15 +252,6 @@ class Collapse(MantineLayoutComponentBase):
 
     tag = "Collapse"
 
-    _rename_props = {
-        "animate_opacity": "animateOpacity",
-        "keep_mounted": "keepMounted",
-        "on_transition_end": "onTransitionEnd",
-        "on_transition_start": "onTransitionStart",
-        "transition_duration": "transitionDuration",
-        "transition_timing_function": "transitionTimingFunction",
-    }
-
     expanded: Var[bool] = None
     keep_mounted: Var[bool] = None
     animate_opacity: Var[bool] = None
@@ -295,24 +270,6 @@ class FloatingWindow(MantineLayoutComponentBase):
     """
 
     tag = "FloatingWindow"
-
-    _rename_props = {
-        "constrain_offset": "constrainOffset",
-        "constrain_to_viewport": "constrainToViewport",
-        "drag_handle_selector": "dragHandleSelector",
-        "exclude_drag_handle_selector": "excludeDragHandleSelector",
-        "initial_position": "initialPosition",
-        "on_drag_end": "onDragEnd",
-        "on_drag_start": "onDragStart",
-        "on_position_change": "onPositionChange",
-        "on_resize_end": "onResizeEnd",
-        "on_resize_start": "onResizeStart",
-        "on_size_change": "onSizeChange",
-        "portal_props": "portalProps",
-        "with_border": "withBorder",
-        "within_portal": "withinPortal",
-        "z_index": "zIndex",
-    }
 
     enabled: Var[bool] = None
     axis: Var[Literal["x", "y"]] = None
@@ -355,8 +312,6 @@ class FloatingWindowResizeHandle(MantineLayoutComponentBase):
 
     tag = "FloatingWindow.ResizeHandle"
 
-    _rename_props = {"aria_label": "aria-label"}
-
     aria_label: Var[str] = None
 
 
@@ -374,13 +329,6 @@ class Marquee(MantineLayoutComponentBase):
     """
 
     tag = "Marquee"
-
-    _rename_props = {
-        "fade_edge_color": "fadeEdgeColor",
-        "fade_edge_size": "fadeEdgeSize",
-        "fade_edges": "fadeEdges",
-        "pause_on_hover": "pauseOnHover",
-    }
 
     duration: Var[int | float] = None
     gap: Var[str | int] = None
@@ -401,13 +349,6 @@ class OverflowList(MantineLayoutComponentBase):
 
     tag = "OverflowList"
 
-    _rename_props = {
-        "max_rows": "maxRows",
-        "max_visible_items": "maxVisibleItems",
-        "render_item": "renderItem",
-        "render_overflow": "renderOverflow",
-    }
-
     data: Var[list[Any]] = None
     gap: Var[str | int] = None
     max_rows: Var[int] = None
@@ -426,10 +367,6 @@ class Portal(MantineComponentBase):
 
     tag = "Portal"
 
-    _rename_props = {
-        "reuse_target_node": "reuseTargetNode",
-    }
-
     target: Var[str] = None
     reuse_target_node: Var[bool] = None
 
@@ -441,17 +378,6 @@ class RollingNumber(MantineLayoutComponentBase):
     """
 
     tag = "RollingNumber"
-
-    _rename_props = {
-        "animation_duration": "animationDuration",
-        "decimal_scale": "decimalScale",
-        "decimal_separator": "decimalSeparator",
-        "fixed_decimal_scale": "fixedDecimalScale",
-        "tabular_numbers": "tabularNumbers",
-        "thousand_separator": "thousandSeparator",
-        "timing_function": "timingFunction",
-        "with_live_region": "withLiveRegion",
-    }
 
     value: Var[int | float] = None
     animation_duration: Var[int] = None
@@ -474,18 +400,6 @@ class Scroller(MantineLayoutComponentBase):
 
     tag = "Scroller"
 
-    _rename_props = {
-        "control_size": "controlSize",
-        "edge_gradient_color": "edgeGradientColor",
-        "end_control_icon": "endControlIcon",
-        "end_control_props": "endControlProps",
-        "scroll_amount": "scrollAmount",
-        "show_end_control": "showEndControl",
-        "show_start_control": "showStartControl",
-        "start_control_icon": "startControlIcon",
-        "start_control_props": "startControlProps",
-    }
-
     draggable: Var[bool] = None
     scroll_amount: Var[int] = None
     control_size: Var[str | int] = None
@@ -503,18 +417,6 @@ class Transition(MantineComponentBase):
     """
 
     tag = "Transition"
-
-    _rename_props = {
-        "enter_delay": "enterDelay",
-        "exit_delay": "exitDelay",
-        "exit_duration": "exitDuration",
-        "keep_mounted": "keepMounted",
-        "on_enter": "onEnter",
-        "on_entered": "onEntered",
-        "on_exit": "onExit",
-        "on_exited": "onExited",
-        "timing_function": "timingFunction",
-    }
 
     mounted: Var[bool] = None
     transition: Var[str | dict] = None

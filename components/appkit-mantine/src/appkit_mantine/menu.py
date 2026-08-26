@@ -67,35 +67,6 @@ class Menu(MantineLayoutComponentBase):
 
     tag = "Menu"
 
-    _rename_props = {
-        "open_delay": "openDelay",
-        "close_delay": "closeDelay",
-        "close_on_item_click": "closeOnItemClick",
-        "close_on_escape": "closeOnEscape",
-        "close_on_click_outside": "closeOnClickOutside",
-        "click_outside_events": "clickOutsideEvents",
-        "default_opened": "defaultOpened",
-        "with_arrow": "withArrow",
-        "arrow_offset": "arrowOffset",
-        "arrow_position": "arrowPosition",
-        "arrow_radius": "arrowRadius",
-        "arrow_size": "arrowSize",
-        "within_portal": "withinPortal",
-        "portal_props": "portalProps",
-        "trap_focus": "trapFocus",
-        "menu_item_tab_index": "menuItemTabIndex",
-        "transition_props": "transitionProps",
-        "z_index": "zIndex",
-        "keep_mounted": "keepMounted",
-        "with_initial_focus_placeholder": "withInitialFocusPlaceholder",
-        "with_overlay": "withOverlay",
-        "overlay_props": "overlayProps",
-        "floating_strategy": "floatingStrategy",
-        "return_focus": "returnFocus",
-        "hide_detached": "hideDetached",
-        "prevent_position_change_when_visible": "preventPositionChangeWhenVisible",
-    }
-
     # Open/close state
     opened: Var[bool]
     default_opened: Var[bool]
@@ -194,12 +165,6 @@ class MenuItem(MantineLayoutComponentBase):
 
     tag = "Menu.Item"
 
-    _rename_props = {
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "close_menu_on_click": "closeMenuOnClick",
-    }
-
     color: Var[str]
     disabled: Var[bool]
     left_section: Var[Any]
@@ -240,27 +205,6 @@ class MenuSub(MantineLayoutComponentBase):
     """Mantine Menu.Sub component - a nested submenu."""
 
     tag = "Menu.Sub"
-
-    _rename_props = {
-        "open_delay": "openDelay",
-        "close_delay": "closeDelay",
-        "with_arrow": "withArrow",
-        "arrow_offset": "arrowOffset",
-        "arrow_position": "arrowPosition",
-        "arrow_radius": "arrowRadius",
-        "arrow_size": "arrowSize",
-        "within_portal": "withinPortal",
-        "portal_props": "portalProps",
-        "transition_props": "transitionProps",
-        "z_index": "zIndex",
-        "keep_mounted": "keepMounted",
-        "with_overlay": "withOverlay",
-        "overlay_props": "overlayProps",
-        "floating_strategy": "floatingStrategy",
-        "return_focus": "returnFocus",
-        "hide_detached": "hideDetached",
-        "prevent_position_change_when_visible": "preventPositionChangeWhenVisible",
-    }
 
     disabled: Var[bool]
     position: Var[str]
@@ -327,12 +271,6 @@ class MenuSubItem(MantineLayoutComponentBase):
 
     tag = "Menu.Sub.Item"
 
-    _rename_props = {
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "close_menu_on_click": "closeMenuOnClick",
-    }
-
     color: Var[str]
     disabled: Var[bool]
     left_section: Var[Any]
@@ -367,13 +305,6 @@ class MenuCheckboxItem(MantineLayoutComponentBase):
 
     tag = "Menu.CheckboxItem"
 
-    _rename_props = {
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "close_menu_on_click": "closeMenuOnClick",
-        "default_checked": "defaultChecked",
-    }
-
     checked: Var[bool]
     default_checked: Var[bool]
     indeterminate: Var[bool]
@@ -396,10 +327,6 @@ class MenuRadioGroup(MantineLayoutComponentBase):
 
     tag = "Menu.RadioGroup"
 
-    _rename_props = {
-        "default_value": "defaultValue",
-    }
-
     value: Var[str]
     default_value: Var[str]
 
@@ -410,12 +337,6 @@ class MenuRadioItem(MantineLayoutComponentBase):
     """Mantine Menu.RadioItem — radio option inside a Menu.RadioGroup."""
 
     tag = "Menu.RadioItem"
-
-    _rename_props = {
-        "left_section": "leftSection",
-        "right_section": "rightSection",
-        "close_menu_on_click": "closeMenuOnClick",
-    }
 
     value: Var[str]
     checked: Var[bool]
@@ -449,11 +370,6 @@ class Menubar(MantineLayoutComponentBase):
     """
 
     tag = "Menubar"
-
-    _rename_props = {
-        "default_open_index": "defaultOpenIndex",
-        "open_index": "openIndex",
-    }
 
     default_open_index: Var[int | None]
     open_index: Var[int | None]

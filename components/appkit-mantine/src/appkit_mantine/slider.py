@@ -53,21 +53,6 @@ class MantineSliderBase(MantineLayoutComponentBase):
     styles: Var[dict[str, Any]]
     unstyled: Var[bool]
 
-    _rename_props = {
-        "class_name": "className",
-        "class_names": "classNames",
-        "default_value": "defaultValue",
-        "label_always_on": "labelAlwaysOn",
-        "label_transition_props": "labelTransitionProps",
-        "on_change_end": "onChangeEnd",
-        "on_change": "onChange",
-        "restrict_to_marks": "restrictToMarks",
-        "show_label_on_hover": "showLabelOnHover",
-        "start_point_value": "startPointValue",
-        "thumb_children": "thumbChildren",
-        "thumb_size": "thumbSize",
-    }
-
 
 class Slider(MantineSliderBase):
     """Mantine Slider component - interactive input for selecting numeric values."""
@@ -84,12 +69,6 @@ class Slider(MantineSliderBase):
     # Appearance
     thumb_children: Var[Any]
     thumb_label: Var[str]
-
-    _rename_props = {
-        **MantineSliderBase._rename_props,  # noqa: SLF001
-        "thumb_label": "thumbLabel",
-        "start_point_value": "startPointValue",
-    }
 
 
 class RangeSlider(MantineSliderBase):
@@ -110,14 +89,6 @@ class RangeSlider(MantineSliderBase):
     # Range props
     min_range: Var[int | float]
     max_range: Var[int | float]
-
-    _rename_props = {
-        **MantineSliderBase._rename_props,  # noqa: SLF001
-        "thumb_from_label": "thumbFromLabel",
-        "thumb_to_label": "thumbToLabel",
-        "max_range": "maxRange",
-        "min_range": "minRange",
-    }
 
 
 # Convenience functions

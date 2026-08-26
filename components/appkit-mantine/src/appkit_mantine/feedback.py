@@ -118,14 +118,6 @@ class RingProgress(MantineLayoutComponentBase):
 
     tag = "RingProgress"
 
-    _rename_props = {
-        "root_color": "rootColor",
-        "round_caps": "roundCaps",
-        "section_gap": "sectionGap",
-        "start_angle": "startAngle",
-        "transition_duration": "transitionDuration",
-    }
-
     sections: Var[list[dict[str, Any]]] = None
     """List of sections: [{value: number, color: str, tooltip?: str}]"""
 
@@ -146,14 +138,6 @@ class SemiCircleProgress(MantineLayoutComponentBase):
     """
 
     tag = "SemiCircleProgress"
-
-    _rename_props = {
-        "empty_segment_color": "emptySegmentColor",
-        "fill_direction": "fillDirection",
-        "filled_segment_color": "filledSegmentColor",
-        "label_position": "labelPosition",
-        "transition_duration": "transitionDuration",
-    }
 
     value: Var[int | float] = None
     size: Var[int] = None

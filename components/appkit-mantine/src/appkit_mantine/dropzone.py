@@ -29,32 +29,6 @@ class Dropzone(MantineDropzoneBase):
 
     tag = "Dropzone"
 
-    _rename_props = {
-        "accept_color": "acceptColor",
-        "activate_on_click": "activateOnClick",
-        "activate_on_drag": "activateOnDrag",
-        "activate_on_keyboard": "activateOnKeyboard",
-        "auto_focus": "autoFocus",
-        "drag_events_bubbling": "dragEventsBubbling",
-        "enable_pointer_events": "enablePointerEvents",
-        "get_files_from_event": "getFilesFromEvent",
-        "input_props": "inputProps",
-        "loader_props": "loaderProps",
-        "max_files": "maxFiles",
-        "max_size": "maxSize",
-        "on_drag_enter": "onDragEnter",
-        "on_drag_leave": "onDragLeave",
-        "on_drag_over": "onDragOver",
-        "on_drop": "onDrop",
-        "on_drop_any": "onDropAny",
-        "on_file_dialog_cancel": "onFileDialogCancel",
-        "on_file_dialog_open": "onFileDialogOpen",
-        "on_reject": "onReject",
-        "prevent_drop_on_document": "preventDropOnDocument",
-        "reject_color": "rejectColor",
-        "use_fs_access_api": "useFsAccessApi",
-    }
-
     accept: Var[list[str] | dict] = None
     """Accepted MIME types or react-dropzone Accept object."""
 
@@ -108,12 +82,6 @@ class DropzoneFullScreen(MantineDropzoneBase):
     """Mantine Dropzone.FullScreen — captures drops anywhere in browser."""
 
     tag = "Dropzone.FullScreen"
-
-    _rename_props = {
-        "portal_props": "portalProps",
-        "within_portal": "withinPortal",
-        "z_index": "zIndex",
-    }
 
     active: Var[bool] = None
     within_portal: Var[bool] = None

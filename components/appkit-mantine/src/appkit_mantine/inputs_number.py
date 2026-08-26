@@ -24,28 +24,6 @@ class NumberInput(MantineInputComponentBase):
     alias = "MantineNumberInput"
 
     # Prop aliasing for camelCase React props
-    _rename_props = {
-        **MantineInputComponentBase._rename_props,  # noqa: SLF001
-        "clamp_behavior": "clampBehavior",
-        "decimal_scale": "decimalScale",
-        "fixed_decimal_scale": "fixedDecimalScale",
-        "decimal_separator": "decimalSeparator",
-        "allow_decimal": "allowDecimal",
-        "allow_negative": "allowNegative",
-        "thousand_separator": "thousandSeparator",
-        "thousands_group_style": "thousandsGroupStyle",
-        "hide_controls": "hideControls",
-        "start_value": "startValue",
-        "with_keyboard_events": "withKeyboardEvents",
-        "allow_mouse_wheel": "allowMouseWheel",
-        "allow_leading_zeros": "allowLeadingZeros",
-        "allowed_decimal_separators": "allowedDecimalSeparators",
-        "select_all_on_focus": "selectAllOnFocus",
-        "step_hold_delay": "stepHoldDelay",
-        "step_hold_interval": "stepHoldInterval",
-        "trim_leading_zeroes_on_blur": "trimLeadingZeroesOnBlur",
-        "value_is_numeric_string": "valueIsNumericString",
-    }
 
     # Numeric constraints
     min: Var[int | float] = None
@@ -177,18 +155,6 @@ class Rating(MantineLayoutComponentBase):
 
     tag = "Rating"
 
-    _rename_props = {
-        "allow_clear": "allowClear",
-        "default_value": "defaultValue",
-        "empty_symbol": "emptySymbol",
-        "full_symbol": "fullSymbol",
-        "get_symbol_label": "getSymbolLabel",
-        "highlight_selected_only": "highlightSelectedOnly",
-        "on_change_end": "onChangeEnd",
-        "on_hover": "onHover",
-        "read_only": "readOnly",
-    }
-
     value: Var[int | float] = None
     default_value: Var[int | float] = None
     count: Var[int] = None
@@ -213,18 +179,6 @@ class AngleSlider(MantineLayoutComponentBase):
     """
 
     tag = "AngleSlider"
-
-    _rename_props = {
-        "default_value": "defaultValue",
-        "format_label": "formatLabel",
-        "hidden_input_props": "hiddenInputProps",
-        "on_change_end": "onChangeEnd",
-        "on_scrub_end": "onScrubEnd",
-        "on_scrub_start": "onScrubStart",
-        "restrict_to_marks": "restrictToMarks",
-        "thumb_size": "thumbSize",
-        "with_label": "withLabel",
-    }
 
     value: Var[int | float] = None
     default_value: Var[int | float] = None
