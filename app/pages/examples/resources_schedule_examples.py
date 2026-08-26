@@ -110,7 +110,7 @@ def _framed(*children: rx.Component, h: str = "480px") -> rx.Component:
 
 
 @navbar_layout(
-    route="/resources-schedule",
+    route="/examples/resources-schedule",
     title="Resources Schedule",
     navbar=app_navbar(),
     with_header=False,

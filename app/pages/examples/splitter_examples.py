@@ -82,7 +82,7 @@ _LIME = "lime.1"
 
 
 @navbar_layout(
-    route="/splitter",
+    route="/examples/splitter",
     title="Splitter",
     navbar=app_navbar(),
     with_header=False,

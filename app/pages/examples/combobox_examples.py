@@ -533,7 +533,7 @@ def _render_cascader_section() -> rx.Component:
 
 
 @navbar_layout(
-    route="/comboboxes",
+    route="/examples/comboboxes",
     title="Combobox Examples",
     navbar=app_navbar(),
     with_header=False,

@@ -12,7 +12,7 @@ from app.components.navbar import app_navbar
 
 
 @navbar_layout(
-    route="/empty-state",
+    route="/examples/empty-state",
     title="Empty State",
     navbar=app_navbar(),
     with_header=False,

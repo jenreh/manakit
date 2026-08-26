@@ -254,7 +254,7 @@ def stateful_autoscroll_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/auto-scroll",
+    route="/examples/auto-scroll",
     title="AutoScroll Examples",
     description="AutoScroll Component Examples",
     navbar=app_navbar(),

@@ -19,7 +19,7 @@ class NumberFormatterState(rx.State):
 
 
 @navbar_layout(
-    route="/number-formatter",
+    route="/examples/number-formatter",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

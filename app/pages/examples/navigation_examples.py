@@ -40,7 +40,7 @@ class NavigationState(rx.State):
 
 
 @navbar_layout(
-    route="/navigation",
+    route="/examples/navigation",
     title="Navigation Examples",
     navbar=app_navbar(),
     with_header=False,

@@ -409,7 +409,7 @@ def integration_notes_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/nprogress",
+    route="/examples/nprogress",
     title="Rich Select Examples",
     navbar=app_navbar(),
     with_header=False,

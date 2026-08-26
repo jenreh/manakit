@@ -31,6 +31,9 @@ repos:
         args: ["--fix=lf"]
       - id: name-tests-test
         args: ["--pytest-test-first"]
+        # Leading underscore marks a shared helper module inside tests/,
+        # not a test module (fixtures, stubs, factories).
+        exclude: '(^|/)tests/_[^/]*\.py$'
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0
     hooks:

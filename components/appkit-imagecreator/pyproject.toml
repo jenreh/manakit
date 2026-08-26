@@ -22,6 +22,7 @@ classifiers = [
 ]
 dependencies = [
     "appkit-commons",
+    "appkit-user",
     "fastapi>=0.139.0",
     "google-genai>=2.19.0",
     "httpx>=0.28.1",
@@ -42,6 +43,7 @@ where = ["src"]
 
 [tool.uv.sources]
 appkit-commons = { workspace = true }
+appkit-user = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

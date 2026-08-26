@@ -35,7 +35,7 @@ function MyPage() {
 
 
 @navbar_layout(
-    route="/extensions",
+    route="/examples/extensions",
     title="Extension Components",
     navbar=app_navbar(),
     with_header=False,

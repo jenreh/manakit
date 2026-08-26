@@ -34,6 +34,19 @@ app:
     auth_token_refresh_delta: 10 # minutes
     session_monitor_interval_seconds: 60 # seconds
 
+    session_filter_enabled: true # guard WS events, page loads and REST routes
+    session_cookie_name: reflex_session
+    session_cookie_secure: false # dev serves plain http on a non-localhost host
+    # fnmatch glob allowlist of routes reachable without a session.
+    # Everything not listed here is default-deny.
+    public_routes:
+      - /
+      - /login
+      - /password-reset
+      - /password-reset/confirm
+      - /oauth/*/callback
+      - /examples/*
+
     oauth_providers:
       - provider: "github"
         client_id: secret:mn-oauth-github-client-id

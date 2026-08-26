@@ -158,10 +158,6 @@ function parseHeaderJson(value) {
   }
 }
 
-function createUserHeaders(userId) {
-  return userId > 0 ? { "x-user-id": String(userId) } : {};
-}
-
 function triggerDownload(parts, filename, mimeType = "application/octet-stream") {
   const blob = new Blob(Array.isArray(parts) ? parts : [parts], {
     type: mimeType,
@@ -211,8 +207,6 @@ export function McpAppBridge({
   serverName,
   tool_name,
   toolName,
-  user_id,
-  userId,
   theme = "light",
   max_height,
   maxHeight,
@@ -230,7 +224,6 @@ export function McpAppBridge({
   const _serverId = server_id ?? serverId ?? 0;
   const _serverName = server_name || serverName || "";
   const _toolName = tool_name || toolName || "";
-  const _userId = user_id ?? userId ?? 0;
   const _maxHeight = max_height ?? maxHeight ?? 600;
   const _prefersBorder = prefers_border ?? prefersBorder ?? true;
   const _onMessage = on_message || onMessage;
@@ -263,11 +256,7 @@ export function McpAppBridge({
 
   const parsedInput = useMemo(() => parseJsonLike(_toolInput, {}), [_toolInput]);
   const parsedResult = useMemo(() => parseJsonLike(_toolResult, null), [_toolResult]);
-  const userHeaders = useMemo(() => createUserHeaders(_userId), [_userId]);
-  const jsonHeaders = useMemo(
-    () => ({ "Content-Type": "application/json", ...userHeaders }),
-    [userHeaders]
-  );
+  const jsonHeaders = useMemo(() => ({ "Content-Type": "application/json" }), []);
 
   const cssVars = React.useMemo(() => ({
     "--color-background-primary": theme === "dark" ? "#1a1b1e" : "#ffffff",
@@ -295,11 +284,8 @@ export function McpAppBridge({
     const loadResource = async () => {
       try {
         const response = await fetch(resourceUrl, {
-          credentials: "omit",
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-            ...userHeaders,
-          },
+          credentials: "include",
+          headers: { "ngrok-skip-browser-warning": "true" },
           signal: controller.signal,
         });
 
@@ -346,7 +332,7 @@ export function McpAppBridge({
     void loadResource();
 
     return () => controller.abort();
-  }, [resourceUrl, userHeaders]);
+  }, [resourceUrl]);
 
   const handleMessage = useCallback((event) => {
     const data = event.data;
@@ -442,7 +428,7 @@ export function McpAppBridge({
         fetch(`${_backendUrl}/api/mcp-apps/${_serverId}/tools/call`, {
           method: "POST",
           headers: jsonHeaders,
-          credentials: "omit",
+          credentials: "include",
           body: JSON.stringify({
             tool_name: params.name,
             arguments: params.arguments || {},
@@ -472,8 +458,7 @@ export function McpAppBridge({
         fetch(
           `${_backendUrl}/api/mcp-apps/${_serverId}/resource?uri=${encodeURIComponent(uri)}`,
           {
-            credentials: "omit",
-            headers: userHeaders,
+            credentials: "include",
           }
         )
           .then((response) =>
@@ -616,7 +601,6 @@ export function McpAppBridge({
     parsedInput,
     parsedResult,
     theme,
-    userHeaders,
   ]);
 
   useEffect(() => {

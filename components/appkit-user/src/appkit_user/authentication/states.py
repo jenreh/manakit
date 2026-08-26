@@ -23,6 +23,13 @@ from appkit_user.authentication.backend.database import (
 )
 from appkit_user.authentication.backend.models import User
 from appkit_user.authentication.backend.services import OAuthService
+from appkit_user.authentication.session_validation import (
+    LOGIN_ROUTE,
+    SessionStatus,
+    SessionValidationResult,
+    SessionValidator,
+    safe_redirect_path,
+)
 from appkit_user.configuration import AuthenticationConfiguration
 
 logger = logging.getLogger(__name__)
@@ -40,7 +47,7 @@ def _session_timeout() -> timedelta:
 
 
 def _session_monitor_interval() -> timedelta:
-    """Minimum interval between auth checks, resolved lazily from config."""
+    """How long a validated session may be trusted without re-reading the DB."""
     return timedelta(seconds=_auth_config().session_monitor_interval_seconds)
 
 
@@ -50,6 +57,9 @@ def _session_monitor_interval() -> timedelta:
 AUTH_TOKEN_REFRESH_DELTA: Final = timedelta(
     minutes=_auth_config().auth_token_refresh_delta
 )
+# Same reason: rx.Cookie() is evaluated at class-definition time.
+SESSION_COOKIE_NAME: Final = _auth_config().session_cookie_name
+SESSION_COOKIE_SECURE: Final = _auth_config().session_cookie_secure
 AUTH_TOKEN_LOCAL_STORAGE_KEY: Final = "_auth_token"  # noqa: S105
 # The OAuth ``state`` is mirrored into the browser so the callback can prove the
 # flow was started by *this* user agent. The router's ``client_token`` is not
@@ -59,8 +69,10 @@ OAUTH_STATE_LOCAL_STORAGE_KEY: Final = "_oauth_state"  # noqa: S105
 TOKEN_LENGTH: Final = 64
 TOKEN_CHARS: Final = string.ascii_letters + string.digits + "!@#$%^&*()-=_+[]{}|;:,.<>?"
 
-LOGIN_ROUTE: Final = "/login"
 LOGOUT_ROUTE: Final = "/login"
+
+# Stateless; shared by check_auth and the session filter.
+_SESSION_VALIDATOR: Final = SessionValidator()
 
 
 def _generate_auth_token() -> str:
@@ -72,8 +84,60 @@ class UserSession(rx.State):
     """Enhanced session state with client-side storage integration."""
 
     auth_token: str = rx.LocalStorage(name=AUTH_TOKEN_LOCAL_STORAGE_KEY)
+    # MIRRORS auth_token rather than replacing it, so existing local-storage
+    # sessions keep working and the cookie simply appears on the next login.
+    # It carries the token on plain HTTP requests (page loads, REST/MCP) where
+    # local storage is not readable. No max_age on purpose: this is a browser
+    # session cookie, the DB `expires_at` is the real gate.
+    session_cookie: str = rx.Cookie(
+        name=SESSION_COOKIE_NAME,
+        path="/",
+        same_site="lax",
+        secure=SESSION_COOKIE_SECURE or None,
+    )
     user_id: int = 0
     user: User | None = None
+
+    # How long a validated session may be trusted without re-reading the DB.
+    # NOT the session's own expiry: caching until then would mean a revoked
+    # session (admin force-logout, logout elsewhere, account deactivated) stayed
+    # usable on an open socket for the whole session lifetime. Capping the cache
+    # at the monitor interval keeps revocation latency at what the old clock
+    # throttle gave (60 s) while still enforcing the timeout at the exact expiry
+    # instant, because the DB stays authoritative once the cache lapses.
+    _session_expires_at: datetime | None = None
+
+    def _has_unexpired_cache(self) -> bool:
+        """Whether a previously validated session is still known to be valid."""
+        return (
+            self._session_expires_at is not None
+            and datetime.now(UTC) < self._session_expires_at
+        )
+
+    def _trust_session_until(self, expires_at: datetime | None) -> None:
+        """Cache the session as valid, capped at the monitor interval.
+
+        Args:
+            expires_at: The session's own expiry, or None when unknown.
+        """
+        trust_until = datetime.now(UTC) + _session_monitor_interval()
+        self._session_expires_at = (
+            min(expires_at, trust_until) if expires_at is not None else trust_until
+        )
+
+    def _cache_session(self, result: SessionValidationResult) -> None:
+        """Adopt a VALID validation result into this state."""
+        if not result.is_valid or result.user is None:
+            return
+        self.user = result.user
+        self.user_id = result.user.user_id
+        self._trust_session_until(result.expires_at)
+        # Backfill the mirror for sessions created before the cookie existed.
+        # Without this, everyone logged in at deploy time keeps a working
+        # WebSocket session but gets 401s from every REST route and a 302 from
+        # the page guard, because those transports can only read the cookie.
+        if not self.session_cookie and self.auth_token:
+            self.session_cookie = self.auth_token
 
     async def _execute_db_operation(
         self, operation: Callable[[AsyncSession], Any]
@@ -145,6 +209,8 @@ class UserSession(rx.State):
             self.auth_token,
             expires_at.replace(tzinfo=None),
         )
+        self.session_cookie = self.auth_token
+        self._trust_session_until(expires_at)
         self.user_id = user_entity.id
         self.user = User.model_validate(user_entity)
 
@@ -207,6 +273,12 @@ class UserSession(rx.State):
             # Continue cleanup even if DB delete fails
             logger.debug("Ignored error during session termination: %s", e)
 
+        # Cleared explicitly *before* reset(): terminate_session is also invoked
+        # on LoginState, and reset() skips vars inherited from a parent state —
+        # so reset() alone would leave the cookie and the expiry cache behind.
+        self.session_cookie = ""
+        self._session_expires_at = None
+
         self.reset()
         return rx.clear_session_storage()
 
@@ -234,6 +306,7 @@ class UserSession(rx.State):
                 # Store naive UTC to fix DB timezone mismatch on TIMESTAMP columns
                 user_session.expires_at = new_expires_at.replace(tzinfo=None)
                 await session.commit()
+                self._trust_session_until(new_expires_at)
                 logger.debug(
                     "Session prolonged for user_id=%s, new expiry=%s",
                     self.user_id,
@@ -263,7 +336,6 @@ class LoginState(UserSession):
     error_message: str = ""
 
     _oauth_service: OAuthService = OAuthService()
-    _last_auth_check: datetime | None = None
 
     # Error messages for login status
     _LOGIN_ERROR_MESSAGES: dict[str, str] = {
@@ -513,13 +585,17 @@ class LoginState(UserSession):
             if path == self.login_route:
                 return None
 
-            self.redirect_to = path
+            self.redirect_to = safe_redirect_path(path)
             return rx.redirect(self.login_route)
 
         if self.redirect_to:
-            target = self.redirect_to
+            # Sanitised again at the point of use: the stored value may predate
+            # this check, or have been pushed back from the browser's own
+            # local storage, which the user controls.
+            target = safe_redirect_path(self.redirect_to)
             self.redirect_to = ""
-            return rx.redirect(target)
+            if target:
+                return rx.redirect(target)
 
         if path == self.login_route or self._is_oauth_callback_path(path):
             return rx.redirect(self.homepage)
@@ -534,59 +610,42 @@ class LoginState(UserSession):
 
     @rx.event
     async def check_auth(self) -> list[EventSpec] | None:
-        """Page guard: redirect to login if session is invalid or expired."""
-        if self._should_skip_auth_check():
+        """Page guard: redirect to login if session is invalid or expired.
+
+        Still driven by ``session_monitor()``, which clicks the hidden trigger
+        every ``session_monitor_interval_seconds`` to kick idle tabs.
+
+        Returns:
+            Events to run on denial, or None when the session is valid.
+        """
+        # A cached expiry that has not been reached yet is authoritative: no DB
+        # round trip until the exact expiry instant.
+        if self._has_unexpired_cache():
             return None
 
-        self._last_auth_check = datetime.now(UTC)
         logger.debug("Auth check for user_id=%s", self.user_id)
+        result = await _SESSION_VALIDATOR.validate(self.auth_token, self.user_id)
 
-        async def _check(db: AsyncSession) -> User | None:
-            user_session = await self._find_valid_session(db)
+        if result.is_valid:
+            self._cache_session(result)
 
-            if user_session is None or user_session.is_expired():
-                return None
-
-            if user_session.user:
-                return User.model_validate(user_session.user)
+            # Sync with parent state
+            user_session_state = await self.get_state(UserSession)
+            user_session_state.user_id = self.user_id
+            user_session_state.user = self.user
             return None
 
-        try:
-            user = await self._execute_db_operation(_check)
-
-            if user:
-                self.user = user
-                self.user_id = user.user_id
-
-                # Sync with parent state
-                user_session_state = await self.get_state(UserSession)
-                user_session_state.user_id = self.user_id
-                user_session_state.user = self.user
-            else:
-                logger.debug("Session expired for user_id=%s", self.user_id)
-                self._last_auth_check = None
-                clear_storage = await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
-                redirect = await self.redir()  # type: ignore[operator]
-                return [e for e in (clear_storage, redirect) if e is not None]
-
-        except Exception as e:
-            # Fail closed. `_execute_db_operation` already retried, so reaching
-            # here means the session could not be validated — rendering the page
-            # anyway would let a database outage become an authorization
-            # bypass. The session itself is left intact so a retry can succeed.
-            logger.error("Auth check failed, denying access: %s", e)
-            self._last_auth_check = None
+        if result.status is SessionStatus.ERROR:
+            # Fail closed: the session could not be validated, and rendering the
+            # page anyway would let a database outage become an authorization
+            # bypass. The session itself is left intact so the next monitor tick
+            # can succeed.
+            logger.error(
+                "Auth check failed, denying access for user_id=%s", self.user_id
+            )
             return [rx.redirect(self.login_route)]
 
-        return None
-
-    def _should_skip_auth_check(self) -> bool:
-        """Check if auth check should be skipped based on time interval."""
-        if self._last_auth_check is None:
-            return False
-
-        elapsed = datetime.now(UTC) - self._last_auth_check
-        if elapsed < _session_monitor_interval():
-            logger.debug("Skipping auth check, last check %s ago", elapsed)
-            return True
-        return False
+        logger.debug("Session %s for user_id=%s", result.status.value, self.user_id)
+        clear_storage = await self.terminate_session()  # type: ignore[operator]  # rx.event handler invoked directly
+        redirect = await self.redir()  # type: ignore[operator]
+        return [e for e in (clear_storage, redirect) if e is not None]

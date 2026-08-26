@@ -296,7 +296,7 @@ def size_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/alert-dialog",
+    route="/examples/alert-dialog",
     title="AlertDialog Examples",
     navbar=app_navbar(),
     with_header=False,

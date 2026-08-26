@@ -68,7 +68,7 @@ TREE_DUMMY_DATA = [
 
 
 @navbar_layout(
-    route="/data-display",
+    route="/examples/data-display",
     title="Data Display",
     navbar=app_navbar(),
     with_header=False,

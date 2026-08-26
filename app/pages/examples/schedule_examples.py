@@ -200,7 +200,7 @@ def _event_badges() -> rx.Component:
 
 
 @navbar_layout(
-    route="/schedule",
+    route="/examples/schedule",
     title="Schedule",
     navbar=app_navbar(),
     with_header=False,

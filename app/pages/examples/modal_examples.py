@@ -474,7 +474,7 @@ def stack_modal_example() -> rx.Component:
 
 
 @navbar_layout(
-    route="/modal",
+    route="/examples/modal",
     title="Modal Examples",
     navbar=app_navbar(),
     with_header=False,

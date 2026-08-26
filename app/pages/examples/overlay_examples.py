@@ -30,7 +30,7 @@ class OverlayExamplesState(rx.State):
 
 
 @navbar_layout(
-    route="/overlay",
+    route="/examples/overlay",
     title="Overlay Examples",
     navbar=app_navbar(),
     with_header=False,

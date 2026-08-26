@@ -263,6 +263,7 @@ version = "1.13.7"
 source = { editable = "components/appkit-imagecreator" }
 dependencies = [
     { name = "appkit-commons" },
+    { name = "appkit-user" },
     { name = "fastapi" },
     { name = "google-genai" },
     { name = "httpx" },
@@ -275,6 +276,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "appkit-commons", editable = "components/appkit-commons" },
+    { name = "appkit-user", editable = "components/appkit-user" },
     { name = "fastapi", specifier = ">=0.139.0" },
     { name = "google-genai", specifier = ">=2.19.0" },
     { name = "httpx", specifier = ">=0.28.1" },
@@ -418,6 +420,7 @@ source = { editable = "components/appkit-user" }
 dependencies = [
     { name = "appkit-commons" },
     { name = "appkit-ui" },
+    { name = "fastapi" },
     { name = "greenlet" },
     { name = "jinja2" },
     { name = "requests-oauthlib" },
@@ -437,6 +440,7 @@ requires-dist = [
     { name = "appkit-commons", editable = "components/appkit-commons" },
     { name = "appkit-ui", editable = "components/appkit-ui" },
     { name = "azure-communication-email", marker = "extra == 'azure'", specifier = ">=1.1.0" },
+    { name = "fastapi", specifier = ">=0.141.1" },
     { name = "greenlet", specifier = ">=3.5.5" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "requests-oauthlib", specifier = ">=2.0.0" },

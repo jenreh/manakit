@@ -28,7 +28,7 @@ def _items() -> list[rx.Component]:
 
 
 @navbar_layout(
-    route="/data-list",
+    route="/examples/data-list",
     title="Data List",
     navbar=app_navbar(),
     with_header=False,

@@ -366,7 +366,7 @@ def example_tabs() -> rx.Component:
 
 
 @navbar_layout(
-    route="/markdown-preview",
+    route="/examples/markdown-preview",
     title="Markdown Preview Examples",
     navbar=app_navbar(),
     with_header=False,

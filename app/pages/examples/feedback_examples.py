@@ -24,7 +24,7 @@ class ProgressState(rx.State):
 
 
 @navbar_layout(
-    route="/feedback",
+    route="/examples/feedback",
     title="Feedback Components",
     navbar=app_navbar(),
     with_header=False,

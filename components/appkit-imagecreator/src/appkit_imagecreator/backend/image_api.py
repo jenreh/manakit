@@ -8,6 +8,7 @@ from fastapi.responses import Response
 
 from appkit_commons.database.session import get_asyncdb_session
 from appkit_imagecreator.backend.repository import image_repo
+from appkit_user.authentication.http_guard import RequiredSession
 
 logger = logging.getLogger(__name__)
 
@@ -19,20 +20,25 @@ type ContentDisposition = Literal["inline", "attachment"]
 @router.get("/{image_id}")
 async def get_image(
     image_id: int,
+    user: RequiredSession,
     content_disposition: Annotated[ContentDisposition, Query()] = "inline",
 ) -> Response:
     """Serve a generated image by ID.
 
     Args:
         image_id: The database ID of the image to retrieve.
+        user: The authenticated user resolved from the session.
         content_disposition: Response content disposition.
 
     Returns:
         The image binary data with appropriate content type.
 
     Raises:
-        HTTPException: If the image is not found.
+        HTTPException: 401 without a valid session, 404 if the image
+            is not found.
     """
+    logger.debug("Serving image %d to user %d", image_id, user.user_id)
+
     async with get_asyncdb_session() as session:
         result = await image_repo.find_image_data(session, image_id)
 
@@ -46,7 +52,11 @@ async def get_image(
         content=image_data,
         media_type=content_type,
         headers={
-            "Cache-Control": "public, max-age=31536000",  # Cache for 1 year
+            # Session-authenticated, so: "private" keeps it out of shared and
+            # proxy caches, and the short lifetime bounds how long a *later*
+            # user of the same browser profile could be served it straight from
+            # cache without this endpoint's session check running at all.
+            "Cache-Control": "private, max-age=300, must-revalidate",
             "Content-Disposition": (
                 f'{content_disposition}; filename="image_{image_id}.png"'
             ),
