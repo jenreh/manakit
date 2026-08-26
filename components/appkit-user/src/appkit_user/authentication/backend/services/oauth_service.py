@@ -2,6 +2,7 @@
 
 import base64
 import hashlib
+import json
 import logging
 import secrets
 from collections.abc import Sequence
@@ -21,6 +22,18 @@ from appkit_user.configuration import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _as_bool(value: Any) -> bool:
+    """Coerce an OIDC claim to bool.
+
+    ``email_verified`` is specified as a boolean but Apple (and some Google
+    responses) serialise it as the string ``"true"``/``"false"``, which is
+    truthy either way when tested directly.
+    """
+    if isinstance(value, str):
+        return value.strip().lower() == "true"
+    return bool(value)
 
 
 def generate_pkce_pair() -> tuple[str, str]:
@@ -152,6 +165,7 @@ class OAuthService:
             user_data = {
                 "id": str(user_data.get("id", "")),
                 "email": user_data.get("email") or "",
+                "email_verified": bool(user_data.get("email_verified")),
                 "name": user_data.get("name") or "",
                 "avatar_url": user_data.get("avatar_url", ""),
                 "username": user_data.get("login", ""),
@@ -164,6 +178,12 @@ class OAuthService:
                 or user_data.get("mail")
                 or "",
                 "name": user_data.get("name") or user_data.get("displayName") or "",
+                # Entra ID only returns addresses it owns/has validated for the
+                # tenant, so a present address counts as verified.
+                "email_verified": bool(
+                    self._convert_upn_to_email(user_data.get("email"))
+                    or user_data.get("mail")
+                ),
                 "avatar_url": user_data.get("picture") or "",
                 "username": user_data.get("preferred_username", ""),
             }
@@ -174,6 +194,7 @@ class OAuthService:
             user_data = {
                 "id": user_data.get("id") or user_data.get("sub") or "",
                 "email": user_data.get("email") or "",
+                "email_verified": _as_bool(user_data.get("email_verified")),
                 "name": user_data.get("name") or user_data.get("given_name") or "",
                 "avatar_url": user_data.get("picture")
                 or user_data.get("avatar_url")
@@ -182,6 +203,7 @@ class OAuthService:
             }
 
         user_data["email"] = (user_data.get("email") or "").lower()
+        user_data["email_verified"] = bool(user_data.get("email_verified"))
         return user_data
 
     def _convert_upn_to_email(self, user_principal_name: str | None) -> str:
@@ -288,11 +310,11 @@ class OAuthService:
                 include_client_id = True
             else:
                 # Confidential client: use Basic auth with client_secret
-                token_kwargs["client_secret"] = config.client_secret
+                token_kwargs["client_secret"] = config.client_secret.get_secret_value()
                 include_client_id = False
         else:
             # Non-Azure providers keep sending client_secret (GitHub)
-            token_kwargs["client_secret"] = config.client_secret
+            token_kwargs["client_secret"] = config.client_secret.get_secret_value()
 
         return cast(
             "dict[str, Any]",
@@ -303,12 +325,44 @@ class OAuthService:
             ),
         )
 
+    def _apple_user_info(self, token: dict[str, Any]) -> dict[str, Any]:
+        """Read Sign in with Apple claims out of the ``id_token``.
+
+        Apple serves no userinfo endpoint — identity claims are only ever
+        delivered in the ``id_token`` returned by the token endpoint. That
+        token arrives over a direct, TLS-protected server-to-server call whose
+        response we requested ourselves, which is the case OpenID Connect Core
+        3.1.3.7 allows signature verification to be skipped for.
+        """
+        id_token = token.get("id_token")
+        if not id_token:
+            raise ValueError("Apple token response did not include an id_token.")
+
+        try:
+            payload_segment = id_token.split(".")[1]
+            padding = "=" * (-len(payload_segment) % 4)
+            claims = json.loads(
+                base64.urlsafe_b64decode(payload_segment + padding).decode("utf-8")
+            )
+        except (IndexError, ValueError, UnicodeDecodeError) as exc:
+            raise ValueError("Apple id_token could not be decoded.") from exc
+
+        return self._normalize_user_data(OAuthProvider.APPLE.value, claims)
+
     def get_user_info(
         self, provider: OAuthProvider | str, token: dict[str, Any]
     ) -> dict[str, Any]:
-        """Get user information from OAuth provider."""
+        """Get user information from OAuth provider.
+
+        The returned dict always carries an ``email_verified`` flag. Callers
+        must not treat an address as an identity assertion unless it is set —
+        an unverified provider address is attacker-controlled text.
+        """
         prov = self._as_provider(provider)
         config: OAuthConfig = self._get_provider_config(prov)
+
+        if self._provider_key(prov) == OAuthProvider.APPLE.value:
+            return self._apple_user_info(token)
 
         oauth = OAuth2Session(config.client_id, token=token)
         response = oauth.get(config.user_url)
@@ -317,16 +371,23 @@ class OAuthService:
 
         provider_key = self._provider_key(prov)
 
-        if (
-            user_data.get("email") is None
-            and provider_key == OAuthProvider.GITHUB.value
-        ):
+        if provider_key == OAuthProvider.GITHUB.value:
+            # /user only exposes the *public* profile email and never says
+            # whether it was confirmed, so always resolve the primary address
+            # through /user/emails, which carries the `verified` flag.
             email_response = oauth.get(self.github_config.user_email_url)
             email_response.raise_for_status()
             emails = email_response.json()
-            user_data["email"] = next(
-                (email["email"] for email in emails if email["primary"]), ""
+            primary = next(
+                (email for email in emails if email.get("primary")),
+                None,
             )
+            if primary:
+                user_data["email"] = primary.get("email") or ""
+                user_data["email_verified"] = bool(primary.get("verified"))
+            else:
+                user_data.setdefault("email", "")
+                user_data["email_verified"] = False
 
         if user_data.get("email") is None and provider_key == OAuthProvider.AZURE.value:
             email_response = oauth.get(self.azure_config.user_url)

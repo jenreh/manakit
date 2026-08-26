@@ -51,6 +51,10 @@ AUTH_TOKEN_REFRESH_DELTA: Final = timedelta(
     minutes=_auth_config().auth_token_refresh_delta
 )
 AUTH_TOKEN_LOCAL_STORAGE_KEY: Final = "_auth_token"  # noqa: S105
+# The OAuth ``state`` is mirrored into the browser so the callback can prove the
+# flow was started by *this* user agent. The router's ``client_token`` is not
+# usable for that: it is regenerated across the provider redirect.
+OAUTH_STATE_LOCAL_STORAGE_KEY: Final = "_oauth_state"  # noqa: S105
 
 TOKEN_LENGTH: Final = 64
 TOKEN_CHARS: Final = string.ascii_letters + string.digits + "!@#$%^&*()-=_+[]{}|;:,.<>?"
@@ -251,6 +255,7 @@ class LoginState(UserSession):
     """Simple authentication state."""
 
     redirect_to: str = rx.LocalStorage(name="login_redirect_to")
+    oauth_state: str = rx.LocalStorage(name=OAUTH_STATE_LOCAL_STORAGE_KEY)
     homepage: str = "/"
     login_route: str = LOGIN_ROUTE
     logout_route: str = LOGOUT_ROUTE
@@ -360,6 +365,10 @@ class LoginState(UserSession):
             async with get_asyncdb_session() as db:
                 await self._store_oauth_state(db, state, provider_str, code_verifier)
 
+            # Bind the state to this browser: the callback only accepts a state
+            # that matches the value this user agent stored before redirecting.
+            self.oauth_state = state
+
             return rx.redirect(auth_url)
 
         except Exception:
@@ -406,6 +415,19 @@ class LoginState(UserSession):
                 )
                 return
 
+            # CSRF / login-fixation guard: the state must match the one this
+            # browser stored when it started the flow. Without this an attacker
+            # can replay their own (code, state) pair into a victim's browser
+            # and silently log the victim into the attacker's account.
+            expected_state = self.oauth_state
+            self.oauth_state = ""
+            if not expected_state or not secrets.compare_digest(expected_state, state):
+                logger.warning(
+                    "OAuth callback state mismatch for provider=%s", provider
+                )
+                yield rx.toast.error("Invalid or expired state", position="top-right")
+                return
+
             async with get_asyncdb_session() as db:
                 await oauth_state_repo.delete_expired(db)
 
@@ -446,11 +468,23 @@ class LoginState(UserSession):
         state: str,
         code_verifier: str | None,
     ) -> UserEntity:
-        """Exchange OAuth code for token and get/create user."""
-        token = self._oauth_service.exchange_code_for_token(
-            provider, code, state, code_verifier
+        """Exchange OAuth code for token and get/create user.
+
+        ``OAuthService`` talks to the provider through ``requests_oauthlib``,
+        which is blocking. Running it inline would stall the whole event loop —
+        and therefore every other connected user — for two HTTP round-trips, so
+        both calls are pushed onto a worker thread.
+        """
+        token = await asyncio.to_thread(
+            self._oauth_service.exchange_code_for_token,
+            provider,
+            code,
+            state,
+            code_verifier,
         )
-        user_info = self._oauth_service.get_user_info(provider, token)
+        user_info = await asyncio.to_thread(
+            self._oauth_service.get_user_info, provider, token
+        )
         return await user_repo.get_or_create_oauth_user(db, user_info, provider, token)
 
     @rx.event
@@ -536,8 +570,13 @@ class LoginState(UserSession):
                 return [e for e in (clear_storage, redirect) if e is not None]
 
         except Exception as e:
-            logger.error("Auth check failed: %s", e)
-            return None
+            # Fail closed. `_execute_db_operation` already retried, so reaching
+            # here means the session could not be validated — rendering the page
+            # anyway would let a database outage become an authorization
+            # bypass. The session itself is left intact so a retry can succeed.
+            logger.error("Auth check failed, denying access: %s", e)
+            self._last_auth_check = None
+            return rx.redirect(self.login_route)
 
         return None
 

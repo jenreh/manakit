@@ -626,6 +626,98 @@ class TestUserRepository:
         assert oauth_account.provider == "github"
 
     @pytest.mark.asyncio
+    async def test_get_or_create_oauth_user_rejects_unverified_email(
+        self,
+        async_session: AsyncSession,
+        user_factory,
+        user_repository,
+        mock_github_user_response,
+        mock_github_token_response,
+    ) -> None:
+        """An unverified provider email must not adopt an existing account.
+
+        Regression guard for account takeover: anyone can put a victim's
+        address on their own provider account, so an unconfirmed address is
+        attacker-controlled text rather than an identity claim.
+        """
+        # Arrange: a local account already owns the address
+        existing_user = await user_factory(email=mock_github_user_response["email"])
+        unverified_info = {**mock_github_user_response, "email_verified": False}
+
+        # Act / Assert
+        with pytest.raises(ValueError, match="has not been confirmed"):
+            await user_repository.get_or_create_oauth_user(
+                async_session,
+                unverified_info,
+                "github",
+                mock_github_token_response,
+            )
+
+        # The victim's account is untouched and no OAuth link was created
+        result = await async_session.execute(
+            select(OAuthAccountEntity).where(
+                OAuthAccountEntity.user_id == existing_user.id
+            )
+        )
+        assert result.scalars().first() is None
+
+    @pytest.mark.asyncio
+    async def test_get_or_create_oauth_user_unverified_email_creates_nothing(
+        self,
+        async_session: AsyncSession,
+        user_repository,
+        mock_github_user_response,
+        mock_github_token_response,
+    ) -> None:
+        """An unverified provider email cannot bootstrap a brand-new account."""
+        unverified_info = {**mock_github_user_response, "email_verified": False}
+
+        with pytest.raises(ValueError, match="has not been confirmed"):
+            await user_repository.get_or_create_oauth_user(
+                async_session,
+                unverified_info,
+                "github",
+                mock_github_token_response,
+            )
+
+        found = await user_repository.find_by_email(
+            async_session, mock_github_user_response["email"]
+        )
+        assert found is None
+
+    @pytest.mark.asyncio
+    async def test_update_existing_oauth_user_ignores_unverified_email(
+        self,
+        async_session: AsyncSession,
+        user_factory,
+        oauth_account_factory,
+        user_repository,
+        mock_github_user_response,
+        mock_github_token_response,
+    ) -> None:
+        """A linked account keeps its address when the provider one is unverified."""
+        # Arrange
+        user = await user_factory(email="original@example.com")
+        await oauth_account_factory(
+            user=user,
+            provider="github",
+            account_id=str(mock_github_user_response["id"]),
+        )
+        hijack_info = {
+            **mock_github_user_response,
+            "email": "victim@corp.com",
+            "email_verified": False,
+        }
+
+        # Act
+        updated = await user_repository.get_or_create_oauth_user(
+            async_session, hijack_info, "github", mock_github_token_response
+        )
+
+        # Assert
+        assert updated.email == "original@example.com"
+
+    @pytest.mark.asyncio
     async def test_get_or_create_oauth_user_updates_existing_oauth_user(
         self,
         async_session: AsyncSession,

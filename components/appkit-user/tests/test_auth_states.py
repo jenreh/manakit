@@ -614,8 +614,51 @@ class TestHandleOAuthCallback:
         assert len(chunks) >= 1  # error toast
 
     @pytest.mark.asyncio
+    async def test_state_not_issued_by_this_browser_is_rejected(self) -> None:
+        """A state this browser never stored must not complete a login.
+
+        Regression guard for login CSRF: an attacker who replays their own
+        (code, state) pair into a victim's browser would otherwise sign the
+        victim into the attacker's account.
+        """
+        state = _StubLoginState()
+        state.oauth_state = ""
+        state.router.url.query_parameters = {
+            "code": "attacker-code",
+            "state": "attacker-state",
+        }
+
+        with patch(f"{_PATCH}.oauth_state_repo") as mock_o_repo:
+            mock_o_repo.find_valid_by_state_and_provider = AsyncMock()
+            chunks = [c async for c in state.handle_oauth_callback("azure")]
+
+        assert state.user is None
+        assert len(chunks) >= 1  # error toast
+        mock_o_repo.find_valid_by_state_and_provider.assert_not_awaited()
+
+    @pytest.mark.asyncio
+    async def test_state_mismatch_is_rejected(self) -> None:
+        """A state that does not match the stored one is refused."""
+        state = _StubLoginState()
+        state.oauth_state = "state-we-issued"
+        state.router.url.query_parameters = {
+            "code": "auth-code",
+            "state": "some-other-state",
+        }
+
+        with patch(f"{_PATCH}.oauth_state_repo") as mock_o_repo:
+            mock_o_repo.find_valid_by_state_and_provider = AsyncMock()
+            [c async for c in state.handle_oauth_callback("azure")]
+
+        assert state.user is None
+        # the single-use state is cleared even on a failed attempt
+        assert state.oauth_state == ""
+        mock_o_repo.find_valid_by_state_and_provider.assert_not_awaited()
+
+    @pytest.mark.asyncio
     async def test_success(self) -> None:
         state = _StubLoginState()
+        state.oauth_state = "state123"
         state.router.url.query_parameters = {
             "code": "auth-code",
             "state": "state123",
@@ -647,6 +690,8 @@ class TestHandleOAuthCallback:
 
         assert state.is_loading is False
         assert state.user is not None
+        # the browser-bound state is single-use
+        assert state.oauth_state == ""
 
 
 class TestLogout:
@@ -1021,8 +1066,12 @@ class TestCheckAuth:
         assert state.auth_token == ""
 
     @pytest.mark.asyncio
-    async def test_exception_returns_none(self) -> None:
-        """check_auth returns None on exception."""
+    async def test_exception_fails_closed(self) -> None:
+        """check_auth redirects to login when the session cannot be validated.
+
+        Regression guard: returning None here rendered the page anyway, so a
+        database outage turned into an authorization bypass.
+        """
         state = _StubLoginState()
         state._last_auth_check = None
         state.auth_token = "token"
@@ -1045,7 +1094,10 @@ class TestCheckAuth:
 
             result = await state.check_auth()
 
-        assert result is None
+        assert result is not None  # redirect, not a silent pass-through
+        # the session itself is preserved so a retry can still succeed
+        assert state.auth_token == "token"
+        assert state._last_auth_check is None
 
     @pytest.mark.asyncio
     async def test_session_without_user(self) -> None:

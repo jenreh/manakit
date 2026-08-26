@@ -1,3 +1,4 @@
+import asyncio
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from typing import Any
@@ -82,10 +83,19 @@ class UserRepository(BaseRepository[UserEntity, AsyncSession]):
             )
 
         email_from_provider = user_info.get("email")
+        email_verified = bool(user_info.get("email_verified"))
         target_user: UserEntity | None = None
 
-        if email_from_provider:
+        if email_from_provider and email_verified:
             target_user = await self.find_by_email(session, email_from_provider)
+        elif email_from_provider:
+            # An unverified provider address is attacker-controlled text, not an
+            # identity claim: anyone can put a victim's address on their own
+            # provider account. Refuse to adopt or create an account from it.
+            raise ValueError(
+                "Your email address has not been confirmed with the identity "
+                "provider. Please verify it there and try again."
+            )
 
         if target_user:
             # Check if existing user is allowed to login
@@ -136,8 +146,13 @@ class UserRepository(BaseRepository[UserEntity, AsyncSession]):
         # Check if existing user is allowed to login
         await self._validate_and_raise_for_oauth_login(user)
 
-        user.name = get_name_from_email(user_info.get("email"), user_info.get("name"))
-        if user_info.get("email") is not None:
+        user.name = (
+            get_name_from_email(user_info.get("email"), user_info.get("name"))
+            or user.name
+        )
+        # Only adopt an address the provider says it confirmed — otherwise a
+        # compromised provider account could rewrite the local identity.
+        if user_info.get("email") and user_info.get("email_verified"):
             user.email = user_info.get("email")
         user.avatar_url = user_info.get("avatar_url", user.avatar_url)
         user.last_login = get_current_utc_time()
@@ -234,7 +249,10 @@ class UserRepository(BaseRepository[UserEntity, AsyncSession]):
         result = await session.execute(stmt)
         user = result.scalars().first()
 
-        if not user or not user.check_password(password):
+        # scrypt is deliberately CPU-heavy (~100ms); running it inline would
+        # stall the event loop for every other connected user on each login
+        # attempt, so verify on a worker thread.
+        if not user or not await asyncio.to_thread(user.check_password, password):
             return None, "invalid_credentials"
 
         # User exists and password is correct, now check status

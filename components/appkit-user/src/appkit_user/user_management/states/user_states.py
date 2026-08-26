@@ -125,11 +125,16 @@ class UserState(rx.State):
         yield
         try:
             roles = self._get_selected_roles(form_data)
+            # The add dialog renders the same is_active/is_verified/is_admin
+            # switches as the edit dialog, so honour them here too instead of
+            # silently falling back to the model defaults.
             new_user = UserCreate(
                 name=form_data["name"],
                 email=form_data["email"],
                 password=form_data["password"],
-                is_verified=True,
+                is_active=bool(form_data.get("is_active")),
+                is_verified=bool(form_data.get("is_verified")),
+                is_admin=bool(form_data.get("is_admin")),
                 needs_password_reset=True,
                 roles=roles,
             )

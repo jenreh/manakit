@@ -1,5 +1,6 @@
 """Repository for password history management."""
 
+import asyncio
 import logging
 from datetime import UTC, datetime
 
@@ -58,12 +59,18 @@ class PasswordHistoryRepository(BaseRepository[PasswordHistoryEntity, AsyncSessi
         """
         recent_hashes = await self.get_last_n_password_hashes(session, user_id, n)
 
-        for password_hash in recent_hashes:
-            if check_password_hash(password_hash, new_password):
-                logger.warning("Password reuse detected for user_id=%d", user_id)
-                return True
+        # Each comparison runs scrypt, so checking N hashes inline would block
+        # the event loop for N x ~100ms. Do the whole scan on a worker thread.
+        def _matches_any() -> bool:
+            return any(
+                check_password_hash(password_hash, new_password)
+                for password_hash in recent_hashes
+            )
 
-        return False
+        reused = await asyncio.to_thread(_matches_any)
+        if reused:
+            logger.warning("Password reuse detected for user_id=%d", user_id)
+        return reused
 
     async def save_password_to_history(
         self,

@@ -13,6 +13,7 @@ from appkit_user.authentication.backend.services.oauth_service import (
     generate_pkce_pair,
 )
 from appkit_user.authentication.backend.services.password_reset_service import (
+    ChangePasswordOutcome,
     ConfirmResetOutcome,
     ConfirmResetResult,
     PasswordResetService,
@@ -25,6 +26,7 @@ from appkit_user.authentication.backend.services.session_cleanup_service import 
 
 __all__ = [
     "AzureEmailProvider",
+    "ChangePasswordOutcome",
     "ConfirmResetOutcome",
     "ConfirmResetResult",
     "EmailProviderBase",
